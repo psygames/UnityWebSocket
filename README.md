@@ -1,8 +1,6 @@
-# YLWebSocket
-Unity Lightweight WebSocket for WebGL Platform.
 #Unity WebSocket 使用
 
-###1.下载 [YLWebSocket.unitypackage]()。
+###1.下载 [YLWebSocket.unitypackage](https://github.com/y85171642/YLWebSocket/blob/master/Release/YLWebSocket.unitypackage?raw=true)。
 
 ###2.使用Unity导入package。
 
@@ -77,9 +75,9 @@ socket.Close();
 
 ```
 
-###4.下载 [服务器Demo]()
+###4.下载 [服务器Demo](https://github.com/y85171642/YLWebSocket/blob/master/Release/TestWebSocketServer.exe?raw=true)
 
 - 提供简单的WebSocket消息收发
 
-- 使用了开源项目 [websocket-sharp]()
+- 使用了开源项目 [websocket-sharp](https://github.com/sta/websocket-sharp)
 
