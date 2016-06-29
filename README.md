@@ -6,25 +6,25 @@
 
 - WebSocket.jslib 
 
-路径：Plugins/YLWebSocket/WebSocketJS.jslib
+        路径：Plugins/YLWebSocket/WebSocketJS.jslib
 
-作用：Unity发布WebGL版本会将其加入到js运行库中。
+        作用：Unity发布WebGL版本会将其加入到js运行库中。
 
 - WebSocket.cs
 
-作用：作为一个WebSocket连接。
+        作用：作为一个WebSocket连接。
 
 - WebSocketManager.cs
 
-作用：创建、管理WebSocket的使用，并且负责接收、分发多个WebSocket消息。
+        作用：创建、管理WebSocket的使用，并且负责接收、分发多个WebSocket消息。
 
 - Demo场景
 
-作用：WebSocket的使用方法示例。
+        作用：WebSocket的使用方法示例。
 
 - SimpleMessagePackTool.cs
 
-作用：简单的将 UTF8字符串 和 byte[] 之间相互转换。
+﻿作用：简单的将 UTF8字符串 和 byte[] 之间相互转换。
 
 ###3.使用方法：
 
