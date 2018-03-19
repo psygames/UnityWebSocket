@@ -123,7 +123,6 @@
     <Compile Include="websocket-sharp\Server\WebSocketServiceHost`1.cs" />
     <Compile Include="websocket-sharp\Server\WebSocketServiceManager.cs" />
     <Compile Include="websocket-sharp\Server\WebSocketSessionManager.cs" />
-    <Compile Include="SimpleMessagePackTool.cs" />
     <Compile Include="websocket-sharp\WebSocket.cs" />
     <Compile Include="websocket-sharp\WebSocketException.cs" />
     <Compile Include="websocket-sharp\WebSocketFrame.cs" />

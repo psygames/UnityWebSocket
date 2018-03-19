@@ -1,0 +1,20 @@
+
+ProjectSettings/ProjectVersion.txt
+
+[Ll]ibrary/
+
+[Tt]emp/
+
+[Oo]bj/
+
+[Bb]uild/
+
+[Bb]uilds/
+
+bin/
+
+
+
+# Visual Studio 2017 cache directory
+
+.vs/

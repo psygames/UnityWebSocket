@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2015
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebsocketDemo.CSharp", "WebsocketDemo.CSharp.csproj", "{00BE72AA-C054-5917-F694-D17891FF9199}"
+# Visual Studio 2017
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebsocketDemo", "WebsocketDemo.csproj", "{441CEC0C-3CEC-0A5A-72AA-542F6C43729F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -9,10 +9,10 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{00BE72AA-C054-5917-F694-D17891FF9199}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{00BE72AA-C054-5917-F694-D17891FF9199}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{00BE72AA-C054-5917-F694-D17891FF9199}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{00BE72AA-C054-5917-F694-D17891FF9199}.Release|Any CPU.Build.0 = Release|Any CPU
+		{441CEC0C-3CEC-0A5A-72AA-542F6C43729F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{441CEC0C-3CEC-0A5A-72AA-542F6C43729F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{441CEC0C-3CEC-0A5A-72AA-542F6C43729F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{441CEC0C-3CEC-0A5A-72AA-542F6C43729F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

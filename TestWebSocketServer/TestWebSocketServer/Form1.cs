@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -75,7 +75,7 @@ namespace TestWebSocketServer
 
         protected override void OnMessage(MessageEventArgs e)
         {
-            string msg = YLWebSocket.SimpleMessagePackTool.Unpack(e.RawData);
+            string msg = Encoding.UTF8.GetString(e.RawData);
             Form1.instance.PrintText("Receive From :" + ID + "\n" + msg);
             SendMessage("Receive [" + msg + "] at " + DateTime.Now);
         }
@@ -84,12 +84,11 @@ namespace TestWebSocketServer
         {
             Form1.instance.PrintText("Client Closed :" + ID);
             Sessions.CloseSession(ID);
-            SendMessage("Close at " + DateTime.Now);
         }
 
         public void SendMessage(string msg)
         {
-            byte[] data = YLWebSocket.SimpleMessagePackTool.Pack(msg);
+            byte[] data = Encoding.UTF8.GetBytes(msg);
             Sessions.SendToAsync(data, ID, (a) => { });
         }
     }
