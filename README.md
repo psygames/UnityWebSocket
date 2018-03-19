@@ -1,12 +1,12 @@
-#Unity WebSocket 使用
+# UnityWebSocket 使用
 
-###1.下载 [YLWebSocket.unitypackage](https://github.com/y85171642/YLWebSocket/blob/master/Release/YLWebSocket.unitypackage?raw=true)。
+### 1. 下载 [UnityWebSocket.unitypackage](https://github.com/y85171642/UnityWebSocket/blob/master/Release/UnityWebSocket.unitypackage?raw=true)。
 
-###2.使用Unity导入package。
+### 2. 使用Unity导入package。
 
-- WebSocket.jslib 
+- WebSocket.jslib
 
-        路径：Plugins/YLWebSocket/WebSocketJS.jslib
+        路径：Plugins/WebSocketJS/WebSocketJS.jslib
 
         作用：Unity发布WebGL版本会将其加入到js运行库中。
 
@@ -14,70 +14,56 @@
 
         作用：作为一个WebSocket连接。
 
-- WebSocketManager.cs
+- WebSocketReceiver.cs
 
-        作用：创建、管理WebSocket的使用，并且负责接收、分发多个WebSocket消息。
+        作用：与jslib交互，负责收发多个WebSocket消息。
 
 - Demo场景
 
         作用：WebSocket的使用方法示例。
 
-- SimpleMessagePackTool.cs
 
-﻿作用：简单的将 UTF8字符串 和 byte[] 之间相互转换。
-
-###3.使用方法：
+### 3. 使用方法：
 
 - 创建WebSocket实例
 
-```csharp 
-
-string address = "ws://127.0.0.1:8730/test";
-
-WebSocket scoket = WebSocketManager.instance.GetSocket(address);
-
-```
+  ```csharp
+  string address = "ws://127.0.0.1:8730/test";
+  WebSocket scoket = new WebSocket(address);
+  ```
 
 - 注册回调
 
-```
-
-
-socket.onConnected += OnConnected;
-
-socket.onClosed += OnClosed;
-
-socket.onReceived += OnReceived;//接收数据类型byte[]
-
-```
+  ```csharp
+  scoket.onOpen += OnOpen;
+  scoket.onClose += OnClose;
+  scoket.onReceive += OnReceive;
+  ```
 
 - 连接
 
-```
-
-socket.Connect();
-
-```
+  ```csharp
+  socket.Connect();
+  ```
 
 - 发送数据
 
-```
-
-socket.Send(data);//发送数据类型byte[]
-
-```
+  ```csharp
+  socket.Send(data);//发送数据类型byte[]
+  ```
 
 - 关闭连接
 
-```
+  ```csharp
+  socket.Close();
+  ```
 
-socket.Close();
+### 4. 发布
+- 需要将Unity项目切换为WebGL平台，并Build。
+- 将生成好的项目文件发布至Tomcat，启动Tomcat，在浏览器中打开相应链接路径。（例如：http://127.0.0.1/UnityWebSocketDemo/ ）
 
-```
-
-###4.下载 [服务器Demo](https://github.com/y85171642/YLWebSocket/blob/master/Release/TestWebSocketServer.exe?raw=true)
-
+### 5. WebSocket服务器
+- 项目发布完成后，需要一个WebSocket服务器收发消息，以下是Demo版本对应的服务器。
+- [服务器Demo下载](https://github.com/y85171642/UnityWebSocket/blob/master/Release/TestWebSocketServer.exe?raw=true)
 - 提供简单的WebSocket消息收发
-
 - 使用了开源项目 [websocket-sharp](https://github.com/sta/websocket-sharp)
-
