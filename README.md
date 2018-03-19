@@ -17,6 +17,8 @@
 - WebSocketReceiver.cs
 
         作用：与jslib交互，负责收发多个WebSocket消息。
+        注意：该脚本必须挂在场景中作为根节点，且名为WebSocketReceiver的GameObject上，
+        这样才能接收到jslib通过SendMessage方式发来消息 ！！！
 
 - Demo场景
 
@@ -67,3 +69,7 @@
 - [服务器Demo下载](https://github.com/y85171642/UnityWebSocket/blob/master/Release/TestWebSocketServer.exe?raw=true)
 - 提供简单的WebSocket消息收发
 - 使用了开源项目 [websocket-sharp](https://github.com/sta/websocket-sharp)
+
+### 6. 再次提醒
+` 注意 `：WebSocketReceiver 脚本必须挂在场景中作为根节点，且名为 WebSocketReceiver 的 GameObject 上，
+这样才能接收到 jslib 通过 SendMessage 方式发来消息 ！！！
