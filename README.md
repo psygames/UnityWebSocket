@@ -3,39 +3,31 @@
 ### 1. 下载 [UnityWebSocket.unitypackage](https://github.com/y85171642/UnityWebSocket/blob/master/Release/UnityWebSocket.unitypackage?raw=true)。
 
 ### 2. 使用Unity导入package。
-
 - WebSocket.jslib
-
         路径：Plugins/WebSocketJS/WebSocketJS.jslib
-
         作用：Unity发布WebGL版本会将其加入到js运行库中。
 
 - WebSocket.cs
-
         作用：作为一个WebSocket连接。
 
 - WebSocketReceiver.cs
-
         作用：与jslib交互，负责收发多个WebSocket消息。
         注意：该脚本必须挂在场景中作为根节点，且名为WebSocketReceiver的GameObject上，
         这样才能接收到jslib通过SendMessage方式发来消息 ！！！
 
 - Demo场景
-
         作用：WebSocket的使用方法示例。
 
 
 ### 3. 使用方法：
 
 - 创建WebSocket实例
-
   ```csharp
   string address = "ws://127.0.0.1:8730/test";
   WebSocket scoket = new WebSocket(address);
   ```
 
 - 注册回调
-
   ```csharp
   scoket.onOpen += OnOpen;
   scoket.onClose += OnClose;
@@ -43,19 +35,16 @@
   ```
 
 - 连接
-
   ```csharp
   socket.Connect();
   ```
 
 - 发送数据
-
   ```csharp
   socket.Send(data);//发送数据类型byte[]
   ```
 
 - 关闭连接
-
   ```csharp
   socket.Close();
   ```
