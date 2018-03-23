@@ -1,3 +1,7 @@
+
+# Demo 线上测试地址
+- [http://47.100.28.149/UnityWebSocketDemo/](http://47.100.28.149/UnityWebSocketDemo/)
+
 # UnityWebSocket 使用
 
 ### 1. 下载 [UnityWebSocket.unitypackage](https://github.com/y85171642/UnityWebSocket/blob/master/Release/UnityWebSocket.unitypackage?raw=true)。
@@ -29,33 +33,22 @@
 - 创建WebSocket实例
 
   ```csharp
+  // 创建实例
   string address = "ws://127.0.0.1:8730/test";
   WebSocket scoket = new WebSocket(address);
-  ```
 
-- 注册回调
-
-  ```csharp
+  // 注册回调
   scoket.onOpen += OnOpen;
   scoket.onClose += OnClose;
   scoket.onReceive += OnReceive;
-  ```
 
-- 连接
-
-  ```csharp
+  // 连接
   socket.Connect();
-  ```
 
-- 发送数据
-
-  ```csharp
+  // 发送数据
   socket.Send(data);//发送数据类型byte[]
-  ```
 
-- 关闭连接
-
-  ```csharp
+  // 关闭连接
   socket.Close();
   ```
 
