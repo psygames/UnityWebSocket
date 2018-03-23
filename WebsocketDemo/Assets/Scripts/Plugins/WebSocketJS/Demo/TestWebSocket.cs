@@ -12,20 +12,16 @@ public class TestWebSocket : MonoBehaviour
     private WebSocket m_scoket;
     private string m_content = "Receive:\n";
 
-    private void Awake()
+    public void Connect()
     {
+        if (m_scoket != null && m_scoket.state != WebSocket.State.Closed)
+            return;
+
         m_scoket = new WebSocket(address.text);
         m_scoket.onOpen += OnOpen;
         m_scoket.onClose += OnClose;
         m_scoket.onReceive += OnReceive;
-    }
-
-    public void Connect()
-    {
-        if (m_scoket.state == WebSocket.State.Closed)
-        {
-            m_scoket.Connect();
-        }
+        m_scoket.Connect();
     }
 
     public void Close()
@@ -53,8 +49,12 @@ public class TestWebSocket : MonoBehaviour
 
     public void OnClose()
     {
+        m_content += "Closed\n";
+
         m_scoket.Alert(" socket closed : " + m_scoket.address);
-        m_content += "Closed";
+        m_scoket.onOpen -= OnOpen;
+        m_scoket.onClose -= OnClose;
+        m_scoket.onReceive -= OnReceive;
     }
 
     public void OnReceive(byte[] data)
@@ -65,15 +65,5 @@ public class TestWebSocket : MonoBehaviour
     void Update()
     {
         receive.text = m_content;
-    }
-
-    private void OnDestroy()
-    {
-        if (m_scoket != null)
-        {
-            m_scoket.onOpen -= OnOpen;
-            m_scoket.onClose -= OnClose;
-            m_scoket.onReceive -= OnReceive;
-        }
     }
 }

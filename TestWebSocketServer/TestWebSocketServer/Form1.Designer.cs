@@ -1,4 +1,4 @@
-﻿namespace TestWebSocketServer
+namespace TestWebSocketServer
 {
     partial class Form1
     {
@@ -53,7 +53,7 @@
             this.address.Name = "address";
             this.address.Size = new System.Drawing.Size(212, 21);
             this.address.TabIndex = 1;
-            this.address.Text = "ws://127.0.0.1:8730/test";
+            this.address.Text = "ws://127.0.0.1:8759/test";
             // 
             // label1
             // 
