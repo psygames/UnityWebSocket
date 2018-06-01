@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace WebSocketJS
 {
-    class WebSocketReceiver : MonoBehaviour
+    public class WebSocketReceiver : MonoBehaviour
     {
         public static WebSocketReceiver instance { get; private set; }
 
@@ -13,11 +13,29 @@ namespace WebSocketJS
         private Dictionary<string, Action> m_closeActions = new Dictionary<string, Action>();
         private Dictionary<string, Action<byte[]>> m_receiveActions = new Dictionary<string, Action<byte[]>>();
 
+        private WebSocketReceiver()
+        { }
+
         void Awake()
         {
             instance = this;
         }
 
+        public static void AutoCreateInstance()
+        {
+            GameObject go = GameObject.Find("/WebSocketReceiver");
+            if (go == null)
+            {
+                go = new GameObject("WebSocketReceiver");
+            }
+
+            if (go.GetComponent<WebSocketReceiver>() == null)
+            {
+                go.AddComponent<WebSocketReceiver>();
+            }
+
+            instance = go.GetComponent<WebSocketReceiver>();
+        }
 
         public void AddListener(string address, Action onOpen, Action onClose, Action<byte[]> onReceive)
         {

@@ -23,9 +23,14 @@ namespace WebSocketJS
         public Action onOpen { get; set; }
         public Action onClose { get; set; }
         public Action<byte[]> onReceive { get; set; }
+        private WebSocket() { }
 
         public WebSocket(string address)
         {
+            if (WebSocketReceiver.instance == null)
+            {
+                WebSocketReceiver.AutoCreateInstance();
+            }
             this.address = address;
             this.state = State.Closed;
         }
@@ -42,11 +47,6 @@ namespace WebSocketJS
 
         public void Connect()
         {
-            if (WebSocketReceiver.instance == null)
-            {
-                throw new Exception("WebsocketReceiver is null, Please make sure WebsocketReceiver is in scene and Awaked!");
-            }
-
             WebSocketReceiver.instance.AddListener(address, OnOpen, OnClose, OnReceive);
             ConnectJS(address);
             this.state = State.Connecting;
