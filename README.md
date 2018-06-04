@@ -54,7 +54,7 @@
 ### 4. 发布
 - 需要将Unity项目切换为WebGL平台，并Build。
 
-- 将生成好的项目文件发布至Tomcat，启动Tomcat，在浏览器中打开相应链接路径。（例如：http://127.0.0.1/UnityWebSocketDemo/ ）
+- 将生成好的项目文件发布至Tomcat，启动Tomcat，在浏览器中打开相应链接路径。（例如：http://127.0.0.1/UnityWebSocketDemo/index.html ）
 
 ### 5. WebSocket服务器
 - 项目发布完成后，需要一个WebSocket服务器收发消息，以下是Demo版本对应的服务器。
@@ -66,4 +66,4 @@
 - 使用了开源项目 [websocket-sharp](https://github.com/sta/websocket-sharp)
 
 ### 6. 注意(Warning)
-切换场景时，请不要卸载WebSocketReceiver。如果卸载了，请销毁WebSocket连接，并重新创建。
+- 切换场景时，请不要卸载WebSocketReceiver。如果卸载了，请销毁WebSocket连接，并重新创建。
