@@ -53,7 +53,7 @@ namespace TestWebSocketServer
             this.address.Name = "address";
             this.address.Size = new System.Drawing.Size(212, 21);
             this.address.TabIndex = 1;
-            this.address.Text = "ws://127.0.0.1:8759/test";
+            this.address.Text = "ws://0.0.0.0:8759/test";
             // 
             // label1
             // 
