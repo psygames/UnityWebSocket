@@ -4,31 +4,10 @@
 
 # UnityWebSocket 使用
 
-### 1. 下载 [UnityWebSocket.unitypackage](https://github.com/y85171642/UnityWebSocket/blob/master/Release/UnityWebSocket.unitypackage?raw=true)。
+### 1. 最新Release版本下载 [UnityWebSocket.unitypackage](https://github.com/y85171642/UnityWebSocket/blob/master/Release/UnityWebSocket.unitypackage?raw=true)。
 
-### 2. 使用Unity导入package。
-- WebSocket.jslib
-
-        路径：Plugins/WebSocketJS/WebSocketJS.jslib
-        作用：Unity发布WebGL版本会将其加入到js运行库中。
-
-- WebSocket.cs
-
-        作用：作为一个WebSocket连接。
-
-- WebSocketReceiver.cs
-
-        作用：与jslib交互，负责收发多个WebSocket消息。
-        注意：该脚本必须挂在场景中作为根节点，
-        且名为WebSocketReceiver的GameObject上，
-        这样才能接收到jslib通过SendMessage方式发来消息 ！！！
-
-- Demo场景
-
-        作用：WebSocket的使用方法示例。
-
-
-### 3. 使用方法：
+### 2. 使用方法：
+- 导入 UnityWebSocket.unitypackage
 
 - 创建WebSocket实例
 
@@ -52,6 +31,26 @@
   socket.Close();
   ```
 
+### 3. 功能说明
+- WebSocket.jslib
+
+        路径：Plugins/WebSocketJS/WebSocketJS.jslib
+        作用：Unity发布WebGL版本会将其加入到js运行库中。
+
+- WebSocket.cs
+
+        作用：WebSocket连接，可同时创建多个不同连接。
+
+- WebSocketReceiver.cs
+
+        作用：与jslib交互，负责收发多个WebSocket消息。
+        该脚本在使用WebSocket时会自动加载到场景中。
+
+- Demo场景
+
+        作用：WebSocket的使用方法示例。
+
+
 ### 4. 发布
 - 需要将Unity项目切换为WebGL平台，并Build。
 
@@ -66,7 +65,5 @@
 
 - 使用了开源项目 [websocket-sharp](https://github.com/sta/websocket-sharp)
 
-### 6. 再次提醒
-- ` 注意 `：WebSocketReceiver 脚本必须挂在场景中作为根节点，
-且名为 WebSocketReceiver 的 GameObject 上，
-这样才能接收到 jslib 通过 SendMessage 方式发来消息 ！！！
+### 6. 注意(Warning)
+切换场景时，请不要卸载WebSocketReceiver。如果卸载了，请销毁WebSocket连接，并重新创建。
