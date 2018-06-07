@@ -42,22 +42,21 @@ public class TestWebSocket : MonoBehaviour
         }
     }
 
-    public void OnOpen()
+    private void OnOpen()
     {
-
+        m_content += "Connected\n";
     }
 
-    public void OnClose()
+    private void OnClose()
     {
         m_content += "Closed\n";
 
-        m_scoket.Alert(" socket closed : " + m_scoket.address);
         m_scoket.onOpen -= OnOpen;
         m_scoket.onClose -= OnClose;
         m_scoket.onReceive -= OnReceive;
     }
 
-    public void OnReceive(byte[] data)
+    private void OnReceive(byte[] data)
     {
         m_content += System.Text.Encoding.UTF8.GetString(data) + "\n";
     }

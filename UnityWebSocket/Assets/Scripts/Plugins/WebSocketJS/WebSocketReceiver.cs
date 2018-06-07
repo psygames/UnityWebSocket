@@ -12,6 +12,7 @@ namespace WebSocketJS
         private Dictionary<string, Action> m_openActions = new Dictionary<string, Action>();
         private Dictionary<string, Action> m_closeActions = new Dictionary<string, Action>();
         private Dictionary<string, Action<byte[]>> m_receiveActions = new Dictionary<string, Action<byte[]>>();
+        private Dictionary<string, Action<string>> m_errorActions = new Dictionary<string, Action<string>>();
 
         private WebSocketReceiver()
         { }
@@ -37,7 +38,7 @@ namespace WebSocketJS
             instance = go.GetComponent<WebSocketReceiver>();
         }
 
-        public void AddListener(string address, Action onOpen, Action onClose, Action<byte[]> onReceive)
+        public void AddListener(string address, Action onOpen, Action onClose, Action<byte[]> onReceive, Action<string> onError)
         {
             if (!m_openActions.ContainsKey(address))
                 m_openActions.Add(address, null);
@@ -50,6 +51,10 @@ namespace WebSocketJS
             if (!m_receiveActions.ContainsKey(address))
                 m_receiveActions.Add(address, null);
             m_receiveActions[address] = onReceive;
+
+            if (!m_errorActions.ContainsKey(address))
+                m_errorActions.Add(address, null);
+            m_errorActions[address] = onError;
         }
 
         public void RemoveListener(string address)
@@ -65,15 +70,15 @@ namespace WebSocketJS
         }
 
         /// <summary>
-        /// jslib will call this method on message received (Method Name Must Be Keep Unchanged).
+        /// jslib will call this method on message received.
         /// </summary>
         /// <param name="address_data">address_data(hex string)</param>
         private void OnReceive(string address_data)
         {
             string address;
-            byte[] data;
-            MessageTranslator(address_data, out address, out data);
-
+            string hexStr;
+            SplitAddressData(address_data, out address, out hexStr);
+            byte[] data = HexStrToBytes(hexStr);
             if (m_receiveActions.ContainsKey(address) && m_receiveActions[address] != null)
             {
                 m_receiveActions[address].Invoke(data);
@@ -81,7 +86,7 @@ namespace WebSocketJS
         }
 
         /// <summary>
-        /// jslib will call this method on connection open (Method Name Must Be Keep Unchanged).
+        /// jslib will call this method on connection open.
         /// </summary>
         /// <param name="address">address</param>
         private void OnOpen(string address)
@@ -93,7 +98,7 @@ namespace WebSocketJS
         }
 
         /// <summary>
-        /// jslib will call this method on connection closed (Method Name Must Be Keep Unchanged).
+        /// jslib will call this method on connection closed.
         /// </summary>
         /// <param name="address">address</param>
         private void OnClose(string address)
@@ -105,21 +110,42 @@ namespace WebSocketJS
         }
 
         /// <summary>
-        /// Message Translator
-        /// Data Format : "address_data", (data is hex string)
-        /// address and data split with "_", it's deal with the jslib 
+        /// jslib will call this method on error.
         /// </summary>
-        private void MessageTranslator(string address_data, out string address, out byte[] data)
+        /// <param name="address_data">address_data(text string)</param>
+        private void OnError(string address_data)
+        {
+            string address;
+            string errorMsg;
+            SplitAddressData(address_data, out address, out errorMsg);
+            if (m_errorActions.ContainsKey(address) && m_errorActions[address] != null)
+            {
+                m_errorActions[address].Invoke(errorMsg);
+            }
+        }
+
+        /// <summary>
+        /// Split address_data with '_'
+        /// </summary>
+        /// <param name="address_data">split with '_'</param>
+        /// <param name="address"></param>
+        /// <param name="data"></param>
+        private void SplitAddressData(string address_data, out string address, out string data)
         {
             int splitIndex = address_data.LastIndexOf("_");
             address = address_data.Substring(0, splitIndex);
-            string hexData = address_data.Substring(splitIndex + 1);
-            data = new byte[hexData.Length / 2];
+            data = address_data.Substring(splitIndex + 1);
+        }
+
+        private byte[] HexStrToBytes(string hexStr)
+        {
+            byte[] data = new byte[hexStr.Length / 2];
             for (int i = 0; i < data.Length; i++)
             {
-                string hex = hexData.Substring(i * 2, 2);
+                string hex = hexStr.Substring(i * 2, 2);
                 data[i] = byte.Parse(hex, System.Globalization.NumberStyles.HexNumber);
             }
+            return data;
         }
     }
 }

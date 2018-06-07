@@ -37,13 +37,11 @@ namespace WebSocketJS
 
         /*------------- call jslib method --------*/
         [DllImport("__Internal")]
-        private static extern void ConnectJS(string str);
+        private static extern void ConnectJS(string address);
         [DllImport("__Internal")]
-        private static extern void SendJS(byte[] data, int length);
+        private static extern void SendJS(string address, byte[] data, int length);
         [DllImport("__Internal")]
-        private static extern void CloseJS();
-        [DllImport("__Internal")]
-        private static extern void AlertJS(string str);
+        private static extern void CloseJS(string address);
 
         public void Connect()
         {
@@ -54,18 +52,13 @@ namespace WebSocketJS
 
         public void Send(byte[] data)
         {
-            SendJS(data, data.Length);
+            SendJS(address, data, data.Length);
         }
 
         public void Close()
         {
-            CloseJS();
+            CloseJS(address);
             this.state = State.Closing;
-        }
-
-        public void Alert(string str)
-        {
-            AlertJS(str);
         }
 
         private void OnOpen()

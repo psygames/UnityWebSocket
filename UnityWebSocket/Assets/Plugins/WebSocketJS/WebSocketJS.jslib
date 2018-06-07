@@ -1,73 +1,115 @@
 
 ﻿var WebSocketJS =
 {
-	$webSocket: {},
+	$RECEIVER_NAME:{},
+	$OPEN_METHOD_NAME:{},
+	$CLOSE_METHOD_NAME:{},
+	$RECEIVE_METHOD_NAME:{},
+	$webSocketMap: {},
+
+	Initialize: function()
+	{
+		webSocketMap = new Map();
+		RECEIVER_NAME = "WebSocketReceiver";
+		OPEN_METHOD_NAME = "OnOpen";
+		CLOSE_METHOD_NAME = "OnClose";
+		RECEIVE_METHOD_NAME = "OnReceive";
+		ERROR_METHOD_NAME = "OnError";
+
+		alert("Inited");
+	}
+
 	ConnectJS: function(bAddress)
 	{
-		//unity receiver name and handle method name.
-		var RECEIVER_NAME = "WebSocketReceiver";
-		var OPEN_METHOD_NAME = "OnOpen";
-		var CLOSE_METHOD_NAME = "OnClose";
-		var RECEIVE_METHOD_NAME = "OnReceive";
+		if(webSocketMap == null)
+			Initialize();
 
 		var address = Pointer_stringify(bAddress);
-		webSocket = new WebSocket(address);
+		var webSocket = null;
+		if(!webSocketMap.has(address))
+		{
+		  webSocket = new WebSocket(address);
+			webSocketMap.set(address, webSocket);
+		}
+		else
+		{
+			webSocket = webSocketMap.get(address);
+		}
+
 		webSocket.onmessage = function (e)
 		{
 			if (e.data instanceof Blob)
-			{
-				var reader = new FileReader();
-				reader.addEventListener("loadend", function()
-				{
-					// format : address_data, (address and data split with "_")
-					// the data format is hex string
-					var msg = address + "_";
-					var array = new Uint8Array(reader.result);
-					for(var i = 0; i < array.length; i++)
-					{
-						var b = array[i];
-						if(b < 16)
-							msg += "0" + b.toString(16);
-						else
-							msg += b.toString(16);
-					}
-					SendMessage(RECEIVER_NAME, RECEIVE_METHOD_NAME, msg);
-				});
-				reader.readAsArrayBuffer(e.data);
-			}
+				OnMessage(address, e.data);
 			else
-			{
-				alert("msg not a blob instance");
-			}
+				OnError(address, "msg not a blob instance");
 		};
 
 		webSocket.onopen = function(e)
 		{
-			SendMessage(RECEIVER_NAME, OPEN_METHOD_NAME, address);
+			OnOpen(address);
 		};
 
 		webSocket.onclose = function(e)
 		{
-			SendMessage(RECEIVER_NAME, CLOSE_METHOD_NAME , address);
+			OnClose(address);
 		};
 	},
 
-	SendJS: function (msg, length)
+	SendJS: function (address, msg, length)
 	{
-		webSocket.send(HEAPU8.buffer.slice(msg, msg + length));
+		if(webSocketMap.has(address))
+			webSocketMap.get(address).send(HEAPU8.buffer.slice(msg, msg + length));
+		else
+			OnError(address, "send msg with a WebSocket not Instantiated");
 	},
 
-	CloseJS: function ()
+	CloseJS: function (address)
 	{
-		webSocket.close();
+		if(webSocketMap.has(address))
+			webSocket.close();
+		else
+			OnError(address, "close with a WebSocket not Instantiated");
 	},
 
-	AlertJS: function (bMsg)
+	OnMessage: function(address, blobData)
 	{
-		var msg = Pointer_stringify(bMsg);
-		alert(msg);
-	}
+			var reader = new FileReader();
+			reader.addEventListener("loadend", function()
+			{
+				// format : address_data, (address and data split with "_")
+				// the data format is hex string
+				var msg = address + "_";
+				var array = new Uint8Array(reader.result);
+				for(var i = 0; i < array.length; i++)
+				{
+					var b = array[i];
+					if(b < 16)
+						msg += "0" + b.toString(16);
+					else
+						msg += b.toString(16);
+				}
+				SendMessage(RECEIVER_NAME, RECEIVE_METHOD_NAME, msg);
+			});
+			reader.readAsArrayBuffer(blobData);
+	},
+
+	OnOpen: function(address)
+	{
+		SendMessage(RECEIVER_NAME, OPEN_METHOD_NAME, address);
+	},
+
+	OnClose: function(address)
+	{
+		SendMessage(RECEIVER_NAME, CLOSE_METHOD_NAME , address);
+	},
+
+	OnError: function(address, errorMsg)
+	{
+		var combinedMsg =  address + "_" + errorMsg;
+		SendMessage(RECEIVER_NAME, ERROR_METHOD_NAME ,combinedMsg);
+	},
+
 };
 
-autoAddDeps(WebSocketJS, '$webSocket');
+autoAddDeps(WebSocketJS, '$webSocketMap');
 mergeInto(LibraryManager.library, WebSocketJS);
