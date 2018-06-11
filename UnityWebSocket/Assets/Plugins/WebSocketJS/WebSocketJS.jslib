@@ -53,6 +53,11 @@
 		{
 			OnClose(address);
 		};
+
+		webSocket.onerror = function(e)
+		{
+			OnError(e.data);
+		};
 	},
 
 	SendJS: function (address, msg, length)

@@ -22,6 +22,7 @@ namespace WebSocketJS
         public State state { get; private set; }
         public Action onOpen { get; set; }
         public Action onClose { get; set; }
+        public Action<string> onError { get; set; }
         public Action<byte[]> onReceive { get; set; }
         private WebSocket() { }
 
@@ -45,7 +46,7 @@ namespace WebSocketJS
 
         public void Connect()
         {
-            WebSocketReceiver.instance.AddListener(address, OnOpen, OnClose, OnReceive);
+            WebSocketReceiver.instance.AddListener(address, OnOpen, OnClose, OnReceive, OnError);
             ConnectJS(address);
             this.state = State.Connecting;
         }
@@ -80,6 +81,12 @@ namespace WebSocketJS
                 onClose.Invoke();
             this.state = State.Closed;
             WebSocketReceiver.instance.RemoveListener(address);
+        }
+
+        private void OnError(string msg)
+        {
+            if (onError != null)
+                onError.Invoke(msg);
         }
 
 
