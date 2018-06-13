@@ -16,12 +16,14 @@ public class TestWebSocket : MonoBehaviour
     public InputField messageInput;
     public Transform entryRoot;
     public Button entryTemplate;
+    public Image currentSelectBg;
+    public Text currentSelectText;
 
     public GameObject logPanel;
     public Text logText;
     public Button logPanelCloseBtn;
 
-    private Dictionary<string, WebSocketEntry> m_sockets;
+    private Dictionary<string, WebSocketEntry> m_sockets = new Dictionary<string, WebSocketEntry>();
     private WebSocketEntry m_selectedEntry;
 
     private void Awake()
@@ -33,7 +35,6 @@ public class TestWebSocket : MonoBehaviour
         logPanelCloseBtn.onClick.AddListener(OnClickCloseLog);
         entryTemplate.gameObject.SetActive(false);
         logPanel.gameObject.SetActive(false);
-
     }
 
     public void NewSocket()
@@ -52,6 +53,8 @@ public class TestWebSocket : MonoBehaviour
         entryItem.GetComponentInChildren<Text>().text = addr;
         entryItem.gameObject.SetActive(true);
         entryItem.transform.SetParent(entryRoot);
+        entryItem.transform.localScale = Vector3.one;
+        entryItem.transform.localRotation = Quaternion.identity;
         entryItem.onClick.AddListener(() => { OnEntryItemClick(entry); });
     }
 
@@ -96,14 +99,37 @@ public class TestWebSocket : MonoBehaviour
 
     void Update()
     {
-        string text = "";
+        var text = "";
+        var addr = "请选择服务器地址";
+        var state = WebSocket.State.Closed;
+
         if (m_selectedEntry != null)
+        {
             text = m_selectedEntry.content;
+            state = m_selectedEntry.socket.state;
+            addr = m_selectedEntry.socket.address;
+        }
         contentText.text = text;
+        currentSelectText.text = addr;
+        currentSelectBg.color = GetStateColor(state);
     }
 
 
-
+    private Color GetStateColor(WebSocket.State state)
+    {
+        switch (state)
+        {
+            case WebSocket.State.Closed:
+                return Color.grey;
+            case WebSocket.State.Closing:
+                return Color.cyan;
+            case WebSocket.State.Connecting:
+                return Color.yellow;
+            case WebSocket.State.Connected:
+                return Color.green;
+        }
+        return Color.white;
+    }
 
 
     class WebSocketEntry
@@ -169,7 +195,24 @@ public class TestWebSocket : MonoBehaviour
             content += "[ERROR] " + errMsg + "\n";
         }
 
+
+        Vector3[] CreatePoint(Vector3 start, Vector3 end, float distance)
+        {
+            Vector3[] retPoint = new Vector3[4];
+
+            Vector3 v3 = Vector3.Cross(end - start, Vector3.up);
+
+            retPoint[0] = start + v3 * distance;
+            retPoint[1] = start - v3 * distance;
+            retPoint[3] = end + v3 * distance;
+            retPoint[2] = end - v3 * distance;
+
+            return retPoint;
+        }
+
     }
+
+
 }
 
 

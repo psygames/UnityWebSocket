@@ -20,18 +20,27 @@ namespace TestWebSocketServer
             instance = this;
         }
 
-        WebSocketServer server = null;
+        private Dictionary<string, WebSocketServer> servers = new Dictionary<string, WebSocketServer>();
+        private Dictionary<string, string> logs = new Dictionary<string, string>();
 
         private void start_Click(object sender, EventArgs e)
         {
-            PrintText("start listening...");
             int spIndex = address.Text.LastIndexOf('/');
             string addr = address.Text.Substring(0, spIndex);
             string path = address.Text.Substring(spIndex);
-            server = new WebSocketServer(addr);
+            if (servers.ContainsKey(addr))
+            {
+                MessageBox.Show("Duplicate Addr -> " + addr);
+                return;
+            }
+
+            var server = new WebSocketServer(addr);
             server.WaitTime = TimeSpan.FromSeconds(2);
             server.AddWebSocketService<MessageHandle>(path);
             server.Start();
+            servers.Add(addr, server);
+            listBox1.Items.Add(address.Text);
+            Log(addr, "start listening...");
         }
 
         private delegate void DelegatePrintText(string str, System.Drawing.Color color);
@@ -48,9 +57,9 @@ namespace TestWebSocketServer
             }
         }
 
-        public void PrintText(string str)
+        public void Log(string addr, string str)
         {
-            PrintText(str + "\n", System.Drawing.Color.Black);
+            PrintText("[" + addr + "]" + "\n" + str + "\n", System.Drawing.Color.Black);
         }
 
         private void RtbAppend(string strInput, System.Drawing.Color fontColor)
@@ -67,22 +76,24 @@ namespace TestWebSocketServer
 
     public class MessageHandle : WebSocketBehavior
     {
+        private string addr { get { return base.Context.Host; } }
+
         protected override void OnOpen()
         {
-            Form1.instance.PrintText("Client Connected: " + ID);
+            Form1.instance.Log(addr, "Client Connected: " + ID);
             SendMessage("Connect at " + DateTime.Now);
         }
 
         protected override void OnMessage(MessageEventArgs e)
         {
             string msg = Encoding.UTF8.GetString(e.RawData);
-            Form1.instance.PrintText("Receive From :" + ID + "\n" + msg);
+            Form1.instance.Log(addr, "Receive From :" + ID + "\n" + msg);
             SendMessage("Receive [" + msg + "] at " + DateTime.Now);
         }
 
         protected override void OnClose(CloseEventArgs e)
         {
-            Form1.instance.PrintText("Client Closed :" + ID);
+            Form1.instance.Log(addr, "Client Closed :" + ID);
             Sessions.CloseSession(ID);
         }
 

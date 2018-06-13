@@ -17,11 +17,11 @@
 		ERROR_METHOD_NAME = "OnError";
 
 		alert("Inited");
-	}
+	},
 
 	ConnectJS: function(bAddress)
 	{
-		if(webSocketMap == null)
+		if(!(webSocketMap instanceof Map))
 			Initialize();
 
 		var address = Pointer_stringify(bAddress);
@@ -36,7 +36,7 @@
 			webSocket = webSocketMap.get(address);
 		}
 
-		webSocket.onmessage = function (e)
+		webSocket.onmessage = function(e)
 		{
 			if (e.data instanceof Blob)
 				OnMessage(address, e.data);
@@ -56,7 +56,7 @@
 
 		webSocket.onerror = function(e)
 		{
-			OnError(e.data);
+			OnError(address, e.data)
 		};
 	},
 
@@ -113,8 +113,16 @@
 		var combinedMsg =  address + "_" + errorMsg;
 		SendMessage(RECEIVER_NAME, ERROR_METHOD_NAME ,combinedMsg);
 	},
-
 };
 
+autoAddDeps(WebSocketJS, '$RECEIVER_NAME');
+autoAddDeps(WebSocketJS, '$OPEN_METHOD_NAME');
+autoAddDeps(WebSocketJS, '$CLOSE_METHOD_NAME');
+autoAddDeps(WebSocketJS, '$RECEIVE_METHOD_NAME');
 autoAddDeps(WebSocketJS, '$webSocketMap');
+autoAddDeps(WebSocketJS, 'Initialize');
+autoAddDeps(WebSocketJS, 'OnMessage');
+autoAddDeps(WebSocketJS, 'OnOpen');
+autoAddDeps(WebSocketJS, 'OnClose');
+autoAddDeps(WebSocketJS, 'OnError');
 mergeInto(LibraryManager.library, WebSocketJS);
