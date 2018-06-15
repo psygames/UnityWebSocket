@@ -5,9 +5,10 @@
 	$OPEN_METHOD_NAME:{},
 	$CLOSE_METHOD_NAME:{},
 	$RECEIVE_METHOD_NAME:{},
+	$ERROR_METHOD_NAME:{},
 	$webSocketMap: {},
 
-	Initialize: function()
+	$Initialize: function()
 	{
 		webSocketMap = new Map();
 		RECEIVER_NAME = "WebSocketReceiver";
@@ -15,16 +16,15 @@
 		CLOSE_METHOD_NAME = "OnClose";
 		RECEIVE_METHOD_NAME = "OnReceive";
 		ERROR_METHOD_NAME = "OnError";
-
-		alert("Inited");
 	},
 
-	ConnectJS: function(bAddress)
+	// call by unity
+	ConnectJS: function(addressaPtr)
 	{
 		if(!(webSocketMap instanceof Map))
 			Initialize();
 
-		var address = Pointer_stringify(bAddress);
+		var address = Pointer_stringify(addressaPtr);
 		var webSocket = null;
 		if(!webSocketMap.has(address))
 		{
@@ -60,23 +60,27 @@
 		};
 	},
 
-	SendJS: function (address, msg, length)
+	// call by unity
+	SendJS: function (addressPtr, msgPtr, length)
 	{
+		var address = Pointer_stringify(addressPtr);
 		if(webSocketMap.has(address))
-			webSocketMap.get(address).send(HEAPU8.buffer.slice(msg, msg + length));
+			webSocketMap.get(address).send(HEAPU8.buffer.slice(msgPtr, msgPtr + length));
 		else
 			OnError(address, "send msg with a WebSocket not Instantiated");
 	},
 
-	CloseJS: function (address)
+	// call by unity
+	CloseJS: function (addressPtr)
 	{
+		var address = Pointer_stringify(addressPtr);
 		if(webSocketMap.has(address))
-			webSocket.close();
+			webSocketMap.get(address).close();
 		else
 			OnError(address, "close with a WebSocket not Instantiated");
 	},
 
-	OnMessage: function(address, blobData)
+	$OnMessage: function(address, blobData)
 	{
 			var reader = new FileReader();
 			reader.addEventListener("loadend", function()
@@ -98,19 +102,20 @@
 			reader.readAsArrayBuffer(blobData);
 	},
 
-	OnOpen: function(address)
+	$OnOpen: function(address)
 	{
 		SendMessage(RECEIVER_NAME, OPEN_METHOD_NAME, address);
 	},
 
-	OnClose: function(address)
+	$OnClose: function(address)
 	{
 		SendMessage(RECEIVER_NAME, CLOSE_METHOD_NAME , address);
 	},
 
-	OnError: function(address, errorMsg)
+	$OnError: function(address, errorMsg)
 	{
 		var combinedMsg =  address + "_" + errorMsg;
+		alert(combinedMsg);
 		SendMessage(RECEIVER_NAME, ERROR_METHOD_NAME ,combinedMsg);
 	},
 };
@@ -120,9 +125,9 @@ autoAddDeps(WebSocketJS, '$OPEN_METHOD_NAME');
 autoAddDeps(WebSocketJS, '$CLOSE_METHOD_NAME');
 autoAddDeps(WebSocketJS, '$RECEIVE_METHOD_NAME');
 autoAddDeps(WebSocketJS, '$webSocketMap');
-autoAddDeps(WebSocketJS, 'Initialize');
-autoAddDeps(WebSocketJS, 'OnMessage');
-autoAddDeps(WebSocketJS, 'OnOpen');
-autoAddDeps(WebSocketJS, 'OnClose');
-autoAddDeps(WebSocketJS, 'OnError');
+autoAddDeps(WebSocketJS, '$Initialize');
+autoAddDeps(WebSocketJS, '$OnMessage');
+autoAddDeps(WebSocketJS, '$OnOpen');
+autoAddDeps(WebSocketJS, '$OnClose');
+autoAddDeps(WebSocketJS, '$OnError');
 mergeInto(LibraryManager.library, WebSocketJS);

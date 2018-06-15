@@ -88,7 +88,7 @@ namespace TestWebSocketServer
         {
             string msg = Encoding.UTF8.GetString(e.RawData);
             Form1.instance.Log(addr, "Receive From :" + ID + "\n" + msg);
-            SendMessage("Receive [" + msg + "] at " + DateTime.Now);
+            SendMessage("Got [" + msg + "] at " + DateTime.Now);
         }
 
         protected override void OnClose(CloseEventArgs e)
