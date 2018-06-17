@@ -25,23 +25,19 @@
 			Initialize();
 
 		var address = Pointer_stringify(addressaPtr);
-		var webSocket = null;
-		if(!webSocketMap.has(address))
+		if(webSocketMap.has(address))
 		{
-		  webSocket = new WebSocket(address);
-			webSocketMap.set(address, webSocket);
-		}
-		else
-		{
-			webSocket = webSocketMap.get(address);
+			OnError(address, "Duplicate address: " + address);
+			return;
 		}
 
+		var webSocket = new WebSocket(address);
 		webSocket.onmessage = function(e)
 		{
 			if (e.data instanceof Blob)
 				OnMessage(address, e.data);
 			else
-				OnError(address, "msg not a blob instance");
+				OnError(address, "msg is not a blob instance");
 		};
 
 		webSocket.onopen = function(e)
@@ -52,12 +48,21 @@
 		webSocket.onclose = function(e)
 		{
 			OnClose(address);
+			if(e.code != 1000)
+			{
+				if(e.reason != null && e.reason.length > 0)
+					OnError(address, e.reason);
+				else
+					OnError(address, GetCloseReason(e.code));
+			}
 		};
 
 		webSocket.onerror = function(e)
 		{
-			OnError(address, e.data)
+			// can not catch the error reason, only use for debug.
 		};
+
+		webSocketMap.set(address, webSocket);
 	},
 
 	// call by unity
@@ -82,24 +87,24 @@
 
 	$OnMessage: function(address, blobData)
 	{
-			var reader = new FileReader();
-			reader.addEventListener("loadend", function()
+		var reader = new FileReader();
+		reader.addEventListener("loadend", function()
+		{
+			// format : address_data, (address and data split with "_")
+			// the data format is hex string
+			var msg = address + "_";
+			var array = new Uint8Array(reader.result);
+			for(var i = 0; i < array.length; i++)
 			{
-				// format : address_data, (address and data split with "_")
-				// the data format is hex string
-				var msg = address + "_";
-				var array = new Uint8Array(reader.result);
-				for(var i = 0; i < array.length; i++)
-				{
-					var b = array[i];
-					if(b < 16)
-						msg += "0" + b.toString(16);
-					else
-						msg += b.toString(16);
-				}
-				SendMessage(RECEIVER_NAME, RECEIVE_METHOD_NAME, msg);
-			});
-			reader.readAsArrayBuffer(blobData);
+				var b = array[i];
+				if(b < 16)
+					msg += "0" + b.toString(16);
+				else
+					msg += b.toString(16);
+			}
+			SendMessage(RECEIVER_NAME, RECEIVE_METHOD_NAME, msg);
+		});
+		reader.readAsArrayBuffer(blobData);
 	},
 
 	$OnOpen: function(address)
@@ -109,17 +114,50 @@
 
 	$OnClose: function(address)
 	{
+		if(webSocketMap.get(address))
+			webSocketMap.delete(address);
 		SendMessage(RECEIVER_NAME, CLOSE_METHOD_NAME , address);
 	},
 
 	$OnError: function(address, errorMsg)
 	{
 		var combinedMsg =  address + "_" + errorMsg;
-		alert(combinedMsg);
 		SendMessage(RECEIVER_NAME, ERROR_METHOD_NAME ,combinedMsg);
 	},
+
+	$GetCloseReason: function(code)
+	{
+		var error = "";
+		switch (code)
+		{
+			case 1001:
+				error = "Endpoint going away.";
+				break;
+			case 1002:
+				error = "Protocol error.";
+				break;
+			case 1003:
+				error = "Unsupported message.";
+				break;
+			case 1005:
+				error = "No status.";
+				break;
+			case 1006:
+				error = "Abnormal disconnection.";
+				break;
+			case 1009:
+				error = "Data frame too large.";
+				break;
+			default:
+				error = "Error Code " + code;
+				break;
+		}
+		return error;
+	},
+
 };
 
+// Auto add to depends
 autoAddDeps(WebSocketJS, '$RECEIVER_NAME');
 autoAddDeps(WebSocketJS, '$OPEN_METHOD_NAME');
 autoAddDeps(WebSocketJS, '$CLOSE_METHOD_NAME');
@@ -130,4 +168,5 @@ autoAddDeps(WebSocketJS, '$OnMessage');
 autoAddDeps(WebSocketJS, '$OnOpen');
 autoAddDeps(WebSocketJS, '$OnClose');
 autoAddDeps(WebSocketJS, '$OnError');
+autoAddDeps(WebSocketJS, '$GetCloseReason');
 mergeInto(LibraryManager.library, WebSocketJS);

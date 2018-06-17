@@ -89,13 +89,15 @@ namespace WebSocketJS
                 onError.Invoke(msg);
         }
 
-
+        /// <summary>
+        /// 参考 html5 WebSocket ReadyState 属性
+        /// </summary>
         public enum State
         {
-            Closed,
             Connecting,
             Connected,
             Closing,
+            Closed,
         }
     }
 }

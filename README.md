@@ -67,3 +67,12 @@
 
 ### 6. 注意(Warning)
 - 切换场景时，请不要卸载WebSocketReceiver。如果卸载了，请销毁WebSocket连接，并重新创建。
+
+### 7. Change Log（v1.0）
+- 支持单客户端同时创建多个不同WebSocket链接。
+- 添加OnError错误回调。错误码对应错误原因，参考jslib文件。
+- 删除Alert功能（与WebSocket无关，按需求自行添加即可）。
+- Close Event Code 作为链接断开错误信息处理。
+- jslib 内容完善，增加Map管理websocket实例。
+- 修改 State 枚举对应到WebSocket ReadyState。
+- 添加 Release Demo Build 文件。
