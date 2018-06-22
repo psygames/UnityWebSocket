@@ -1,0 +1,3 @@
+[submodule "UnityWebSocket/Assets/Scripts/Plugins/websocket-sharp"]
+	path = UnityWebSocket/Assets/Scripts/Plugins/websocket-sharp
+url=https://github.com/y85171642/websocket-sharp.git

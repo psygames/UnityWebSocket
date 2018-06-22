@@ -1,8 +1,8 @@
 using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
-using WebSocketJS;
 using System.Collections.Generic;
+using UnityWebSocket;
 using System;
 
 public class TestWebSocket : MonoBehaviour
