@@ -13,13 +13,11 @@
     <TargetFrameworkIdentifier>.NETFramework</TargetFrameworkIdentifier>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <TargetFrameworkProfile>Unity Subset v3.5</TargetFrameworkProfile>
-    <CompilerResponseFile>
-    </CompilerResponseFile>
+    <CompilerResponseFile></CompilerResponseFile>
     <UnityProjectType>Game:1</UnityProjectType>
     <UnityBuildTarget>WebGL:20</UnityBuildTarget>
     <UnityVersion>2017.4.2f2</UnityVersion>
-    <RootNamespace>
-    </RootNamespace>
+    <RootNamespace></RootNamespace>
     <LangVersion>4</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -237,9 +235,90 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Scripts\Plugins\UnityWebSocket\Demo\TestWebSocket.cs" />
+    <Compile Include="Assets\Scripts\Plugins\UnityWebSocket\WebSocket.cs" />
     <Compile Include="Assets\Scripts\Plugins\UnityWebSocket\websocket-jslib\WebSocket.cs" />
     <Compile Include="Assets\Scripts\Plugins\UnityWebSocket\websocket-jslib\WebSocketReceiver.cs" />
-    <Compile Include="Assets\Scripts\Plugins\UnityWebSocket\WebSocket.cs" />
+    <Compile Include="Assets\Scripts\Plugins\UnityWebSocket\websocket-sharp\AssemblyInfo.cs" />
+    <Compile Include="Assets\Scripts\Plugins\UnityWebSocket\websocket-sharp\ByteOrder.cs" />
+    <Compile Include="Assets\Scripts\Plugins\UnityWebSocket\websocket-sharp\CloseEventArgs.cs" />
+    <Compile Include="Assets\Scripts\Plugins\UnityWebSocket\websocket-sharp\CloseStatusCode.cs" />
+    <Compile Include="Assets\Scripts\Plugins\UnityWebSocket\websocket-sharp\CompressionMethod.cs" />
+    <Compile Include="Assets\Scripts\Plugins\UnityWebSocket\websocket-sharp\ErrorEventArgs.cs" />
+    <Compile Include="Assets\Scripts\Plugins\UnityWebSocket\websocket-sharp\Ext.cs" />
+    <Compile Include="Assets\Scripts\Plugins\UnityWebSocket\websocket-sharp\Fin.cs" />
+    <Compile Include="Assets\Scripts\Plugins\UnityWebSocket\websocket-sharp\HttpBase.cs" />
+    <Compile Include="Assets\Scripts\Plugins\UnityWebSocket\websocket-sharp\HttpRequest.cs" />
+    <Compile Include="Assets\Scripts\Plugins\UnityWebSocket\websocket-sharp\HttpResponse.cs" />
+    <Compile Include="Assets\Scripts\Plugins\UnityWebSocket\websocket-sharp\LogData.cs" />
+    <Compile Include="Assets\Scripts\Plugins\UnityWebSocket\websocket-sharp\Logger.cs" />
+    <Compile Include="Assets\Scripts\Plugins\UnityWebSocket\websocket-sharp\LogLevel.cs" />
+    <Compile Include="Assets\Scripts\Plugins\UnityWebSocket\websocket-sharp\Mask.cs" />
+    <Compile Include="Assets\Scripts\Plugins\UnityWebSocket\websocket-sharp\MessageEventArgs.cs" />
+    <Compile Include="Assets\Scripts\Plugins\UnityWebSocket\websocket-sharp\Net\AuthenticationBase.cs" />
+    <Compile Include="Assets\Scripts\Plugins\UnityWebSocket\websocket-sharp\Net\AuthenticationChallenge.cs" />
+    <Compile Include="Assets\Scripts\Plugins\UnityWebSocket\websocket-sharp\Net\AuthenticationResponse.cs" />
+    <Compile Include="Assets\Scripts\Plugins\UnityWebSocket\websocket-sharp\Net\AuthenticationSchemes.cs" />
+    <Compile Include="Assets\Scripts\Plugins\UnityWebSocket\websocket-sharp\Net\Chunk.cs" />
+    <Compile Include="Assets\Scripts\Plugins\UnityWebSocket\websocket-sharp\Net\ChunkedRequestStream.cs" />
+    <Compile Include="Assets\Scripts\Plugins\UnityWebSocket\websocket-sharp\Net\ChunkStream.cs" />
+    <Compile Include="Assets\Scripts\Plugins\UnityWebSocket\websocket-sharp\Net\ClientSslConfiguration.cs" />
+    <Compile Include="Assets\Scripts\Plugins\UnityWebSocket\websocket-sharp\Net\Cookie.cs" />
+    <Compile Include="Assets\Scripts\Plugins\UnityWebSocket\websocket-sharp\Net\CookieCollection.cs" />
+    <Compile Include="Assets\Scripts\Plugins\UnityWebSocket\websocket-sharp\Net\CookieException.cs" />
+    <Compile Include="Assets\Scripts\Plugins\UnityWebSocket\websocket-sharp\Net\EndPointListener.cs" />
+    <Compile Include="Assets\Scripts\Plugins\UnityWebSocket\websocket-sharp\Net\EndPointManager.cs" />
+    <Compile Include="Assets\Scripts\Plugins\UnityWebSocket\websocket-sharp\Net\HttpBasicIdentity.cs" />
+    <Compile Include="Assets\Scripts\Plugins\UnityWebSocket\websocket-sharp\Net\HttpConnection.cs" />
+    <Compile Include="Assets\Scripts\Plugins\UnityWebSocket\websocket-sharp\Net\HttpDigestIdentity.cs" />
+    <Compile Include="Assets\Scripts\Plugins\UnityWebSocket\websocket-sharp\Net\HttpHeaderInfo.cs" />
+    <Compile Include="Assets\Scripts\Plugins\UnityWebSocket\websocket-sharp\Net\HttpHeaderType.cs" />
+    <Compile Include="Assets\Scripts\Plugins\UnityWebSocket\websocket-sharp\Net\HttpListener.cs" />
+    <Compile Include="Assets\Scripts\Plugins\UnityWebSocket\websocket-sharp\Net\HttpListenerAsyncResult.cs" />
+    <Compile Include="Assets\Scripts\Plugins\UnityWebSocket\websocket-sharp\Net\HttpListenerContext.cs" />
+    <Compile Include="Assets\Scripts\Plugins\UnityWebSocket\websocket-sharp\Net\HttpListenerException.cs" />
+    <Compile Include="Assets\Scripts\Plugins\UnityWebSocket\websocket-sharp\Net\HttpListenerPrefix.cs" />
+    <Compile Include="Assets\Scripts\Plugins\UnityWebSocket\websocket-sharp\Net\HttpListenerPrefixCollection.cs" />
+    <Compile Include="Assets\Scripts\Plugins\UnityWebSocket\websocket-sharp\Net\HttpListenerRequest.cs" />
+    <Compile Include="Assets\Scripts\Plugins\UnityWebSocket\websocket-sharp\Net\HttpListenerResponse.cs" />
+    <Compile Include="Assets\Scripts\Plugins\UnityWebSocket\websocket-sharp\Net\HttpRequestHeader.cs" />
+    <Compile Include="Assets\Scripts\Plugins\UnityWebSocket\websocket-sharp\Net\HttpResponseHeader.cs" />
+    <Compile Include="Assets\Scripts\Plugins\UnityWebSocket\websocket-sharp\Net\HttpStatusCode.cs" />
+    <Compile Include="Assets\Scripts\Plugins\UnityWebSocket\websocket-sharp\Net\HttpStreamAsyncResult.cs" />
+    <Compile Include="Assets\Scripts\Plugins\UnityWebSocket\websocket-sharp\Net\HttpUtility.cs" />
+    <Compile Include="Assets\Scripts\Plugins\UnityWebSocket\websocket-sharp\Net\HttpVersion.cs" />
+    <Compile Include="Assets\Scripts\Plugins\UnityWebSocket\websocket-sharp\Net\InputChunkState.cs" />
+    <Compile Include="Assets\Scripts\Plugins\UnityWebSocket\websocket-sharp\Net\InputState.cs" />
+    <Compile Include="Assets\Scripts\Plugins\UnityWebSocket\websocket-sharp\Net\LineState.cs" />
+    <Compile Include="Assets\Scripts\Plugins\UnityWebSocket\websocket-sharp\Net\NetworkCredential.cs" />
+    <Compile Include="Assets\Scripts\Plugins\UnityWebSocket\websocket-sharp\Net\QueryStringCollection.cs" />
+    <Compile Include="Assets\Scripts\Plugins\UnityWebSocket\websocket-sharp\Net\ReadBufferState.cs" />
+    <Compile Include="Assets\Scripts\Plugins\UnityWebSocket\websocket-sharp\Net\RequestStream.cs" />
+    <Compile Include="Assets\Scripts\Plugins\UnityWebSocket\websocket-sharp\Net\ResponseStream.cs" />
+    <Compile Include="Assets\Scripts\Plugins\UnityWebSocket\websocket-sharp\Net\ServerSslConfiguration.cs" />
+    <Compile Include="Assets\Scripts\Plugins\UnityWebSocket\websocket-sharp\Net\WebHeaderCollection.cs" />
+    <Compile Include="Assets\Scripts\Plugins\UnityWebSocket\websocket-sharp\Net\WebSockets\HttpListenerWebSocketContext.cs" />
+    <Compile Include="Assets\Scripts\Plugins\UnityWebSocket\websocket-sharp\Net\WebSockets\TcpListenerWebSocketContext.cs" />
+    <Compile Include="Assets\Scripts\Plugins\UnityWebSocket\websocket-sharp\Net\WebSockets\WebSocketContext.cs" />
+    <Compile Include="Assets\Scripts\Plugins\UnityWebSocket\websocket-sharp\Opcode.cs" />
+    <Compile Include="Assets\Scripts\Plugins\UnityWebSocket\websocket-sharp\PayloadData.cs" />
+    <Compile Include="Assets\Scripts\Plugins\UnityWebSocket\websocket-sharp\Rsv.cs" />
+    <Compile Include="Assets\Scripts\Plugins\UnityWebSocket\websocket-sharp\Server\HttpRequestEventArgs.cs" />
+    <Compile Include="Assets\Scripts\Plugins\UnityWebSocket\websocket-sharp\Server\HttpServer.cs" />
+    <Compile Include="Assets\Scripts\Plugins\UnityWebSocket\websocket-sharp\Server\IWebSocketSession.cs" />
+    <Compile Include="Assets\Scripts\Plugins\UnityWebSocket\websocket-sharp\Server\ServerState.cs" />
+    <Compile Include="Assets\Scripts\Plugins\UnityWebSocket\websocket-sharp\Server\WebSocketBehavior.cs" />
+    <Compile Include="Assets\Scripts\Plugins\UnityWebSocket\websocket-sharp\Server\WebSocketServer.cs" />
+    <Compile Include="Assets\Scripts\Plugins\UnityWebSocket\websocket-sharp\Server\WebSocketServiceHost.cs" />
+    <Compile Include="Assets\Scripts\Plugins\UnityWebSocket\websocket-sharp\Server\WebSocketServiceHost`1.cs" />
+    <Compile Include="Assets\Scripts\Plugins\UnityWebSocket\websocket-sharp\Server\WebSocketServiceManager.cs" />
+    <Compile Include="Assets\Scripts\Plugins\UnityWebSocket\websocket-sharp\Server\WebSocketSessionManager.cs" />
+    <Compile Include="Assets\Scripts\Plugins\UnityWebSocket\websocket-sharp\WebSocket.cs" />
+    <Compile Include="Assets\Scripts\Plugins\UnityWebSocket\websocket-sharp\WebSocketException.cs" />
+    <Compile Include="Assets\Scripts\Plugins\UnityWebSocket\websocket-sharp\WebSocketFrame.cs" />
+    <Compile Include="Assets\Scripts\Plugins\UnityWebSocket\websocket-sharp\WebSocketState.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Assets\Scripts\Plugins\UnityWebSocket\websocket-sharp\LICENSE.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="GenerateTargetFrameworkMonikerAttribute" />
