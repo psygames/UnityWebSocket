@@ -148,7 +148,7 @@ public class TestWebSocket : MonoBehaviour
 
         public void Connect()
         {
-            if (socket != null && socket.state != WebSocket.State.Closed)
+            if (socket == null || socket.state != WebSocket.State.Closed)
                 return;
 
             socket.Connect();

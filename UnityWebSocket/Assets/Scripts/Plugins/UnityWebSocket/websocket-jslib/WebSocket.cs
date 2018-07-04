@@ -4,7 +4,7 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System;
 
-namespace UnityWebSocket
+namespace WebSocketJslib
 {
     /// <summary>
     /// <para>WebSocket is a network connection.</para>
