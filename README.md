@@ -60,7 +60,7 @@
 ### 5. WebSocket服务器
 - 项目发布完成后，需要一个WebSocket服务器收发消息，以下是Demo版本对应的服务器。
 
-- [服务器Demo下载](https://github.com/y85171642/UnityWebSocket/blob/master/Release/TestWebSocketServer.exe?raw=true)
+- [服务器Demo下载](https://github.com/y85171642/UnityWebSocket/tree/master/Release/Demo/Server)
 
 - 提供简单的WebSocket消息收发
 
