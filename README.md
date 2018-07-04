@@ -2,7 +2,6 @@
 # Demo 线上测试地址
 - [http://47.100.28.149/UnityWebSocketDemo/](http://47.100.28.149/UnityWebSocketDemo/)
 
-# DEV FOR MULTI PLATFORMS
 # UnityWebSocket 使用
 
 ### 1. 最新Release版本下载 [UnityWebSocket.unitypackage](https://github.com/y85171642/UnityWebSocket/releases/latest)。
