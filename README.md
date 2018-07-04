@@ -5,7 +5,7 @@
 # DEV FOR MULTI PLATFORMS
 # UnityWebSocket 使用
 
-### 1. 最新Release版本下载 [UnityWebSocket.unitypackage](https://github.com/y85171642/UnityWebSocket/blob/master/Release/LastRelease/UnityWebSocket.unitypackage?raw=true)。
+### 1. 最新Release版本下载 [UnityWebSocket.unitypackage](https://github.com/y85171642/UnityWebSocket/releases/latest)。
 
 ### 2. 使用方法：
 - 导入 UnityWebSocket.unitypackage
