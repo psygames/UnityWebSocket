@@ -64,6 +64,7 @@ namespace UnityWebSocket
         public Action<byte[]> onReceive { get; set; }
 
         WebSocketSharp.WebSocket m_rawSocket = null;
+
         public WebSocket(string address)
         {
             m_rawSocket = new WebSocketSharp.WebSocket(address);
