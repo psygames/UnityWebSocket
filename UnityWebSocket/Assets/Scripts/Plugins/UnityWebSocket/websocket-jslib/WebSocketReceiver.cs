@@ -19,6 +19,7 @@ namespace WebSocketJslib
 
         void Awake()
         {
+            DontDestroyOnLoad(gameObject);
             instance = this;
         }
 
