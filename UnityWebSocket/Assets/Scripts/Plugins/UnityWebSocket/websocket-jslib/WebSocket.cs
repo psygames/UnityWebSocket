@@ -1,8 +1,6 @@
-using UnityEngine;
-using System.Runtime.Serialization.Formatters.Binary;
-using System.IO;
 using System.Runtime.InteropServices;
 using System;
+using UnityWebSocket;
 
 namespace WebSocketJslib
 {
@@ -19,11 +17,13 @@ namespace WebSocketJslib
     public class WebSocket
     {
         public string address { get; private set; }
-        public State state { get; private set; }
-        public Action onOpen { get; set; }
-        public Action onClose { get; set; }
-        public Action<string> onError { get; set; }
-        public Action<byte[]> onReceive { get; set; }
+        public WebSocketState readyState { get { return (WebSocketState)GetReadyStateJS(); } }
+
+        public event EventHandler onOpen;
+        public event EventHandler<CloseEventArgs> onClose;
+        public event EventHandler<ErrorEventArgs> onError;
+        public event EventHandler<MessageEventArgs> onReceive;
+
         private WebSocket() { }
 
         public WebSocket(string address)
@@ -33,7 +33,6 @@ namespace WebSocketJslib
                 WebSocketReceiver.AutoCreateInstance();
             }
             this.address = address;
-            this.state = State.Closed;
         }
 
         /*------------- call jslib method --------*/
@@ -43,12 +42,14 @@ namespace WebSocketJslib
         private static extern void SendJS(string address, byte[] data, int length);
         [DllImport("__Internal")]
         private static extern void CloseJS(string address);
+        [DllImport("__Internal")]
+        private static extern int GetReadyStateJS();
+
 
         public void Connect()
         {
             WebSocketReceiver.instance.AddListener(address, OnOpen, OnClose, OnReceive, OnError);
             ConnectJS(address);
-            this.state = State.Connecting;
         }
 
         public void Send(byte[] data)
@@ -59,27 +60,24 @@ namespace WebSocketJslib
         public void Close()
         {
             CloseJS(address);
-            this.state = State.Closing;
         }
 
         private void OnOpen()
         {
             if (onOpen != null)
-                onOpen.Invoke();
-            this.state = State.Connected;
+                onOpen(this, EventArgs.Empty);
         }
 
         private void OnReceive(byte[] msg)
         {
             if (onReceive != null)
-                onReceive.Invoke(msg);
+                onReceive(this,new MessageEventArgs())
         }
 
         private void OnClose()
         {
             if (onClose != null)
                 onClose.Invoke();
-            this.state = State.Closed;
             WebSocketReceiver.instance.RemoveListener(address);
         }
 
@@ -87,17 +85,6 @@ namespace WebSocketJslib
         {
             if (onError != null)
                 onError.Invoke(msg);
-        }
-
-        /// <summary>
-        /// 参考 html5 WebSocket ReadyState 属性
-        /// </summary>
-        public enum State
-        {
-            Connecting,
-            Connected,
-            Closing,
-            Closed,
         }
     }
 }

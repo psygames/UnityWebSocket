@@ -5,6 +5,7 @@
 	$OPEN_METHOD_NAME:{},
 	$CLOSE_METHOD_NAME:{},
 	$RECEIVE_METHOD_NAME:{},
+	$RECEIVE_STRING_METHOD_NAME:{},
 	$ERROR_METHOD_NAME:{},
 	$webSocketMap: {},
 
@@ -15,6 +16,7 @@
 		OPEN_METHOD_NAME = "OnOpen";
 		CLOSE_METHOD_NAME = "OnClose";
 		RECEIVE_METHOD_NAME = "OnReceive";
+		RECEIVE_STRING_METHOD_NAME = "OnReceiveString";
 		ERROR_METHOD_NAME = "OnError";
 	},
 
@@ -27,7 +29,7 @@
 		var address = Pointer_stringify(addressaPtr);
 		if(webSocketMap.has(address))
 		{
-			OnError(address, "Duplicate address: " + address);
+			OnError(address, "Duplicated address: " + address);
 			return;
 		}
 
@@ -36,7 +38,9 @@
 		{
 			if (e.data instanceof Blob)
 				OnMessage(address, e.data);
-			else
+			else if(typeOf event.data === String) {、
+    		OnMessageString(address, e.data);
+  		else
 				OnError(address, "msg is not a blob instance");
 		};
 
@@ -85,6 +89,21 @@
 			OnError(address, "close with a WebSocket not Instantiated");
 	},
 
+	// call by unity
+	GetReadyStateJS: function (addressPtr)
+	{
+		var address = Pointer_stringify(addressPtr);
+		if(webSocketMap.has(address))
+			webSocketMap.get(address).readyState;
+		else
+			OnError(address, "get readyState with a WebSocket not Instantiated");
+	},
+
+	$OnMessageString: function(address, str)
+	{
+		SendMessage(RECEIVER_NAME, RECEIVE_STRING_METHOD_NAME, str);
+	},
+
 	$OnMessage: function(address, blobData)
 	{
 		var reader = new FileReader();
@@ -112,11 +131,11 @@
 		SendMessage(RECEIVER_NAME, OPEN_METHOD_NAME, address);
 	},
 
-	$OnClose: function(address)
+	$OnClose: function(address, code, reason, wasClean)
 	{
 		if(webSocketMap.get(address))
 			webSocketMap.delete(address);
-		SendMessage(RECEIVER_NAME, CLOSE_METHOD_NAME , address);
+		SendMessage(RECEIVER_NAME, CLOSE_METHOD_NAME, address, code, reason, wasClean);
 	},
 
 	$OnError: function(address, errorMsg)
@@ -161,10 +180,12 @@
 autoAddDeps(WebSocketJS, '$RECEIVER_NAME');
 autoAddDeps(WebSocketJS, '$OPEN_METHOD_NAME');
 autoAddDeps(WebSocketJS, '$CLOSE_METHOD_NAME');
+autoAddDeps(WebSocketJS, '$RECEIVE_STRING_METHOD_NAME');
 autoAddDeps(WebSocketJS, '$RECEIVE_METHOD_NAME');
 autoAddDeps(WebSocketJS, '$webSocketMap');
 autoAddDeps(WebSocketJS, '$Initialize');
 autoAddDeps(WebSocketJS, '$OnMessage');
+autoAddDeps(WebSocketJS, '$OnMessageString');
 autoAddDeps(WebSocketJS, '$OnOpen');
 autoAddDeps(WebSocketJS, '$OnClose');
 autoAddDeps(WebSocketJS, '$OnError');

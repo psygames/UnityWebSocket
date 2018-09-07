@@ -5,24 +5,44 @@ using System.Text;
 
 namespace UnityWebSocket
 {
-    public class WebSocket
+    /// <summary>
+    /// For All Platform
+    /// </summary>
+    public class WebSocket : IWebSocket
     {
-#if UNITY_WEBGL && !UNITY_EDITOR
+        #region events
+        public event EventHandler onOpen;
+        public event EventHandler<CloseEventArgs> onClose;
+        public event EventHandler<ErrorEventArgs> onError;
+        public event EventHandler<MessageEventArgs> onReceive;
+        #endregion
+
+#if UNITY_WEBGLs
         public string address { get { return m_rawSocket.address; } }
         public State state { get { return (State)m_rawSocket.state; } }
-        public Action onOpen { get; set; }
-        public Action onClose { get; set; }
-        public Action<string> onError { get; set; }
-        public Action<byte[]> onReceive { get; set; }
 
         WebSocketJslib.WebSocket m_rawSocket = null;
         public WebSocket(string address)
         {
             m_rawSocket = new WebSocketJslib.WebSocket(address);
-            m_rawSocket.onOpen = () => { if (onOpen != null) onOpen.Invoke(); };
-            m_rawSocket.onClose = () => { if (onClose != null) onClose.Invoke(); }; 
-            m_rawSocket.onError = (a) => { if (onError != null) onError.Invoke(a); };
-            m_rawSocket.onReceive = (a) => { if (onReceive != null) onReceive.Invoke(a); };
+            m_rawSocket.onOpen = () =>
+            {
+                if (onOpen != null)
+                    onOpen(this, EventArgs.Empty);
+            };
+            m_rawSocket.onClose = () =>
+            {
+                if (onClose != null)
+                    onClose(this, new CloseEventArgs(e.Code, e.Reason));
+            };
+            m_rawSocket.onError = (errMsg) =>
+            {
+                if (onError != null)
+                    onError(this, new ErrorEventArgs(errMsg, new Exception(errMsg)));
+            };
+            m_rawSocket.onReceive = (a) => {
+                if (onReceive != null) onReceive.Invoke(a);
+            };
         }
 
         public void Connect()
@@ -35,11 +55,19 @@ namespace UnityWebSocket
             m_rawSocket.Send(data);
         }
 
+        public void Send(string data)
+        {
+        }
+
+        public void Ping()
+        {
+        }
+
         public void Close()
         {
             m_rawSocket.Close();
         }
-        
+
         public void ConnectAsync()
         {
             Connect();
@@ -57,22 +85,33 @@ namespace UnityWebSocket
         }
 #else
         public string address { get { return m_rawSocket.Url.AbsoluteUri; } }
-        public State state { get { return (State)m_rawSocket.ReadyState; } }
-        public Action onOpen { get; set; }
-        public Action onClose { get; set; }
-        public Action<string> onError { get; set; }
-        public Action<byte[]> onReceive { get; set; }
-
+        public WebSocketState state { get { return (WebSocketState)m_rawSocket.ReadyState; } }
         WebSocketSharp.WebSocket m_rawSocket = null;
 
         public WebSocket(string address)
         {
             m_rawSocket = new WebSocketSharp.WebSocket(address);
             m_rawSocket.Close();
-            m_rawSocket.OnOpen += (o, e) => { if (onOpen != null) onOpen.Invoke(); };
-            m_rawSocket.OnClose += (o, e) => { if (onClose != null) onClose.Invoke(); };
-            m_rawSocket.OnError += (o, e) => { if (onError != null) onError.Invoke(e.Message); };
-            m_rawSocket.OnMessage += (o, e) => { if (onReceive != null) onReceive.Invoke(e.RawData); };
+            m_rawSocket.OnOpen += (o, e) =>
+            {
+                if (onOpen != null)
+                    onOpen(this, EventArgs.Empty);
+            };
+            m_rawSocket.OnClose += (o, e) =>
+            {
+                if (onClose != null)
+                    onClose(this, new CloseEventArgs(e.Code, e.Reason));
+            };
+            m_rawSocket.OnError += (o, e) =>
+            {
+                if (onError != null)
+                    onError(this, new ErrorEventArgs(e.Message, e.Exception));
+            };
+            m_rawSocket.OnMessage += (o, e) =>
+            {
+                if (onReceive != null)
+                    onReceive(this, new MessageEventArgs((Opcode)e.Opcode, e.RawData));
+            };
         }
 
         public void Connect()
@@ -83,6 +122,16 @@ namespace UnityWebSocket
         public void Send(byte[] data)
         {
             m_rawSocket.Send(data);
+        }
+
+        public void Send(string data)
+        {
+            m_rawSocket.Send(data);
+        }
+
+        public void Ping()
+        {
+            m_rawSocket.Ping();
         }
 
         public void Close()
@@ -106,15 +155,5 @@ namespace UnityWebSocket
         }
 #endif
 
-        /// <summary>
-        /// 参考 html5 WebSocket ReadyState 属性
-        /// </summary>
-        public enum State
-        {
-            Connecting,
-            Connected,
-            Closing,
-            Closed,
-        }
     }
 }

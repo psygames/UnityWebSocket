@@ -73,16 +73,15 @@ namespace WebSocketJslib
         /// <summary>
         /// jslib will call this method on message received.
         /// </summary>
-        /// <param name="address_data">address_data(hex string)</param>
-        private void OnReceive(string address_data)
+        /// <param name="address_data">address_opcode_data(hex string)</param>
+        private void OnReceive(string address_opcode_data)
         {
-            string address;
-            string hexStr;
-            SplitAddressData(address_data, out address, out hexStr);
-            byte[] data = HexStrToBytes(hexStr);
-            if (m_receiveActions.ContainsKey(address) && m_receiveActions[address] != null)
+            string[] spData;
+            SplitData(address_opcode_data, 3, out spData);
+            byte[] data = HexStrToBytes(spData[2]);
+            if (m_receiveActions.ContainsKey(spData[0]) && m_receiveActions[spData[0]] != null)
             {
-                m_receiveActions[address].Invoke(data);
+                m_receiveActions[spData[0]].Invoke(data);
             }
         }
 
@@ -118,24 +117,24 @@ namespace WebSocketJslib
         {
             string address;
             string errorMsg;
-            SplitAddressData(address_data, out address, out errorMsg);
+            SplitData(address_data, out address, out errorMsg);
             if (m_errorActions.ContainsKey(address) && m_errorActions[address] != null)
             {
                 m_errorActions[address].Invoke(errorMsg);
             }
         }
 
-        /// <summary>
-        /// Split address_data with '_'
-        /// </summary>
-        /// <param name="address_data">split with '_'</param>
-        /// <param name="address"></param>
-        /// <param name="data"></param>
-        private void SplitAddressData(string address_data, out string address, out string data)
+        private void SplitData(string rawData, int length, out string[] retData)
         {
-            int splitIndex = address_data.LastIndexOf("_");
-            address = address_data.Substring(0, splitIndex);
-            data = address_data.Substring(splitIndex + 1);
+            retData = new string[length];
+            int i = -1;
+            int lastIndex = 0;
+            while (++i < length)
+            {
+                var index = rawData.IndexOf('_', lastIndex);
+                retData[i] = rawData.Substring(lastIndex, index - lastIndex);
+                lastIndex = index + 1;
+            }
         }
 
         private byte[] HexStrToBytes(string hexStr)
