@@ -48,7 +48,7 @@ namespace WebSocketJslib
 
         public void Connect()
         {
-            WebSocketReceiver.instance.AddListener(address, OnOpen, OnClose, OnReceive, OnError);
+            WebSocketReceiver.instance.AddListener(address, onOpen, onClose, onReceive, onError);
             ConnectJS(address);
         }
 

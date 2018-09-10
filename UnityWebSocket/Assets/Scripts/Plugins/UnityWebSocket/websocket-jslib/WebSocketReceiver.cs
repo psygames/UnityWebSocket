@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityWebSocket;
 
 namespace WebSocketJslib
 {
@@ -9,10 +10,7 @@ namespace WebSocketJslib
     {
         public static WebSocketReceiver instance { get; private set; }
 
-        private Dictionary<string, Action> m_openActions = new Dictionary<string, Action>();
-        private Dictionary<string, Action> m_closeActions = new Dictionary<string, Action>();
-        private Dictionary<string, Action<byte[]>> m_receiveActions = new Dictionary<string, Action<byte[]>>();
-        private Dictionary<string, Action<string>> m_errorActions = new Dictionary<string, Action<string>>();
+        private Dictionary<string, WebSocketHandle> m_handles = new Dictionary<string, WebSocketHandle>();
 
         private WebSocketReceiver()
         { }
@@ -39,35 +37,34 @@ namespace WebSocketJslib
             instance = go.GetComponent<WebSocketReceiver>();
         }
 
-        public void AddListener(string address, Action onOpen, Action onClose, Action<byte[]> onReceive, Action<string> onError)
+        public void AddListener(string address
+            , Action onOpen
+            , Action<CloseEventArgs> onClose
+            , Action<MessageEventArgs> onReceive
+            , Action<ErrorEventArgs> onError)
         {
-            if (!m_openActions.ContainsKey(address))
-                m_openActions.Add(address, null);
-            m_openActions[address] = onOpen;
+            WebSocketHandle handle = new WebSocketHandle();
+            handle.onOpen += onOpen;
+            handle.onClose += onClose;
+            handle.onReceive += onReceive;
+            handle.onError += onError;
 
-            if (!m_closeActions.ContainsKey(address))
-                m_closeActions.Add(address, null);
-            m_closeActions[address] = onClose;
-
-            if (!m_receiveActions.ContainsKey(address))
-                m_receiveActions.Add(address, null);
-            m_receiveActions[address] = onReceive;
-
-            if (!m_errorActions.ContainsKey(address))
-                m_errorActions.Add(address, null);
-            m_errorActions[address] = onError;
+            if (!m_handles.ContainsKey(address))
+                m_handles.Add(address, null);
+            m_handles[address] = handle;
         }
 
         public void RemoveListener(string address)
         {
-            if (m_openActions.ContainsKey(address))
-                m_openActions.Remove(address);
+            if (m_handles.ContainsKey(address))
+                m_handles.Remove(address);
+        }
 
-            if (m_closeActions.ContainsKey(address))
-                m_closeActions.Remove(address);
-
-            if (m_receiveActions.ContainsKey(address))
-                m_receiveActions.Remove(address);
+        private WebSocketHandle GetHandle(string address)
+        {
+            WebSocketHandle handle = null;
+            m_handles.TryGetValue(address, out handle);
+            return handle;
         }
 
         /// <summary>
@@ -76,13 +73,23 @@ namespace WebSocketJslib
         /// <param name="address_data">address_opcode_data(hex string)</param>
         private void OnReceive(string address_opcode_data)
         {
-            string[] spData;
-            SplitData(address_opcode_data, 3, out spData);
-            byte[] data = HexStrToBytes(spData[2]);
-            if (m_receiveActions.ContainsKey(spData[0]) && m_receiveActions[spData[0]] != null)
-            {
-                m_receiveActions[spData[0]].Invoke(data);
-            }
+            string[] sp;
+            SplitData(address_opcode_data, 3, out sp);
+            var address = sp[0];
+            var opcode_str = sp[1];
+            var data_str = sp[2];
+            var handle = GetHandle(address);
+            if (handle == null)
+                return;
+
+            Opcode opcode = (Opcode)int.Parse(opcode_str);
+            byte[] rawData = new byte[0];
+            if (opcode == Opcode.Text)
+                rawData = System.Text.Encoding.UTF8.GetBytes(data_str);
+            else if (opcode == Opcode.Binary)
+                rawData = HexStrToBytes(data_str);
+
+            handle.onReceive(this, new MessageEventArgs(opcode, rawData));
         }
 
         /// <summary>
@@ -146,6 +153,35 @@ namespace WebSocketJslib
                 data[i] = byte.Parse(hex, System.Globalization.NumberStyles.HexNumber);
             }
             return data;
+        }
+
+
+        private class WebSocketHandle
+        {
+            public event EventHandler onOpen;
+            public event EventHandler<CloseEventArgs> onClose;
+            public event EventHandler<ErrorEventArgs> onError;
+            public event EventHandler<MessageEventArgs> onReceive;
+
+            public void HandleOpen()
+            {
+                onOpen(this, EventArgs.Empty);
+            }
+
+            public void HandleClose(ushort code, string reason)
+            {
+                onClose(this, new CloseEventArgs(code, reason));
+            }
+
+            public void HandleReceive(Opcode code, byte[] rawData)
+            {
+                onReceive(this, new MessageEventArgs(code, rawData));
+            }
+
+            public void HandleError(string message)
+            {
+                onError(this, new ErrorEventArgs(message));
+            }
         }
     }
 }
