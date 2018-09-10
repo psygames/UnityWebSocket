@@ -14,34 +14,36 @@ namespace UnityWebSocket
         public event EventHandler onOpen;
         public event EventHandler<CloseEventArgs> onClose;
         public event EventHandler<ErrorEventArgs> onError;
-        public event EventHandler<MessageEventArgs> onReceive;
+        public event EventHandler<MessageEventArgs> onMessage;
         #endregion
 
-#if UNITY_WEBGLs
+#if UNITY_WEBGL && !UNITY_EDITOR
         public string address { get { return m_rawSocket.address; } }
-        public State state { get { return (State)m_rawSocket.state; } }
+        public WebSocketState readyState { get { return m_rawSocket.readyState; } }
 
         WebSocketJslib.WebSocket m_rawSocket = null;
         public WebSocket(string address)
         {
             m_rawSocket = new WebSocketJslib.WebSocket(address);
-            m_rawSocket.onOpen = () =>
+            m_rawSocket.onOpen += (o, e) =>
             {
                 if (onOpen != null)
                     onOpen(this, EventArgs.Empty);
             };
-            m_rawSocket.onClose = () =>
+            m_rawSocket.onClose += (o, e) =>
             {
                 if (onClose != null)
-                    onClose(this, new CloseEventArgs(e.Code, e.Reason));
+                    onClose(this, new CloseEventArgs(e.Code, e.Reason, e.WasClean));
             };
-            m_rawSocket.onError = (errMsg) =>
+            m_rawSocket.onError += (o, e) =>
             {
                 if (onError != null)
-                    onError(this, new ErrorEventArgs(errMsg, new Exception(errMsg)));
+                    onError(this, new ErrorEventArgs(e.Message, e.Exception));
             };
-            m_rawSocket.onReceive = (a) => {
-                if (onReceive != null) onReceive.Invoke(a);
+            m_rawSocket.onMessage += (o, e) =>
+            {
+                if (onMessage != null)
+                    onMessage(this, new MessageEventArgs((Opcode)e.Opcode, e.RawData));
             };
         }
 
@@ -57,10 +59,12 @@ namespace UnityWebSocket
 
         public void Send(string data)
         {
+            m_rawSocket.Send(data);
         }
 
         public void Ping()
         {
+            throw new NotImplementedException("WebGL Platform Ping Has Not Implemented Yet!");
         }
 
         public void Close()
@@ -85,13 +89,12 @@ namespace UnityWebSocket
         }
 #else
         public string address { get { return m_rawSocket.Url.AbsoluteUri; } }
-        public WebSocketState state { get { return (WebSocketState)m_rawSocket.ReadyState; } }
+        public WebSocketState readyState { get { return (WebSocketState)m_rawSocket.ReadyState; } }
         WebSocketSharp.WebSocket m_rawSocket = null;
 
         public WebSocket(string address)
         {
             m_rawSocket = new WebSocketSharp.WebSocket(address);
-            m_rawSocket.Close();
             m_rawSocket.OnOpen += (o, e) =>
             {
                 if (onOpen != null)
@@ -100,7 +103,7 @@ namespace UnityWebSocket
             m_rawSocket.OnClose += (o, e) =>
             {
                 if (onClose != null)
-                    onClose(this, new CloseEventArgs(e.Code, e.Reason));
+                    onClose(this, new CloseEventArgs(e.Code, e.Reason, e.WasClean));
             };
             m_rawSocket.OnError += (o, e) =>
             {
@@ -109,8 +112,8 @@ namespace UnityWebSocket
             };
             m_rawSocket.OnMessage += (o, e) =>
             {
-                if (onReceive != null)
-                    onReceive(this, new MessageEventArgs((Opcode)e.Opcode, e.RawData));
+                if (onMessage != null)
+                    onMessage(this, new MessageEventArgs((Opcode)e.Opcode, e.RawData));
             };
         }
 

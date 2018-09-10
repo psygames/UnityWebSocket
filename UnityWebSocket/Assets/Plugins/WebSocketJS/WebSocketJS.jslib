@@ -1,12 +1,11 @@
 
 ﻿var WebSocketJS =
 {
-	$RECEIVER_NAME:{},
-	$OPEN_METHOD_NAME:{},
-	$CLOSE_METHOD_NAME:{},
-	$RECEIVE_METHOD_NAME:{},
-	$RECEIVE_STRING_METHOD_NAME:{},
-	$ERROR_METHOD_NAME:{},
+	$RECEIVER_NAME: {},
+	$OPEN_METHOD_NAME: {},
+	$CLOSE_METHOD_NAME: {},
+	$MESSAGE_METHOD_NAME: {},
+	$ERROR_METHOD_NAME: {},
 	$webSocketMap: {},
 
 	$Initialize: function()
@@ -15,8 +14,7 @@
 		RECEIVER_NAME = "WebSocketReceiver";
 		OPEN_METHOD_NAME = "OnOpen";
 		CLOSE_METHOD_NAME = "OnClose";
-		RECEIVE_METHOD_NAME = "OnReceive";
-		RECEIVE_STRING_METHOD_NAME = "OnReceiveString";
+		MESSAGE_METHOD_NAME = "OnMessage";
 		ERROR_METHOD_NAME = "OnError";
 	},
 
@@ -37,11 +35,11 @@
 		webSocket.onmessage = function(e)
 		{
 			if (e.data instanceof Blob)
-				OnMessage(address, e.data);
-			else if(typeOf event.data === String) {、
-    		OnMessageString(address, e.data);
+				OnMessage(address, 2, e.data);
+			else if(typeof e.data == 'string')
+    		OnMessage(address, 1, e.data);
   		else
-				OnError(address, "msg is not a blob instance");
+				OnError(address, "onmessage can not recognize msg type !");
 		};
 
 		webSocket.onopen = function(e)
@@ -51,19 +49,13 @@
 
 		webSocket.onclose = function(e)
 		{
-			OnClose(address);
-			if(e.code != 1000)
-			{
-				if(e.reason != null && e.reason.length > 0)
-					OnError(address, e.reason);
-				else
-					OnError(address, GetCloseReason(e.code));
-			}
+			OnClose(address, e.code, e.reason, e.wasClean);
 		};
 
 		webSocket.onerror = function(e)
 		{
 			// can not catch the error reason, only use for debug.
+			OnError(address, e.message);
 		};
 
 		webSocketMap.set(address, webSocket);
@@ -75,6 +67,17 @@
 		var address = Pointer_stringify(addressPtr);
 		if(webSocketMap.has(address))
 			webSocketMap.get(address).send(HEAPU8.buffer.slice(msgPtr, msgPtr + length));
+		else
+			OnError(address, "send msg with a WebSocket not Instantiated");
+	},
+
+	// call by unity
+	SendStrJS: function (addressPtr, msgPtr)
+	{
+		var address = Pointer_stringify(addressPtr);
+		var msg = Pointer_stringify(msgPtr);
+		if(webSocketMap.has(address))
+			webSocketMap.get(address).send(msg);
 		else
 			OnError(address, "send msg with a WebSocket not Instantiated");
 	},
@@ -93,37 +96,42 @@
 	GetReadyStateJS: function (addressPtr)
 	{
 		var address = Pointer_stringify(addressPtr);
+		if(!(webSocketMap instanceof Map))
+			return 0;
 		if(webSocketMap.has(address))
-			webSocketMap.get(address).readyState;
-		else
-			OnError(address, "get readyState with a WebSocket not Instantiated");
+		 	return webSocketMap.get(address).readyState;
+		return 0;
 	},
 
-	$OnMessageString: function(address, str)
+	$OnMessage: function(address, opcode, data)
 	{
-		SendMessage(RECEIVER_NAME, RECEIVE_STRING_METHOD_NAME, str);
-	},
-
-	$OnMessage: function(address, blobData)
-	{
-		var reader = new FileReader();
-		reader.addEventListener("loadend", function()
+		var addr_opcode_data = address + "_" + opcode + "_";
+		// blobData
+		if(opcode == 2)
 		{
-			// format : address_data, (address and data split with "_")
-			// the data format is hex string
-			var msg = address + "_";
-			var array = new Uint8Array(reader.result);
-			for(var i = 0; i < array.length; i++)
+			var reader = new FileReader();
+			reader.addEventListener("loadend", function()
 			{
-				var b = array[i];
-				if(b < 16)
-					msg += "0" + b.toString(16);
-				else
-					msg += b.toString(16);
-			}
-			SendMessage(RECEIVER_NAME, RECEIVE_METHOD_NAME, msg);
-		});
-		reader.readAsArrayBuffer(blobData);
+				// format : address_data, (address and data split with "_")
+				// the data format is hex string
+				var array = new Uint8Array(reader.result);
+				for(var i = 0; i < array.length; i++)
+				{
+					var b = array[i];
+					if(b < 16)
+						addr_opcode_data += "0" + b.toString(16);
+					else
+						addr_opcode_data += b.toString(16);
+				}
+				SendMessage(RECEIVER_NAME, MESSAGE_METHOD_NAME, addr_opcode_data);
+			});
+			reader.readAsArrayBuffer(data);
+		}
+		else
+		{
+			addr_opcode_data += data;
+			SendMessage(RECEIVER_NAME, MESSAGE_METHOD_NAME, addr_opcode_data);
+		}
 	},
 
 	$OnOpen: function(address)
@@ -135,59 +143,26 @@
 	{
 		if(webSocketMap.get(address))
 			webSocketMap.delete(address);
-		SendMessage(RECEIVER_NAME, CLOSE_METHOD_NAME, address, code, reason, wasClean);
+		SendMessage(RECEIVER_NAME, CLOSE_METHOD_NAME, address+"_"+code+"_"+reason+"_"+wasClean);
 	},
 
 	$OnError: function(address, errorMsg)
 	{
 		var combinedMsg =  address + "_" + errorMsg;
-		SendMessage(RECEIVER_NAME, ERROR_METHOD_NAME ,combinedMsg);
+		SendMessage(RECEIVER_NAME, ERROR_METHOD_NAME, combinedMsg);
 	},
-
-	$GetCloseReason: function(code)
-	{
-		var error = "";
-		switch (code)
-		{
-			case 1001:
-				error = "Endpoint going away.";
-				break;
-			case 1002:
-				error = "Protocol error.";
-				break;
-			case 1003:
-				error = "Unsupported message.";
-				break;
-			case 1005:
-				error = "No status.";
-				break;
-			case 1006:
-				error = "Abnormal disconnection.";
-				break;
-			case 1009:
-				error = "Data frame too large.";
-				break;
-			default:
-				error = "Error Code " + code;
-				break;
-		}
-		return error;
-	},
-
 };
 
 // Auto add to depends
 autoAddDeps(WebSocketJS, '$RECEIVER_NAME');
 autoAddDeps(WebSocketJS, '$OPEN_METHOD_NAME');
 autoAddDeps(WebSocketJS, '$CLOSE_METHOD_NAME');
-autoAddDeps(WebSocketJS, '$RECEIVE_STRING_METHOD_NAME');
-autoAddDeps(WebSocketJS, '$RECEIVE_METHOD_NAME');
+autoAddDeps(WebSocketJS, '$MESSAGE_METHOD_NAME');
+autoAddDeps(WebSocketJS, '$ERROR_METHOD_NAME');
 autoAddDeps(WebSocketJS, '$webSocketMap');
 autoAddDeps(WebSocketJS, '$Initialize');
 autoAddDeps(WebSocketJS, '$OnMessage');
-autoAddDeps(WebSocketJS, '$OnMessageString');
 autoAddDeps(WebSocketJS, '$OnOpen');
 autoAddDeps(WebSocketJS, '$OnClose');
 autoAddDeps(WebSocketJS, '$OnError');
-autoAddDeps(WebSocketJS, '$GetCloseReason');
 mergeInto(LibraryManager.library, WebSocketJS);

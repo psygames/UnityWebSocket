@@ -101,12 +101,12 @@ public class TestWebSocket : MonoBehaviour
     {
         var text = "";
         var addr = "请选择服务器地址";
-        var state = WebSocket.State.Closed;
+        var state = WebSocketState.Closed;
 
         if (m_selectedEntry != null)
         {
             text = m_selectedEntry.content;
-            state = m_selectedEntry.socket.state;
+            state = m_selectedEntry.socket.readyState;
             addr = m_selectedEntry.socket.address;
         }
         contentText.text = text;
@@ -115,17 +115,17 @@ public class TestWebSocket : MonoBehaviour
     }
 
 
-    private Color GetStateColor(WebSocket.State state)
+    private Color GetStateColor(WebSocketState state)
     {
         switch (state)
         {
-            case WebSocket.State.Closed:
+            case WebSocketState.Closed:
                 return Color.grey;
-            case WebSocket.State.Closing:
+            case WebSocketState.Closing:
                 return Color.cyan;
-            case WebSocket.State.Connecting:
+            case WebSocketState.Connecting:
                 return Color.yellow;
-            case WebSocket.State.Connected:
+            case WebSocketState.Open:
                 return Color.green;
         }
         return Color.white;
@@ -142,13 +142,15 @@ public class TestWebSocket : MonoBehaviour
             socket = new WebSocket(address);
             socket.onOpen += OnOpen;
             socket.onClose += OnClose;
-            socket.onReceive += OnReceive;
+            socket.onMessage += OnReceive;
             socket.onError += OnError;
         }
 
         public void Connect()
         {
-            if (socket == null || socket.state != WebSocket.State.Closed)
+            if (socket == null
+                || socket.readyState == WebSocketState.Open
+                || socket.readyState == WebSocketState.Closing)
                 return;
 
             socket.Connect();
@@ -157,8 +159,8 @@ public class TestWebSocket : MonoBehaviour
 
         public void Close()
         {
-            if (socket.state == WebSocket.State.Connecting
-                || socket.state == WebSocket.State.Connected)
+            if (socket.readyState == WebSocketState.Connecting
+                || socket.readyState == WebSocketState.Open)
             {
                 socket.Close();
             }
@@ -166,33 +168,32 @@ public class TestWebSocket : MonoBehaviour
 
         public void Send(string text)
         {
-            if (socket.state == WebSocket.State.Connected)
+            if (socket.readyState == WebSocketState.Open)
             {
-                byte[] data = System.Text.Encoding.UTF8.GetBytes(text);
-                socket.Send(data);
+                socket.Send(text);
                 content += "[SEND] " + text + "\n";
             }
         }
 
 
-        private void OnOpen()
+        private void OnOpen(object sender, EventArgs e)
         {
             content += "[INFO] Connected\n";
         }
 
-        private void OnClose()
+        private void OnClose(object sender, CloseEventArgs e)
         {
             content += "[INFO] Closed\n";
         }
 
-        private void OnReceive(byte[] data)
+        private void OnReceive(object sender, MessageEventArgs e)
         {
-            content += "[RECEIVE] " + System.Text.Encoding.UTF8.GetString(data) + "\n";
+            content += "[RECEIVE] " + e.Data + "\n";
         }
 
-        private void OnError(string errMsg)
+        private void OnError(object sender, ErrorEventArgs e)
         {
-            content += "[ERROR] " + errMsg + "\n";
+            content += "[ERROR] " + e.Message + "\n";
         }
 
 

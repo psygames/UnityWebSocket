@@ -17,12 +17,12 @@ namespace WebSocketJslib
     public class WebSocket
     {
         public string address { get; private set; }
-        public WebSocketState readyState { get { return (WebSocketState)GetReadyStateJS(); } }
+        public WebSocketState readyState { get { return (WebSocketState)GetReadyStateJS(address); } }
 
         public event EventHandler onOpen;
         public event EventHandler<CloseEventArgs> onClose;
         public event EventHandler<ErrorEventArgs> onError;
-        public event EventHandler<MessageEventArgs> onReceive;
+        public event EventHandler<MessageEventArgs> onMessage;
 
         private WebSocket() { }
 
@@ -41,20 +41,27 @@ namespace WebSocketJslib
         [DllImport("__Internal")]
         private static extern void SendJS(string address, byte[] data, int length);
         [DllImport("__Internal")]
+        private static extern void SendStrJS(string address, string msg);
+        [DllImport("__Internal")]
         private static extern void CloseJS(string address);
         [DllImport("__Internal")]
-        private static extern int GetReadyStateJS();
+        private static extern int GetReadyStateJS(string address);
 
 
         public void Connect()
         {
-            WebSocketReceiver.instance.AddListener(address, onOpen, onClose, onReceive, onError);
+            WebSocketReceiver.instance.AddListener(address, OnOpen, OnClose, OnReceive, OnError);
             ConnectJS(address);
         }
 
         public void Send(byte[] data)
         {
             SendJS(address, data, data.Length);
+        }
+
+        public void Send(string data)
+        {
+            SendStrJS(address, data);
         }
 
         public void Close()
@@ -68,23 +75,23 @@ namespace WebSocketJslib
                 onOpen(this, EventArgs.Empty);
         }
 
-        private void OnReceive(byte[] msg)
+        private void OnReceive(Opcode opcode, byte[] rawData)
         {
-            if (onReceive != null)
-                onReceive(this,new MessageEventArgs())
+            if (onMessage != null)
+                onMessage(this, new MessageEventArgs(opcode, rawData));
         }
 
-        private void OnClose()
+        private void OnClose(ushort code, string reason, bool wasClean)
         {
             if (onClose != null)
-                onClose.Invoke();
+                onClose(this, new CloseEventArgs(code, reason, wasClean));
             WebSocketReceiver.instance.RemoveListener(address);
         }
 
         private void OnError(string msg)
         {
             if (onError != null)
-                onError.Invoke(msg);
+                onError(this, new ErrorEventArgs(msg));
         }
     }
 }

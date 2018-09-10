@@ -86,7 +86,7 @@ namespace TestWebSocketServer
 
         protected override void OnMessage(MessageEventArgs e)
         {
-            string msg = Encoding.UTF8.GetString(e.RawData);
+            string msg = e.Data;
             Form1.instance.Log(addr, "Receive From :" + ID + "\n" + msg);
             SendMessage("Got [" + msg + "] at " + DateTime.Now);
         }
@@ -99,8 +99,7 @@ namespace TestWebSocketServer
 
         public void SendMessage(string msg)
         {
-            byte[] data = Encoding.UTF8.GetBytes(msg);
-            Sessions.SendToAsync(data, ID, (a) => { });
+            Sessions.SendToAsync(msg, ID, (a) => { });
         }
     }
 }

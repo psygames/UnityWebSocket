@@ -59,24 +59,25 @@ namespace UnityWebSocket
         }
 
         internal CloseEventArgs(ushort code)
-          : this(code, null)
+          : this(code, null, false)
         {
         }
 
         internal CloseEventArgs(CloseStatusCode code)
-          : this((ushort)code, null)
+          : this((ushort)code, null, false)
         {
         }
 
-        internal CloseEventArgs(CloseStatusCode code, string reason)
-          : this((ushort)code, reason)
+        internal CloseEventArgs(CloseStatusCode code, string reason, bool wasClean)
+          : this((ushort)code, reason, wasClean)
         {
         }
 
-        internal CloseEventArgs(ushort code, string reason)
+        internal CloseEventArgs(ushort code, string reason, bool wasClean)
         {
             _code = code;
             _reason = reason;
+            _clean = wasClean;
         }
 
         #endregion
