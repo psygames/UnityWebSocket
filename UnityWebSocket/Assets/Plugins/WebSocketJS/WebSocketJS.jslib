@@ -1,4 +1,3 @@
-
 ﻿var WebSocketJS =
 {
 	$RECEIVER_NAME: {},
@@ -55,7 +54,8 @@
 		webSocket.onerror = function(e)
 		{
 			// can not catch the error reason, only use for debug.
-			OnError(address, e.message);
+			// see this page  https://stackoverflow.com/questions/18803971/websocket-onerror-how-to-read-error-description
+			OnError(address, "a websocket error occured.");
 		};
 
 		webSocketMap.set(address, webSocket);
@@ -68,7 +68,7 @@
 		if(webSocketMap.has(address))
 			webSocketMap.get(address).send(HEAPU8.buffer.slice(msgPtr, msgPtr + length));
 		else
-			OnError(address, "send msg with a WebSocket not Instantiated");
+			OnError(address, "send msg binary with a WebSocket not Instantiated");
 	},
 
 	// call by unity
@@ -79,7 +79,7 @@
 		if(webSocketMap.has(address))
 			webSocketMap.get(address).send(msg);
 		else
-			OnError(address, "send msg with a WebSocket not Instantiated");
+			OnError(address, "send msg string with a WebSocket not Instantiated");
 	},
 
 	// call by unity
@@ -105,32 +105,30 @@
 
 	$OnMessage: function(address, opcode, data)
 	{
-		var addr_opcode_data = address + "_" + opcode + "_";
-		// blobData
-		if(opcode == 2)
+		var combinedMsg = address + "_" + opcode + "_";
+		if(opcode == 2) // blob data
 		{
 			var reader = new FileReader();
 			reader.addEventListener("loadend", function()
 			{
-				// format : address_data, (address and data split with "_")
-				// the data format is hex string
+				// data format to hex string
 				var array = new Uint8Array(reader.result);
 				for(var i = 0; i < array.length; i++)
 				{
 					var b = array[i];
 					if(b < 16)
-						addr_opcode_data += "0" + b.toString(16);
+						combinedMsg += "0" + b.toString(16);
 					else
-						addr_opcode_data += b.toString(16);
+						combinedMsg += b.toString(16);
 				}
-				SendMessage(RECEIVER_NAME, MESSAGE_METHOD_NAME, addr_opcode_data);
+				SendMessage(RECEIVER_NAME, MESSAGE_METHOD_NAME, combinedMsg);
 			});
 			reader.readAsArrayBuffer(data);
 		}
-		else
+		else // string data
 		{
-			addr_opcode_data += data;
-			SendMessage(RECEIVER_NAME, MESSAGE_METHOD_NAME, addr_opcode_data);
+			combinedMsg += data;
+			SendMessage(RECEIVER_NAME, MESSAGE_METHOD_NAME, combinedMsg);
 		}
 	},
 
@@ -143,7 +141,8 @@
 	{
 		if(webSocketMap.get(address))
 			webSocketMap.delete(address);
-		SendMessage(RECEIVER_NAME, CLOSE_METHOD_NAME, address+"_"+code+"_"+reason+"_"+wasClean);
+		var combinedMsg = address + "_" + code + "_" + reason + "_" + wasClean;
+		SendMessage(RECEIVER_NAME, CLOSE_METHOD_NAME, combinedMsg);
 	},
 
 	$OnError: function(address, errorMsg)

@@ -19,9 +19,9 @@ public class TestWebSocket : MonoBehaviour
     public Image currentSelectBg;
     public Text currentSelectText;
 
-    public GameObject logPanel;
-    public Text logText;
-    public Button logPanelCloseBtn;
+    public GameObject messageBoxObj;
+    public Text messagexBoxText;
+    public Button messageBoxCloseBtn;
 
     private Dictionary<string, WebSocketEntry> m_sockets = new Dictionary<string, WebSocketEntry>();
     private WebSocketEntry m_selectedEntry;
@@ -32,9 +32,9 @@ public class TestWebSocket : MonoBehaviour
         connentBtn.onClick.AddListener(Connect);
         closeBtn.onClick.AddListener(Close);
         sendBtn.onClick.AddListener(Send);
-        logPanelCloseBtn.onClick.AddListener(OnClickCloseLog);
+        messageBoxCloseBtn.onClick.AddListener(OnClickCloseMessageBox);
         entryTemplate.gameObject.SetActive(false);
-        logPanel.gameObject.SetActive(false);
+        messageBoxObj.gameObject.SetActive(false);
     }
 
     public void NewSocket()
@@ -42,7 +42,7 @@ public class TestWebSocket : MonoBehaviour
         string addr = addressInput.text;
         if (m_sockets.ContainsKey(addr))
         {
-            Log("Duplicate address " + addr);
+            MessageBox("Duplicate address " + addr);
             return;
         }
 
@@ -73,7 +73,6 @@ public class TestWebSocket : MonoBehaviour
 
     public void Close()
     {
-
         if (m_selectedEntry == null)
             return;
         m_selectedEntry.Close();
@@ -86,15 +85,15 @@ public class TestWebSocket : MonoBehaviour
         m_selectedEntry.Send(messageInput.text);
     }
 
-    public void Log(string log)
+    public void MessageBox(string log)
     {
-        logPanel.SetActive(true);
-        logText.text = log;
+        messageBoxObj.SetActive(true);
+        messagexBoxText.text = log;
     }
 
-    private void OnClickCloseLog()
+    private void OnClickCloseMessageBox()
     {
-        logPanel.SetActive(false);
+        messageBoxObj.SetActive(false);
     }
 
     void Update()
@@ -195,25 +194,7 @@ public class TestWebSocket : MonoBehaviour
         {
             content += "[ERROR] " + e.Message + "\n";
         }
-
-
-        Vector3[] CreatePoint(Vector3 start, Vector3 end, float distance)
-        {
-            Vector3[] retPoint = new Vector3[4];
-
-            Vector3 v3 = Vector3.Cross(end - start, Vector3.up);
-
-            retPoint[0] = start + v3 * distance;
-            retPoint[1] = start - v3 * distance;
-            retPoint[3] = end + v3 * distance;
-            retPoint[2] = end - v3 * distance;
-
-            return retPoint;
-        }
-
     }
-
-
 }
 
 

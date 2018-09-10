@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.37311947, g: 0.38074005, b: 0.35872722, a: 1}
+  m_IndirectSpecularColor: {r: 0.37311953, g: 0.38074014, b: 0.3587274, a: 1}
 --- !u!157 &3
 LightmapSettings:
   m_ObjectHideFlags: 0
@@ -682,7 +682,7 @@ GameObject:
   m_Component:
   - component: {fileID: 313235359}
   m_Layer: 5
-  m_Name: log
+  m_Name: messageBox
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2274,7 +2274,7 @@ GameObject:
   - component: {fileID: 1002391569}
   - component: {fileID: 1002391568}
   m_Layer: 5
-  m_Name: bg
+  m_Name: mask
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2847,9 +2847,9 @@ MonoBehaviour:
   entryTemplate: {fileID: 1967433805}
   currentSelectBg: {fileID: 1869076092}
   currentSelectText: {fileID: 533606997}
-  logPanel: {fileID: 313235358}
-  logText: {fileID: 401804344}
-  logPanelCloseBtn: {fileID: 571569540}
+  messageBoxObj: {fileID: 313235358}
+  messagexBoxText: {fileID: 401804344}
+  messageBoxCloseBtn: {fileID: 571569540}
 --- !u!4 &1541134461
 Transform:
   m_ObjectHideFlags: 0
@@ -3482,7 +3482,7 @@ Canvas:
   m_OverrideSorting: 0
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
-  m_AdditionalShaderChannelsFlag: 25
+  m_AdditionalShaderChannelsFlag: 0
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
@@ -3718,7 +3718,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 837294421}
   m_Direction: 2
   m_Value: 1
-  m_Size: 0.99999994
+  m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:

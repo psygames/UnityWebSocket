@@ -63,7 +63,7 @@ namespace WebSocketJslib
         /// <summary>
         /// jslib will call this method on message received.
         /// </summary>
-        /// <param name="address_data">address_opcode_data(hex string)</param>
+        /// <param name="address_opcode_data">address_opcode_data(hex string)</param>
         private void OnMessage(string address_opcode_data)
         {
             string[] sp;
@@ -100,7 +100,7 @@ namespace WebSocketJslib
         /// <summary>
         /// jslib will call this method on connection closed.
         /// </summary>
-        /// <param name="address">address</param>
+        /// <param name="address_code_reason_wasClean">address_code_reason_wasClean</param>
         private void OnClose(string address_code_reason_wasClean)
         {
             string[] sp;
