@@ -3,9 +3,9 @@
 - [http://47.100.28.149/UnityWebSocketDemo/](http://47.100.28.149/UnityWebSocketDemo/)
 - WebSocket服务器(ServerDemo)监听地址：
 
+        ws://47.100.28.149:8758/test
         ws://47.100.28.149:8759/test
         ws://47.100.28.149:8760/test
-        ws://47.100.28.149:8761/test
 
 # UnityWebSocket 使用
 
