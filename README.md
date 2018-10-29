@@ -45,10 +45,10 @@
 
 ### 3. 模块说明
 - WebSocket.jslib
+语法格式需要遵循 [asm.js](http://www.ruanyifeng.com/blog/2017/09/asmjs_emscripten.html)。
 
         路径：Plugins/WebSocketJS/WebSocketJS.jslib
         作用：Unity发布WebGL版本会将其加入到js运行库中。
-        语法格式需要遵循 [asm.js](http://www.ruanyifeng.com/blog/2017/09/asmjs_emscripten.html)。
 
 - WebSocket.cs
 
