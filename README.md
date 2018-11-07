@@ -100,3 +100,6 @@
 - jslib中添加了获取socket.readyState的方法。
 - jslib中的SendMessage参数整理。
 - fix some Bugs.
+
+#### v1.2.1
+- fix 非WebGL平台打包兼容BUG（屏蔽websocket-jslib部分代码）
