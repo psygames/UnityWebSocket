@@ -1,6 +1,8 @@
+#if UNITY_WEBGL && !UNITY_EDITOR
 using System.Runtime.InteropServices;
 using System;
 using UnityWebSocket;
+
 
 namespace WebSocketJslib
 {
@@ -95,3 +97,4 @@ namespace WebSocketJslib
         }
     }
 }
+#endif

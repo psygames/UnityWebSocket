@@ -56,6 +56,9 @@ public class TestWebSocket : MonoBehaviour
         entryItem.transform.localScale = Vector3.one;
         entryItem.transform.localRotation = Quaternion.identity;
         entryItem.onClick.AddListener(() => { OnEntryItemClick(entry); });
+
+        if (m_selectedEntry == null)
+            m_selectedEntry = entry;
     }
 
     private void OnEntryItemClick(WebSocketEntry entry)
