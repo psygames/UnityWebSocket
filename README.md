@@ -65,6 +65,7 @@
         作用：WebSocket的使用方法示例。
 
 ### 4. 注意(Warning)
+- Unity2018 以上版本需要修改WebGL平台 Publishing Settings -> Linker Target 为 asm.js。
 - WebSocket的命名空间是 UnityWebSocket ，项目中有多个命名空间存在WebSocket类，不要用错了 :) 。
 - WebSocket的 onOpen、OnClose、OnMessage、OnError 回调都发生在网络线程中，回调处理函数不能直接修改主线程中的Unity组件内容，需要在主线程中加消息处理队列（需要加锁），缓存网络消息后，再在主线程中处理消息包。
 - WebGL平台下，暂时不能使用异步连接、关闭、发送，接口仍然使用的同步方式。
