@@ -104,3 +104,7 @@
 
 #### v1.2.1
 - fix 非WebGL平台打包兼容BUG（屏蔽websocket-jslib部分代码）
+
+#### v1.2.2
+- support for wss(ssl) 支持SSL协议格式（更新了websocket-sharp源码）。
+- 服务器Demo尚未支持 SSL。会在未来版本支持。
