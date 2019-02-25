@@ -69,6 +69,7 @@ namespace WebSocketSharp.Net
     private Uri                    _commentUri;
     private bool                   _discard;
     private string                 _domain;
+    private static readonly int[]  _emptyPorts;
     private DateTime               _expires;
     private bool                   _httpOnly;
     private string                 _name;
@@ -88,6 +89,7 @@ namespace WebSocketSharp.Net
 
     static Cookie ()
     {
+      _emptyPorts = new int[0];
       _reservedCharsForName = new[] { ' ', '=', ';', ',', '\n', '\r', '\t' };
       _reservedCharsForValue = new[] { ';', ',' };
     }
@@ -106,8 +108,6 @@ namespace WebSocketSharp.Net
       _expires = DateTime.MinValue;
       _name = String.Empty;
       _path = String.Empty;
-      _port = String.Empty;
-      _ports = new int[0];
       _timestamp = DateTime.Now;
       _value = String.Empty;
       _version = 0;
@@ -270,7 +270,7 @@ namespace WebSocketSharp.Net
 
     internal int[] Ports {
       get {
-        return _ports;
+        return _ports ?? _emptyPorts;
       }
     }
 
@@ -455,36 +455,52 @@ namespace WebSocketSharp.Net
     /// Gets or sets the value of the Port attribute of the cookie.
     /// </summary>
     /// <value>
-    /// A <see cref="string"/> that represents the list of TCP ports to which the cookie applies.
+    ///   <para>
+    ///   A <see cref="string"/> that represents the list of TCP ports
+    ///   that the cookie applies to.
+    ///   </para>
+    ///   <para>
+    ///   The default value is an empty string.
+    ///   </para>
     /// </value>
     /// <exception cref="CookieException">
-    /// The value specified for a set operation isn't enclosed in double quotes or
-    /// couldn't be parsed.
+    ///   <para>
+    ///   The value specified for a set operation is not enclosed in
+    ///   double quotes.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   The value specified for a set operation could not be parsed.
+    ///   </para>
     /// </exception>
     public string Port {
       get {
-        return _port;
+        return _port ?? String.Empty;
       }
 
       set { 
         if (value.IsNullOrEmpty ()) {
-          _port = String.Empty;
-          _ports = new int[0];
+          _port = value;
+          _ports = null;
 
           return;
         }
 
-        if (!value.IsEnclosedIn ('"'))
-          throw new CookieException (
-            "The value specified for the Port attribute isn't enclosed in double quotes.");
+        if (!value.IsEnclosedIn ('"')) {
+          var msg = "The value is not enclosed in double quotes.";
+          throw new CookieException (msg);
+        }
 
-        string err;
-        if (!tryCreatePorts (value, out _ports, out err))
-          throw new CookieException (
-            String.Format (
-              "The value specified for the Port attribute contains an invalid value: {0}", err));
+        int[] ports;
+        if (!tryCreatePorts (value, out ports)) {
+          var msg = "The value could not be parsed.";
+          throw new CookieException (msg);
+        }
 
         _port = value;
+        _ports = ports;
       }
     }
 
@@ -614,101 +630,105 @@ namespace WebSocketSharp.Net
 
     private static int hash (int i, int j, int k, int l, int m)
     {
-      return i ^
-             (j << 13 | j >> 19) ^
-             (k << 26 | k >>  6) ^
-             (l <<  7 | l >> 25) ^
-             (m << 20 | m >> 12);
+      return i
+             ^ (j << 13 | j >> 19)
+             ^ (k << 26 | k >>  6)
+             ^ (l <<  7 | l >> 25)
+             ^ (m << 20 | m >> 12);
     }
 
     private string toResponseStringVersion0 ()
     {
-      var output = new StringBuilder (64);
-      output.AppendFormat ("{0}={1}", _name, _value);
+      var buff = new StringBuilder (64);
 
-      if (_expires != DateTime.MinValue)
-        output.AppendFormat (
+      buff.AppendFormat ("{0}={1}", _name, _value);
+
+      if (_expires != DateTime.MinValue) {
+        buff.AppendFormat (
           "; Expires={0}",
           _expires.ToUniversalTime ().ToString (
             "ddd, dd'-'MMM'-'yyyy HH':'mm':'ss 'GMT'",
-            CultureInfo.CreateSpecificCulture ("en-US")));
+            CultureInfo.CreateSpecificCulture ("en-US")
+          )
+        );
+      }
 
       if (!_path.IsNullOrEmpty ())
-        output.AppendFormat ("; Path={0}", _path);
+        buff.AppendFormat ("; Path={0}", _path);
 
       if (!_domain.IsNullOrEmpty ())
-        output.AppendFormat ("; Domain={0}", _domain);
+        buff.AppendFormat ("; Domain={0}", _domain);
 
       if (_secure)
-        output.Append ("; Secure");
+        buff.Append ("; Secure");
 
       if (_httpOnly)
-        output.Append ("; HttpOnly");
+        buff.Append ("; HttpOnly");
 
-      return output.ToString ();
+      return buff.ToString ();
     }
 
     private string toResponseStringVersion1 ()
     {
-      var output = new StringBuilder (64);
-      output.AppendFormat ("{0}={1}; Version={2}", _name, _value, _version);
+      var buff = new StringBuilder (64);
+
+      buff.AppendFormat ("{0}={1}; Version={2}", _name, _value, _version);
 
       if (_expires != DateTime.MinValue)
-        output.AppendFormat ("; Max-Age={0}", MaxAge);
+        buff.AppendFormat ("; Max-Age={0}", MaxAge);
 
       if (!_path.IsNullOrEmpty ())
-        output.AppendFormat ("; Path={0}", _path);
+        buff.AppendFormat ("; Path={0}", _path);
 
       if (!_domain.IsNullOrEmpty ())
-        output.AppendFormat ("; Domain={0}", _domain);
+        buff.AppendFormat ("; Domain={0}", _domain);
 
       if (!_port.IsNullOrEmpty ()) {
-        if (_port == "\"\"")
-          output.Append ("; Port");
+        if (_port != "\"\"")
+          buff.AppendFormat ("; Port={0}", _port);
         else
-          output.AppendFormat ("; Port={0}", _port);
+          buff.Append ("; Port");
       }
 
       if (!_comment.IsNullOrEmpty ())
-        output.AppendFormat ("; Comment={0}", _comment.UrlEncode ());
+        buff.AppendFormat ("; Comment={0}", HttpUtility.UrlEncode (_comment));
 
       if (_commentUri != null) {
         var url = _commentUri.OriginalString;
-        output.AppendFormat ("; CommentURL={0}", url.IsToken () ? url : url.Quote ());
+        buff.AppendFormat (
+          "; CommentURL={0}", !url.IsToken () ? url.Quote () : url
+        );
       }
 
       if (_discard)
-        output.Append ("; Discard");
+        buff.Append ("; Discard");
 
       if (_secure)
-        output.Append ("; Secure");
+        buff.Append ("; Secure");
 
-      return output.ToString ();
+      return buff.ToString ();
     }
 
-    private static bool tryCreatePorts (string value, out int[] result, out string parseError)
+    private static bool tryCreatePorts (string value, out int[] result)
     {
-      var ports = value.Trim ('"').Split (',');
-      var len = ports.Length;
+      result = null;
+
+      var arr = value.Trim ('"').Split (',');
+      var len = arr.Length;
       var res = new int[len];
+
       for (var i = 0; i < len; i++) {
-        res[i] = Int32.MinValue;
-
-        var port = ports[i].Trim ();
-        if (port.Length == 0)
+        var s = arr[i].Trim ();
+        if (s.Length == 0) {
+          res[i] = Int32.MinValue;
           continue;
-
-        if (!Int32.TryParse (port, out res[i])) {
-          result = new int[0];
-          parseError = port;
-
-          return false;
         }
+
+        if (!Int32.TryParse (s, out res[i]))
+          return false;
       }
 
       result = res;
-      parseError = String.Empty;
-
       return true;
     }
 
@@ -716,7 +736,6 @@ namespace WebSocketSharp.Net
 
     #region Internal Methods
 
-    // From client to server
     internal string ToRequestString (Uri uri)
     {
       if (_name.Length == 0)
@@ -725,36 +744,46 @@ namespace WebSocketSharp.Net
       if (_version == 0)
         return String.Format ("{0}={1}", _name, _value);
 
-      var output = new StringBuilder (64);
-      output.AppendFormat ("$Version={0}; {1}={2}", _version, _name, _value);
+      var buff = new StringBuilder (64);
+
+      buff.AppendFormat ("$Version={0}; {1}={2}", _version, _name, _value);
 
       if (!_path.IsNullOrEmpty ())
-        output.AppendFormat ("; $Path={0}", _path);
+        buff.AppendFormat ("; $Path={0}", _path);
       else if (uri != null)
-        output.AppendFormat ("; $Path={0}", uri.GetAbsolutePath ());
+        buff.AppendFormat ("; $Path={0}", uri.GetAbsolutePath ());
       else
-        output.Append ("; $Path=/");
+        buff.Append ("; $Path=/");
 
-      var appendDomain = uri == null || uri.Host != _domain;
-      if (appendDomain && !_domain.IsNullOrEmpty ())
-        output.AppendFormat ("; $Domain={0}", _domain);
-
-      if (!_port.IsNullOrEmpty ()) {
-        if (_port == "\"\"")
-          output.Append ("; $Port");
-        else
-          output.AppendFormat ("; $Port={0}", _port);
+      if (!_domain.IsNullOrEmpty ()) {
+        if (uri == null || uri.Host != _domain)
+          buff.AppendFormat ("; $Domain={0}", _domain);
       }
 
-      return output.ToString ();
+      if (!_port.IsNullOrEmpty ()) {
+        if (_port != "\"\"")
+          buff.AppendFormat ("; $Port={0}", _port);
+        else
+          buff.Append ("; $Port");
+      }
+
+      return buff.ToString ();
     }
 
-    // From server to client
+    /// <summary>
+    /// Returns a string that represents the current cookie instance.
+    /// </summary>
+    /// <returns>
+    /// A <see cref="string"/> that is suitable for the Set-Cookie response
+    /// header.
+    /// </returns>
     internal string ToResponseString ()
     {
-      return _name.Length > 0
-             ? (_version == 0 ? toResponseStringVersion0 () : toResponseStringVersion1 ())
-             : String.Empty;
+      return _name.Length == 0
+             ? String.Empty
+             : _version == 0
+               ? toResponseStringVersion0 ()
+               : toResponseStringVersion1 ();
     }
 
     #endregion
@@ -762,58 +791,66 @@ namespace WebSocketSharp.Net
     #region Public Methods
 
     /// <summary>
-    /// Determines whether the specified <see cref="Object"/> is equal to the current
-    /// <see cref="Cookie"/>.
+    /// Determines whether the current cookie instance is equal to
+    /// the specified <see cref="object"/> instance.
     /// </summary>
     /// <param name="comparand">
-    /// An <see cref="Object"/> to compare with the current <see cref="Cookie"/>.
+    ///   <para>
+    ///   An <see cref="object"/> instance to compare with
+    ///   the current cookie instance.
+    ///   </para>
+    ///   <para>
+    ///   An reference to a <see cref="Cookie"/> instance.
+    ///   </para>
     /// </param>
     /// <returns>
-    /// <c>true</c> if <paramref name="comparand"/> is equal to the current <see cref="Cookie"/>;
-    /// otherwise, <c>false</c>.
+    /// <c>true</c> if the current cookie instance is equal to
+    /// <paramref name="comparand"/>; otherwise, <c>false</c>.
     /// </returns>
-    public override bool Equals (Object comparand)
+    public override bool Equals (object comparand)
     {
       var cookie = comparand as Cookie;
-      return cookie != null &&
-             _name.Equals (cookie.Name, StringComparison.InvariantCultureIgnoreCase) &&
-             _value.Equals (cookie.Value, StringComparison.InvariantCulture) &&
-             _path.Equals (cookie.Path, StringComparison.InvariantCulture) &&
-             _domain.Equals (cookie.Domain, StringComparison.InvariantCultureIgnoreCase) &&
-             _version == cookie.Version;
+      return cookie != null
+             && _name.Equals (
+                  cookie._name, StringComparison.InvariantCultureIgnoreCase
+                )
+             && _value.Equals (
+                  cookie._value, StringComparison.InvariantCulture
+                )
+             && _path.Equals (
+                  cookie._path, StringComparison.InvariantCulture
+                )
+             && _domain.Equals (
+                  cookie._domain, StringComparison.InvariantCultureIgnoreCase
+                )
+             && _version == cookie._version;
     }
 
     /// <summary>
-    /// Serves as a hash function for a <see cref="Cookie"/> object.
+    /// Gets a hash code for the current cookie instance.
     /// </summary>
     /// <returns>
-    /// An <see cref="int"/> that represents the hash code for the current <see cref="Cookie"/>.
+    /// An <see cref="int"/> that represents the hash code.
     /// </returns>
     public override int GetHashCode ()
     {
       return hash (
-        StringComparer.InvariantCultureIgnoreCase.GetHashCode (_name),
-        _value.GetHashCode (),
-        _path.GetHashCode (),
-        StringComparer.InvariantCultureIgnoreCase.GetHashCode (_domain),
-        _version);
+               StringComparer.InvariantCultureIgnoreCase.GetHashCode (_name),
+               _value.GetHashCode (),
+               _path.GetHashCode (),
+               StringComparer.InvariantCultureIgnoreCase.GetHashCode (_domain),
+               _version
+             );
     }
 
     /// <summary>
-    /// Returns a <see cref="string"/> that represents the current <see cref="Cookie"/>.
+    /// Returns a string that represents the current cookie instance.
     /// </summary>
-    /// <remarks>
-    /// This method returns a <see cref="string"/> to use to send an HTTP Cookie to
-    /// an origin server.
-    /// </remarks>
     /// <returns>
-    /// A <see cref="string"/> that represents the current <see cref="Cookie"/>.
+    /// A <see cref="string"/> that is suitable for the Cookie request header.
     /// </returns>
     public override string ToString ()
     {
-      // i.e., only used for clients
-      // See para 4.2.2 of RFC 2109 and para 3.3.4 of RFC 2965
-      // See also bug #316017
       return ToRequestString (null);
     }
 

@@ -615,12 +615,12 @@ namespace WebSocketSharp
           Uri uri;
           if (!Uri.TryCreate (value, UriKind.Absolute, out uri)) {
             msg = "Not an absolute URI string.";
-            throw new ArgumentException (msg, value);
+            throw new ArgumentException (msg, "value");
           }
 
           if (uri.Segments.Length > 1) {
             msg = "It includes the path segments.";
-            throw new ArgumentException (msg, value);
+            throw new ArgumentException (msg, "value");
           }
         }
 
@@ -641,11 +641,16 @@ namespace WebSocketSharp
     }
 
     /// <summary>
-    /// Gets the name of the subprotocol selected by server.
+    /// Gets the name of subprotocol selected by the server.
     /// </summary>
     /// <value>
-    /// A <see cref="string"/> that will be one of the names of the subprotocols
-    /// specified by client, or an empty string if not specified or selected.
+    ///   <para>
+    ///   A <see cref="string"/> that will be one of the names of
+    ///   subprotocols specified by client.
+    ///   </para>
+    ///   <para>
+    ///   An empty string if not specified or selected.
+    ///   </para>
     /// </value>
     public string Protocol {
       get {
@@ -2567,7 +2572,7 @@ namespace WebSocketSharp
     }
 
     /// <summary>
-    /// Closes the connection with the specified <paramref name="code"/>.
+    /// Closes the connection with the specified code.
     /// </summary>
     /// <remarks>
     /// This method does nothing if the current state of the connection is
@@ -2575,8 +2580,8 @@ namespace WebSocketSharp
     /// </remarks>
     /// <param name="code">
     ///   <para>
-    ///   A <see cref="ushort"/> that represents the status code
-    ///   indicating the reason for the close.
+    ///   A <see cref="ushort"/> that represents the status code indicating
+    ///   the reason for the close.
     ///   </para>
     ///   <para>
     ///   The status codes are defined in
@@ -2621,7 +2626,7 @@ namespace WebSocketSharp
     }
 
     /// <summary>
-    /// Closes the connection with the specified <paramref name="code"/>.
+    /// Closes the connection with the specified code.
     /// </summary>
     /// <remarks>
     /// This method does nothing if the current state of the connection is
@@ -2666,8 +2671,7 @@ namespace WebSocketSharp
     }
 
     /// <summary>
-    /// Closes the connection with the specified <paramref name="code"/> and
-    /// <paramref name="reason"/>.
+    /// Closes the connection with the specified code and reason.
     /// </summary>
     /// <remarks>
     /// This method does nothing if the current state of the connection is
@@ -2675,8 +2679,8 @@ namespace WebSocketSharp
     /// </remarks>
     /// <param name="code">
     ///   <para>
-    ///   A <see cref="ushort"/> that represents the status code
-    ///   indicating the reason for the close.
+    ///   A <see cref="ushort"/> that represents the status code indicating
+    ///   the reason for the close.
     ///   </para>
     ///   <para>
     ///   The status codes are defined in
@@ -2719,8 +2723,7 @@ namespace WebSocketSharp
     ///   -or-
     ///   </para>
     ///   <para>
-    ///   <paramref name="code"/> is 1005 (no status) and
-    ///   there is <paramref name="reason"/>.
+    ///   <paramref name="code"/> is 1005 (no status) and there is reason.
     ///   </para>
     ///   <para>
     ///   -or-
@@ -2771,8 +2774,7 @@ namespace WebSocketSharp
     }
 
     /// <summary>
-    /// Closes the connection with the specified <paramref name="code"/> and
-    /// <paramref name="reason"/>.
+    /// Closes the connection with the specified code and reason.
     /// </summary>
     /// <remarks>
     /// This method does nothing if the current state of the connection is
@@ -2813,8 +2815,7 @@ namespace WebSocketSharp
     ///   </para>
     ///   <para>
     ///   <paramref name="code"/> is
-    ///   <see cref="CloseStatusCode.NoStatus"/> and
-    ///   there is <paramref name="reason"/>.
+    ///   <see cref="CloseStatusCode.NoStatus"/> and there is reason.
     ///   </para>
     ///   <para>
     ///   -or-
@@ -2870,8 +2871,8 @@ namespace WebSocketSharp
     ///   This method does not wait for the close to be complete.
     ///   </para>
     ///   <para>
-    ///   And this method does nothing if the current state of
-    ///   the connection is Closing or Closed.
+    ///   This method does nothing if the current state of the connection is
+    ///   Closing or Closed.
     ///   </para>
     /// </remarks>
     public void CloseAsync ()
@@ -2880,22 +2881,21 @@ namespace WebSocketSharp
     }
 
     /// <summary>
-    /// Closes the connection asynchronously with the specified
-    /// <paramref name="code"/>.
+    /// Closes the connection asynchronously with the specified code.
     /// </summary>
     /// <remarks>
     ///   <para>
     ///   This method does not wait for the close to be complete.
     ///   </para>
     ///   <para>
-    ///   And this method does nothing if the current state of
-    ///   the connection is Closing or Closed.
+    ///   This method does nothing if the current state of the connection is
+    ///   Closing or Closed.
     ///   </para>
     /// </remarks>
     /// <param name="code">
     ///   <para>
-    ///   A <see cref="ushort"/> that represents the status code
-    ///   indicating the reason for the close.
+    ///   A <see cref="ushort"/> that represents the status code indicating
+    ///   the reason for the close.
     ///   </para>
     ///   <para>
     ///   The status codes are defined in
@@ -2940,16 +2940,15 @@ namespace WebSocketSharp
     }
 
     /// <summary>
-    /// Closes the connection asynchronously with the specified
-    /// <paramref name="code"/>.
+    /// Closes the connection asynchronously with the specified code.
     /// </summary>
     /// <remarks>
     ///   <para>
     ///   This method does not wait for the close to be complete.
     ///   </para>
     ///   <para>
-    ///   And this method does nothing if the current state of
-    ///   the connection is Closing or Closed.
+    ///   This method does nothing if the current state of the connection is
+    ///   Closing or Closed.
     ///   </para>
     /// </remarks>
     /// <param name="code">
@@ -2991,22 +2990,21 @@ namespace WebSocketSharp
     }
 
     /// <summary>
-    /// Closes the connection asynchronously with the specified
-    /// <paramref name="code"/> and <paramref name="reason"/>.
+    /// Closes the connection asynchronously with the specified code and reason.
     /// </summary>
     /// <remarks>
     ///   <para>
     ///   This method does not wait for the close to be complete.
     ///   </para>
     ///   <para>
-    ///   And this method does nothing if the current state of
-    ///   the connection is Closing or Closed.
+    ///   This method does nothing if the current state of the connection is
+    ///   Closing or Closed.
     ///   </para>
     /// </remarks>
     /// <param name="code">
     ///   <para>
-    ///   A <see cref="ushort"/> that represents the status code
-    ///   indicating the reason for the close.
+    ///   A <see cref="ushort"/> that represents the status code indicating
+    ///   the reason for the close.
     ///   </para>
     ///   <para>
     ///   The status codes are defined in
@@ -3049,8 +3047,7 @@ namespace WebSocketSharp
     ///   -or-
     ///   </para>
     ///   <para>
-    ///   <paramref name="code"/> is 1005 (no status) and
-    ///   there is <paramref name="reason"/>.
+    ///   <paramref name="code"/> is 1005 (no status) and there is reason.
     ///   </para>
     ///   <para>
     ///   -or-
@@ -3101,16 +3098,15 @@ namespace WebSocketSharp
     }
 
     /// <summary>
-    /// Closes the connection asynchronously with the specified
-    /// <paramref name="code"/> and <paramref name="reason"/>.
+    /// Closes the connection asynchronously with the specified code and reason.
     /// </summary>
     /// <remarks>
     ///   <para>
     ///   This method does not wait for the close to be complete.
     ///   </para>
     ///   <para>
-    ///   And this method does nothing if the current state of
-    ///   the connection is Closing or Closed.
+    ///   This method does nothing if the current state of the connection is
+    ///   Closing or Closed.
     ///   </para>
     /// </remarks>
     /// <param name="code">
@@ -3148,8 +3144,7 @@ namespace WebSocketSharp
     ///   </para>
     ///   <para>
     ///   <paramref name="code"/> is
-    ///   <see cref="CloseStatusCode.NoStatus"/> and
-    ///   there is <paramref name="reason"/>.
+    ///   <see cref="CloseStatusCode.NoStatus"/> and there is reason.
     ///   </para>
     ///   <para>
     ///   -or-
