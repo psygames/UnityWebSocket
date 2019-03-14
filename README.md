@@ -1,6 +1,6 @@
 
 ## Demo 线上测试地址
-- [http://47.100.28.149/UnityWebSocketDemo/](http://47.100.28.149/UnityWebSocketDemo/)
+- [http://39.105.150.229/UnityWebSocketDemo/](http://39.105.150.229/UnityWebSocketDemo/)
 
 ## UnityWebSocket 使用
 
