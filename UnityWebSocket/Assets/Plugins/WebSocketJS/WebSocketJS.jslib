@@ -10,7 +10,7 @@
 	$Initialize: function()
 	{
 		webSocketMap = new Map();
-		RECEIVER_NAME = "WebSocketReceiver";
+		RECEIVER_NAME = "[WebSocketReceiver]";
 		OPEN_METHOD_NAME = "OnOpen";
 		CLOSE_METHOD_NAME = "OnClose";
 		MESSAGE_METHOD_NAME = "OnMessage";
