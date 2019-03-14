@@ -24,10 +24,10 @@ namespace WebSocketJslib
 
         public static void AutoCreateInstance()
         {
-            GameObject go = GameObject.Find("/WebSocketReceiver");
+            GameObject go = GameObject.Find("/[WebSocketReceiver]");
             if (go == null)
             {
-                go = new GameObject("WebSocketReceiver");
+                go = new GameObject("[WebSocketReceiver]");
             }
 
             if (go.GetComponent<WebSocketReceiver>() == null)

@@ -10,7 +10,6 @@ namespace UnityWebSocket
         void Connect();
         void Send(byte[] data);
         void Send(string data);
-        void Ping();
         void Close();
         void ConnectAsync();
         void CloseAsync();

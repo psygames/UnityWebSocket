@@ -1,13 +1,8 @@
 
-# Demo 线上测试地址
+## Demo 线上测试地址
 - [http://47.100.28.149/UnityWebSocketDemo/](http://47.100.28.149/UnityWebSocketDemo/)
-- WebSocket服务器(ServerDemo)监听地址：
 
-        ws://47.100.28.149:8758/test
-        ws://47.100.28.149:8759/test
-        ws://47.100.28.149:8760/test
-
-# UnityWebSocket 使用
+## UnityWebSocket 使用
 
 ### 1. [最新版本下载](https://github.com/y85171642/UnityWebSocket/releases)
 
@@ -70,13 +65,17 @@
 - WebSocket的 onOpen、OnClose、OnMessage、OnError 回调都发生在网络线程中，回调处理函数不能直接修改主线程中的Unity组件内容，需要在主线程中加消息处理队列（需要加锁），缓存网络消息后，再在主线程中处理消息包。
 - WebGL平台下，暂时不能使用异步连接、关闭、发送，接口仍然使用的同步方式。
 - WebGL平台下，需要将打包好的文件，发布到Tomcat等服务器上运行。
-- ServerDemo 是用于示例版本的WebSocket测试服务器，需要使用对应的版本。
-- v1.1 后版本加入了websocket-sharp插件（源码），如果你的项目已包含该插件，可自行删除或修改。
+- v1.1 后版本加入了websocket-sharp插件（源码），如果你的项目已包含该插件，可选择较新版本。
 
 ### 5. WebSocket服务器
-- 提供简单的WebSocket消息收发
-- 每个版本都包含对应的服务器（ServerDemo）。
-- 使用了开源项目 [websocket-sharp](https://github.com/sta/websocket-sharp)
+- 使用官方提供的 Echo Test 服务器。参考 [Echo Test](http://www.websocket.org/echo.html)。
+- 需要自己搭建服务器，请参考 [websocket-sharp](https://github.com/sta/websocket-sharp) 的服务器示例。
+- WebSocket 测试地址：
+
+        wss://demos.kaazing.com/echo
+        ws://demos.kaazing.com/echo
+        ws://47.100.28.149:8758/test
+        ws://47.100.28.149:8759/test
 
 ### 6. 版本记录
 #### v1.0
@@ -103,8 +102,12 @@
 - fix some Bugs.
 
 #### v1.2.1
-- fix 非WebGL平台打包兼容BUG（屏蔽websocket-jslib部分代码）
+- fix 非WebGL平台打包兼容BUG（屏蔽websocket-jslib部分代码）。
 
-#### v1.2.2
+#### v1.2.2 - pre
 - support for wss(ssl) 支持SSL协议格式（更新了websocket-sharp源码）。
 - 服务器Demo尚未支持 SSL。会在未来版本支持。
+
+#### v1.3
+- 移除服务器Demo，改用 [websocket-sharp](http://www.websocket.org/echo.html) 官方提供的测试服务器。
+- 添加 PlayerSetting -> Linker Target 属性检测。
