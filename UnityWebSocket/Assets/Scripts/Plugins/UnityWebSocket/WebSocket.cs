@@ -196,6 +196,8 @@ namespace UnityWebSocket
                 if (onMessage != null)
                     onMessage(this, new MessageEventArgs((Opcode)e.Opcode, e.RawData));
             };
+
+            m_rawSocket.SslConfiguration.EnabledSslProtocols = (System.Security.Authentication.SslProtocols)((int)m_rawSocket.SslConfiguration.EnabledSslProtocols | 192 | 768 | 3072);
         }
 
         /// <summary>
