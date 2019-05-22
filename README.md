@@ -79,6 +79,9 @@
 
 ### 6. 版本记录
 
+#### v1.3.1
+- 修复 Tls error，添加默认协议 Tls，Tls11，Tls12。
+  
 #### v1.3
 - 移除服务器Demo，改用 [websocket-sharp](http://www.websocket.org/echo.html) 官方提供的测试服务器。
 - 添加 PlayerSetting -> Linker Target 属性检测。
