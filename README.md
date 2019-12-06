@@ -79,6 +79,9 @@
 
 ### 6. 版本记录
 
+#### v1.3.2
+- 修复 非ssl连接，使用sslConfiguration bug。 
+
 #### v1.3.1
 - 修复 Tls error，添加默认协议 Tls，Tls11，Tls12。
   
