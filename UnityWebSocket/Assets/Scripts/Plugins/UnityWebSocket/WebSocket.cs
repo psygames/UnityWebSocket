@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -197,7 +197,10 @@ namespace UnityWebSocket
                     onMessage(this, new MessageEventArgs((Opcode)e.Opcode, e.RawData));
             };
 
-            m_rawSocket.SslConfiguration.EnabledSslProtocols = (System.Security.Authentication.SslProtocols)((int)m_rawSocket.SslConfiguration.EnabledSslProtocols | 192 | 768 | 3072);
+            if (m_rawSocket.IsSecure)
+            {
+                m_rawSocket.SslConfiguration.EnabledSslProtocols = (System.Security.Authentication.SslProtocols)((int)m_rawSocket.SslConfiguration.EnabledSslProtocols | 192 | 768 | 3072);
+            }
         }
 
         /// <summary>
