@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace UnityWebSocket
 {
@@ -121,58 +118,6 @@ namespace UnityWebSocket
 
         private WebSocketSharp.WebSocket m_rawSocket = null;
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="WebSocket"/> class with
-        /// <paramref name="url"/> and optionally <paramref name="protocols"/>.
-        /// </summary>
-        /// <param name="url">
-        ///   <para>
-        ///   A <see cref="string"/> that specifies the URL to which to connect.
-        ///   </para>
-        ///   <para>
-        ///   The scheme of the URL must be ws or wss.
-        ///   </para>
-        ///   <para>
-        ///   The new instance uses a secure connection if the scheme is wss.
-        ///   </para>
-        /// </param>
-        /// <param name="protocols">
-        ///   <para>
-        ///   An array of <see cref="string"/> that specifies the names of
-        ///   the subprotocols if necessary.
-        ///   </para>
-        ///   <para>
-        ///   Each value of the array must be a token defined in
-        ///   <see href="http://tools.ietf.org/html/rfc2616#section-2.2">
-        ///   RFC 2616</see>.
-        ///   </para>
-        /// </param>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="url"/> is <see langword="null"/>.
-        /// </exception>
-        /// <exception cref="ArgumentException">
-        ///   <para>
-        ///   <paramref name="url"/> is an empty string.
-        ///   </para>
-        ///   <para>
-        ///   -or-
-        ///   </para>
-        ///   <para>
-        ///   <paramref name="url"/> is an invalid WebSocket URL string.
-        ///   </para>
-        ///   <para>
-        ///   -or-
-        ///   </para>
-        ///   <para>
-        ///   <paramref name="protocols"/> contains a value that is not a token.
-        ///   </para>
-        ///   <para>
-        ///   -or-
-        ///   </para>
-        ///   <para>
-        ///   <paramref name="protocols"/> contains a value twice.
-        ///   </para>
-        /// </exception> 
         public WebSocket(string address)
         {
             m_rawSocket = new WebSocketSharp.WebSocket(address);
