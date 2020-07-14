@@ -1,8 +1,8 @@
-﻿using System;
+﻿#if !NET_LEGACY
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading;
-#if !NET_LEGACY
 using System.Threading.Tasks;
 using System.Net.WebSockets;
 
