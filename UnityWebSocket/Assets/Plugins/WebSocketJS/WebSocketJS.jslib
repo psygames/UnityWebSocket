@@ -97,10 +97,10 @@
     {
         var address = Pointer_stringify(addressPtr);
         if(!(webSocketMap instanceof Map))
-            return 0;
+            return 3; // Closed
         if(webSocketMap.has(address))
              return webSocketMap.get(address).readyState;
-        return 0;
+        return 3; // Closed
     },
 
     $OnMessage: function(address, opcode, data)
