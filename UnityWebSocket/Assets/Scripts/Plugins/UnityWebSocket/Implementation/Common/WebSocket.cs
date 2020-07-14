@@ -9,6 +9,16 @@ using System.Net.WebSockets;
 
 namespace UnityWebSocket.Common
 {
+    /// <summary>
+    /// <para>WebSocket indicate a network connection.</para>
+    /// <para>It can be connecting, connected, closing or closed state. </para>
+    /// <para>You can send and receive messages by using it.</para>
+    /// <para>Register receive callback for handling received messages.</para>
+    /// <para>WebSocket 表示一个网络连接，</para>
+    /// <para>它可以是 connecting connected closing closed 状态，</para>
+    /// <para>可以发送和接收消息，</para>
+    /// <para>接收消息处理的地方注册消息回调即可。</para>
+    /// </summary>
     public class WebSocket : IWebSocket
     {
         public string Address { get; private set; }
@@ -52,6 +62,11 @@ namespace UnityWebSocket.Common
 
         public void ConnectAsync(string address)
         {
+            if (cts != null || socket != null)
+            {
+                HandleOnError("socket is busy.");
+                return;
+            }
             this.Address = address;
             var uri = new Uri(Address);
             cts = new CancellationTokenSource();
@@ -173,23 +188,40 @@ namespace UnityWebSocket.Common
         private async Task ReceiveThread()
         {
             isReceiveThreadRunning = true;
-            var buffer = new ArraySegment<byte>(new byte[1024 * 1024]);
+
+            var buffer = new byte[1024 * 1024];
+            var bufferCount = 0;
+            var segment = new ArraySegment<byte>(buffer, 0, buffer.Length);
             while (!cts.IsCancellationRequested)
             {
-                WebSocketReceiveResult result = await socket.ReceiveAsync(buffer, cts.Token);
-                byte[] data = new byte[result.Count];
-                for (int i = 0; i < result.Count; i++)
+                WebSocketReceiveResult result = await socket.ReceiveAsync(segment, cts.Token);
+                bufferCount += result.Count;
+                segment = new ArraySegment<byte>(buffer, bufferCount, buffer.Length - bufferCount);
+
+                if (!result.EndOfMessage)
+                    continue;
+
+                byte[] data = new byte[bufferCount];
+                for (int i = 0; i < bufferCount; i++)
                 {
-                    data[i] = buffer.Array[buffer.Offset + i];
+                    data[i] = buffer[i];
                 }
+
+                bufferCount = 0;
+                segment = new ArraySegment<byte>(buffer, 0, buffer.Length);
+
                 if (result.MessageType == WebSocketMessageType.Binary)
+                {
                     HandleOnMessage(Opcode.Binary, data);
+                }
                 else if (result.MessageType == WebSocketMessageType.Text)
+                {
                     HandleOnMessage(Opcode.Text, data);
+                }
                 else
                 {
                     cts.Cancel();
-                    HandleOnClose((ushort)result.CloseStatus, result.CloseStatusDescription, result.EndOfMessage);
+                    HandleOnClose((ushort)result.CloseStatus, result.CloseStatusDescription, true);
                 }
             }
 

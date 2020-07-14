@@ -3,7 +3,14 @@
 namespace UnityWebSocket
 {
     /// <summary>
-    /// For All Platform
+    /// <para>WebSocket indicate a network connection.</para>
+    /// <para>It can be connecting, connected, closing or closed state. </para>
+    /// <para>You can send and receive messages by using it.</para>
+    /// <para>Register receive callback for handling received messages.</para>
+    /// <para>WebSocket 表示一个网络连接，</para>
+    /// <para>它可以是 connecting connected closing closed 状态，</para>
+    /// <para>可以发送和接收消息，</para>
+    /// <para>接收消息处理的地方注册消息回调即可。</para>
     /// </summary>
     public class WebSocket : IWebSocket
     {

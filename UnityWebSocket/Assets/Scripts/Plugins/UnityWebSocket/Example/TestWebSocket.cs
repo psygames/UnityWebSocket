@@ -39,16 +39,17 @@ public class TestWebSocket : MonoBehaviour
     string sendText = "";
     string message = "";
     int messageCount;
+    Vector2 scrollPos;
 
     private void OnGUI()
     {
         var scale = Screen.width / 800f;
-        GUI.matrix = Matrix4x4.TRS(new Vector3(200 * scale, 10, 0), Quaternion.identity, new Vector3(scale, scale, 1));
+        GUI.matrix = Matrix4x4.TRS(new Vector3(0, 0, 0), Quaternion.identity, new Vector3(scale, scale, 1));
+        var width = GUILayout.Width(Screen.width / scale - 10);
 
-        GUILayout.Label(string.Format("State: {0}", socket.ReadyState));
-
-        GUILayout.Label("URL:                                                   ");
-        url = GUILayout.TextField(url);
+        GUILayout.Label(string.Format("State: {0}", socket.ReadyState), width);
+        GUILayout.Label("URL: ", width);
+        url = GUILayout.TextField(url, width);
 
         GUILayout.BeginHorizontal();
         GUI.enabled = socket.ReadyState == WebSocketState.Closed;
@@ -65,7 +66,7 @@ public class TestWebSocket : MonoBehaviour
         GUILayout.EndHorizontal();
 
         GUILayout.Label("Text: ");
-        sendText = GUILayout.TextArea(sendText);
+        sendText = GUILayout.TextArea(sendText, GUILayout.MinHeight(50), width);
 
         if (GUILayout.Button("Send"))
         {
@@ -79,7 +80,10 @@ public class TestWebSocket : MonoBehaviour
             message = "";
             messageCount = 0;
         }
+
+        scrollPos = GUILayout.BeginScrollView(scrollPos, GUILayout.MaxHeight(Screen.height / scale - 250), width);
         GUILayout.Label(message);
+        GUILayout.EndScrollView();
 
     }
 }
