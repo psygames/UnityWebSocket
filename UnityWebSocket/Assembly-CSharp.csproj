@@ -69,9 +69,13 @@
     <Compile Include="Assets\Scripts\Plugins\UnityWebSocket\Core\IWebSocket.cs" />
     <Compile Include="Assets\Scripts\Plugins\UnityWebSocket\Core\MessageEventArgs.cs" />
     <Compile Include="Assets\Scripts\Plugins\UnityWebSocket\Core\Opcode.cs" />
+    <Compile Include="Assets\Scripts\Plugins\UnityWebSocket\Core\OpenEventArgs.cs" />
     <Compile Include="Assets\Scripts\Plugins\UnityWebSocket\Core\WebSocketState.cs" />
     <Compile Include="Assets\Scripts\Plugins\UnityWebSocket\Example\TestWebSocket.cs" />
-    <Compile Include="Assets\Scripts\Plugins\UnityWebSocket\Implementation\Common\WebSocket.cs" />
+    <Compile Include="Assets\Scripts\Plugins\UnityWebSocket\Implementation\NoWebGL\WebSocket.cs" />
+    <Compile Include="Assets\Scripts\Plugins\UnityWebSocket\Implementation\Synchronized\UnityWebSocketDebuger.cs" />
+    <Compile Include="Assets\Scripts\Plugins\UnityWebSocket\Implementation\Synchronized\UnityWebSocketManager.cs" />
+    <Compile Include="Assets\Scripts\Plugins\UnityWebSocket\Implementation\Synchronized\WebSocket.cs" />
     <Compile Include="Assets\Scripts\Plugins\UnityWebSocket\Implementation\Uniform\WebSocket.cs" />
     <Compile Include="Assets\Scripts\Plugins\UnityWebSocket\Implementation\WebGL\WebSocket.cs" />
     <Compile Include="Assets\Scripts\Plugins\UnityWebSocket\Implementation\WebGL\WebSocketReceiver.cs" />

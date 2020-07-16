@@ -43,7 +43,7 @@ namespace UnityWebSocket.Editor
             else if (PlayerSettings.scriptingRuntimeVersion == ScriptingRuntimeVersion.Legacy)
             {
                 EditorUtility.DisplayDialog("Warning"
-                    , "Scripting Runtime Version should be .NET 4.x, via Menu:\nPlayerSettings -> Other Settings -> Script Runtime Version -> .Net 4.x Equivalent"
+                    , "Scripting Runtime Version should be .NET 4.x, via Menu:\nPlayerSettings -> Other Settings -> Scripting Runtime Version -> .Net 4.x Equivalent"
                     , "OK");
             }
             else
@@ -67,7 +67,7 @@ namespace UnityWebSocket.Editor
             if (PlayerSettings.scriptingRuntimeVersion == ScriptingRuntimeVersion.Legacy)
             {
                 EditorUtility.DisplayDialog("Warning"
-                    , "Scripting Runtime Version should be .NET 4.x, via Menu:\nPlayerSettings -> Other Settings -> Script Runtime Version -> .Net 4.x Equivalent"
+                    , "Scripting Runtime Version should be .NET 4.x, via Menu:\nPlayerSettings -> Other Settings -> Scripting Runtime Version -> .Net 4.x Equivalent"
                     , "OK");
             }
         }

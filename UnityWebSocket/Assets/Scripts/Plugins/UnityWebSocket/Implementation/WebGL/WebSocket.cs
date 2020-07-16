@@ -5,33 +5,15 @@ using UnityWebSocket;
 
 namespace UnityWebSocket.WebGL
 {
-    /// <summary>
-    /// <para>WebSocket indicate a network connection.</para>
-    /// <para>It can be connecting, connected, closing or closed state. </para>
-    /// <para>You can send and receive messages by using it.</para>
-    /// <para>Register receive callback for handling received messages.</para>
-    /// <para>WebSocket 表示一个网络连接，</para>
-    /// <para>它可以是 connecting connected closing closed 状态，</para>
-    /// <para>可以发送和接收消息，</para>
-    /// <para>接收消息处理的地方注册消息回调即可。</para>
-    /// </summary>
     public class WebSocket : IWebSocket
     {
         public string Address { get; private set; }
         public WebSocketState ReadyState { get { return (WebSocketState)GetReadyStateJS(Address); } }
 
-        public event EventHandler OnOpen;
+        public event EventHandler<OpenEventArgs> OnOpen;
         public event EventHandler<CloseEventArgs> OnClose;
         public event EventHandler<ErrorEventArgs> OnError;
         public event EventHandler<MessageEventArgs> OnMessage;
-
-        public WebSocket()
-        {
-            if (WebSocketReceiver.Instance == null)
-            {
-                WebSocketReceiver.AutoCreateInstance();
-            }
-        }
 
         /*------------- call jslib method --------*/
         [DllImport("__Internal")]
@@ -48,7 +30,7 @@ namespace UnityWebSocket.WebGL
         private void HandleOnOpen()
         {
             if (OnOpen != null)
-                OnOpen.Invoke(this, EventArgs.Empty);
+                OnOpen.Invoke(this, new OpenEventArgs());
         }
 
         private void HandleOnMessage(Opcode opcode, byte[] rawData)
@@ -82,18 +64,18 @@ namespace UnityWebSocket.WebGL
             CloseJS(Address);
         }
 
-        public void SendAsync(string text, Action<bool> completed)
+        public void SendAsync(string text, Action completed = null)
         {
             SendStrJS(Address, text);
             if (completed != null)
-                completed.Invoke(true);
+                completed.Invoke();
         }
 
-        public void SendAsync(byte[] data, Action<bool> completed)
+        public void SendAsync(byte[] data, Action completed = null)
         {
             SendJS(Address, data, data.Length);
             if (completed != null)
-                completed.Invoke(true);
+                completed.Invoke();
         }
     }
 }

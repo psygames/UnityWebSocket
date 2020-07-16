@@ -1,4 +1,6 @@
 
+[(English)](README_EN.md)
+
 ## Demo 线上测试地址
 - [http://39.105.150.229/UnityWebSocketDemo/](http://39.105.150.229/UnityWebSocketDemo/)
 
@@ -7,84 +9,91 @@
 ### 1. [最新版本下载](https://github.com/y85171642/UnityWebSocket/releases)
 
 ### 2. 使用方法：
-- 导入 UnityWebSocket.unitypackage
 
-- 创建WebSocket实例
+
+- 在 Unity 中导入 UnityWebSocket.unitypackage
+
+      需要 Scripting Runtime Version = .Net 4.x
+
+      需要 WebGL LinkerTarger = asm.js or Both
+
+- 使用 WebSocket
 
   ```csharp
   // 命名空间
   using UnityWebSocket;
+  using UnityWebSocket.Synchronized;
 
   // 创建实例
-  string address = "ws://127.0.0.1:8730/test";
-  WebSocket scoket = new WebSocket(address);
+  WebSocket scoket = new WebSocket();
 
   // 注册回调
-  scoket.onOpen += OnOpen;
-  scoket.onClose += OnClose;
-  scoket.onMessage += OnMessage;
-  socket.onError += OnError;
+  scoket.OnOpen += OnOpen;
+  scoket.OnClose += OnClose;
+  scoket.OnMessage += OnMessage;
+  socket.OnError += OnError;
 
   // 连接
-  socket.Connect();
+  string address = "ws://echo.websocket.org";
+  socket.ConnectAsync(address);
 
-  // 发送数据
-  socket.Send(str); // 发送类型String数据
-  socket.Send(bytes); // 发送byte[]类型数据
+  // 发送数据（两种发送方式）
+  socket.SendAsync(str); // 发送类型 String 类型数据
+  socket.SendAsync(bytes); // 发送 byte[] 类型数据
 
   // 关闭连接
-  socket.Close();
+  socket.CloseAsync();
   ```
 
-- 详细使用方法可参考项目中的Example示例，或参考 [websocket-sharp](https://github.com/sta/websocket-sharp) 的使用方法。
+- 详细使用方法可参考项目中的 [Example](UnityWebSocket/Assets/Scripts/Plugins/UnityWebSocket/Example/TestWebSocket.cs) 示例代码。
 
 ### 3. 模块说明
 - WebSocket.jslib
 语法格式需要遵循 [asm.js](http://www.ruanyifeng.com/blog/2017/09/asmjs_emscripten.html)。
 
-        路径：Plugins/WebSocketJS/WebSocketJS.jslib
-        作用：Unity发布WebGL版本会将其加入到js运行库中。
+      路径：Plugins/WebSocketJS/WebSocketJS.jslib
+      作用：Unity发布WebGL版本会将其加入到js运行库中。
 
 - WebSocket.cs
 
-        作用：WebSocket连接，可同时创建多个不同连接。
-        已经支持全平台使用。
+      作用：WebSocket连接，可同时创建多个不同连接。
+      已经支持全平台使用。
 
 - WebSocketReceiver.cs
 
-        作用：与jslib交互，负责收发多个WebSocket消息。
-        该脚本在使用WebSocket时会自动加载到场景中，并添加到DonDestroyOnLoad。
+      作用：与jslib交互，负责收发多个WebSocket消息。
+      该脚本在使用WebSocket时会自动加载到场景中，并添加到DonDestroyOnLoad。
 
 - Example场景
 
-        作用：WebSocket的使用方法示例。
+      作用：WebSocket的使用方法示例。
 
 ### 4. 注意(Warning)
-- Unity2018 以上版本需要修改WebGL平台 Publishing Settings -> Linker Target 为 Both。
-- WebSocket的命名空间是 UnityWebSocket ，项目中有多个命名空间存在WebSocket类，不要用错了 :) 。
-- WebSocket的 onOpen、OnClose、OnMessage、OnError 回调都发生在网络线程中，回调处理函数不能直接修改主线程中的Unity组件内容，需要在主线程中加消息处理队列（需要加锁），缓存网络消息后，再在主线程中处理消息包。
-- WebGL平台下，暂时不能使用异步连接、关闭、发送，接口仍然使用的同步方式。
-- WebGL平台下，需要将打包好的文件，发布到Tomcat等服务器上运行。
-- v1.1 后版本加入了websocket-sharp插件（源码），如果你的项目已包含该插件，可选择较新版本。
+- Unity2018 以上版本需要修改WebGL平台 Publishing Settings -> Linker Target 为 asm.js 或 Both。
+- 插件中多个命名空间中存在 **WebSocket** 类，适用不同环境。
+
+  命名空间 | 平台 | 方式 |  说明  
+  -|-|-|-
+  UnityWebSocket.Synchronized | 全平台 | 同步(无阻塞) | **[推荐]** 无需考虑异步回调使用 Unity 组件的问题。
+  UnityWebSocket.Uniform | 全平台 | 异步 | 需要考虑异步回调使用 Unity 组件的问题。
+  UnityWebSocket.WebGL | WebGL平台 | 异步 | 仅支持WebGL平台下的通信。
+  UnityWebSocket.NoWebGL | 非WebGL平台 | 异步  | 仅支持非WebGL平台下的通信。
 
 ### 5. WebSocket服务器
 - 使用官方提供的 Echo Test 服务器。参考 [Echo Test](http://www.websocket.org/echo.html)。
-- 需要自己搭建服务器，请参考 [websocket-sharp](https://github.com/sta/websocket-sharp) 的服务器示例。
-- WebSocket 测试地址：
-
-        wss://demos.kaazing.com/echo
-        ws://demos.kaazing.com/echo
-        ws://47.100.28.149:8758/test
-        ws://47.100.28.149:8759/test
 
 ### 6. 版本记录
 
+#### v2.0
+- 移除 websocket-sharp 插件，使用 .Net 4.x 内置的 ClientWebSocket 作为非 WebGL 平台下 WebSocket 插件。
+- 添加**同步方式**的WebSocket ，使用者不必再考虑**异步回调**中使用 Unity 组件的问题。
+
 #### v1.3.2
-- 修复 非ssl连接，使用sslConfiguration bug。 
+- 修复 非ssl连接，使用sslConfiguration bug。
 
 #### v1.3.1
 - 修复 Tls error，添加默认协议 Tls，Tls11，Tls12。
-  
+
 #### v1.3
 - 移除服务器Demo，改用 [websocket-sharp](http://www.websocket.org/echo.html) 官方提供的测试服务器。
 - 添加 PlayerSetting -> Linker Target 属性检测。

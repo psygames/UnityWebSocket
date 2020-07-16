@@ -2,6 +2,16 @@ using System;
 
 namespace UnityWebSocket
 {
+    /// <summary>
+    /// <para>IWebSocket indicate a network connection.</para>
+    /// <para>It can be connecting, connected, closing or closed state. </para>
+    /// <para>You can send and receive messages by using it.</para>
+    /// <para>Register receive callback for handling received messages.</para>
+    /// <para>IWebSocket 表示一个网络连接，</para>
+    /// <para>它可以是 connecting connected closing closed 状态，</para>
+    /// <para>可以发送和接收消息，</para>
+    /// <para>接收消息处理的地方注册消息回调即可。</para>
+    /// </summary>
     public interface IWebSocket
     {
         /// <summary>
@@ -60,15 +70,11 @@ namespace UnityWebSocket
         /// </param>
         /// <param name="completed">
         ///   <para>
-        ///   An <c>Action&lt;bool&gt;</c> delegate or <see langword="null"/>
+        ///   An <c>Action</c> delegate or <see langword="null"/>
         ///   if not needed.
         ///   </para>
         ///   <para>
         ///   The delegate invokes the method called when the send is complete.
-        ///   </para>
-        ///   <para>
-        ///   <c>true</c> is passed to the method if the send has done with
-        ///   no error; otherwise, <c>false</c>.
         ///   </para>
         /// </param>
         /// <exception cref="InvalidOperationException">
@@ -77,13 +83,22 @@ namespace UnityWebSocket
         /// <exception cref="ArgumentNullException">
         /// <paramref name="data"/> is <see langword="null"/>.
         /// </exception>
-        void SendAsync(byte[] data, Action<bool> completed);
+        void SendAsync(byte[] data, Action completed = null);
 
         /// <summary>
         /// Sends the specified data using the WebSocket connection.
         /// </summary>
         /// <param name="text">
         /// A <see cref="string"/> that represents the text data to send.
+        /// </param>
+        /// <param name="completed">
+        ///   <para>
+        ///   An <c>Action</c> delegate or <see langword="null"/>
+        ///   if not needed.
+        ///   </para>
+        ///   <para>
+        ///   The delegate invokes the method called when the send is complete.
+        ///   </para>
         /// </param>
         /// <exception cref="InvalidOperationException">
         /// The current state of the connection is not Open.
@@ -92,9 +107,9 @@ namespace UnityWebSocket
         /// <paramref name="text"/> is <see langword="null"/>.
         /// </exception>
         /// <exception cref="ArgumentException">
-        /// <paramref name="text"/> could not be UTF-8-encoded.
+        /// <paramref name="text"/> could be UTF-8 encoded.
         /// </exception>
-        void SendAsync(string text, Action<bool> completed);
+        void SendAsync(string text, Action completed = null);
 
         /// <summary>
         /// get the address which to connect.
@@ -120,7 +135,7 @@ namespace UnityWebSocket
         /// <summary>
         /// Occurs when the WebSocket connection has been established.
         /// </summary>
-        event EventHandler OnOpen;
+        event EventHandler<OpenEventArgs> OnOpen;
 
         /// <summary>
         /// Occurs when the WebSocket connection has been closed.
@@ -128,12 +143,12 @@ namespace UnityWebSocket
         event EventHandler<CloseEventArgs> OnClose;
 
         /// <summary>
-        /// Occurs when the <see cref="WebSocket"/> gets an error.
+        /// Occurs when the <see cref="IWebSocket"/> gets an error.
         /// </summary>
         event EventHandler<ErrorEventArgs> OnError;
 
         /// <summary>
-        /// Occurs when the <see cref="WebSocket"/> receives a message.
+        /// Occurs when the <see cref="IWebSocket"/> receives a message.
         /// </summary>
         event EventHandler<MessageEventArgs> OnMessage;
     }

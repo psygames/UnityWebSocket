@@ -1,10 +1,12 @@
 ﻿using UnityEngine;
 using UnityWebSocket;
+using UnityWebSocket.Synchronized;
 
 public class TestWebSocket : MonoBehaviour
 {
     public string url = "ws://echo.websocket.org";
-    WebSocket socket;
+    private WebSocket socket;
+
     private void Awake()
     {
         socket = new WebSocket();
@@ -13,7 +15,6 @@ public class TestWebSocket : MonoBehaviour
         socket.OnClose += Socket_OnClose;
         socket.OnError += Socket_OnError;
     }
-
 
     private void Socket_OnOpen(object sender, System.EventArgs e)
     {
@@ -70,7 +71,13 @@ public class TestWebSocket : MonoBehaviour
 
         if (GUILayout.Button("Send"))
         {
-            socket.SendAsync(sendText, null);
+            if (!string.IsNullOrEmpty(sendText))
+            {
+                socket.SendAsync(sendText, () =>
+                {
+                    message += string.Format("Send: {0}\n", sendText);
+                });
+            }
         }
 
         GUI.enabled = true;
@@ -84,6 +91,5 @@ public class TestWebSocket : MonoBehaviour
         scrollPos = GUILayout.BeginScrollView(scrollPos, GUILayout.MaxHeight(Screen.height / scale - 250), width);
         GUILayout.Label(message);
         GUILayout.EndScrollView();
-
     }
 }

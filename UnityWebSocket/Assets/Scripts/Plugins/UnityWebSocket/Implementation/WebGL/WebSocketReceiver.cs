@@ -7,7 +7,16 @@ namespace UnityWebSocket.WebGL
 {
     public class WebSocketReceiver : MonoBehaviour
     {
-        public static WebSocketReceiver Instance { get; private set; }
+        private static WebSocketReceiver _instance;
+        public static WebSocketReceiver Instance
+        {
+            get
+            {
+                if (_instance == null)
+                    AutoCreateInstance();
+                return _instance;
+            }
+        }
 
         private readonly Dictionary<string, WebSocketHandle> _handles = new Dictionary<string, WebSocketHandle>();
 
@@ -17,7 +26,7 @@ namespace UnityWebSocket.WebGL
         void Awake()
         {
             DontDestroyOnLoad(gameObject);
-            Instance = this;
+            _instance = this;
         }
 
         public static void AutoCreateInstance()
@@ -32,8 +41,6 @@ namespace UnityWebSocket.WebGL
             {
                 go.AddComponent<WebSocketReceiver>();
             }
-
-            Instance = go.GetComponent<WebSocketReceiver>();
         }
 
         public void AddListener(string address
