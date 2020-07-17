@@ -3,7 +3,7 @@
 
 ### Demo 线上测试地址
 
-- [http://39.105.150.229/UnityWebSocketDemo/](http://39.105.150.229/UnityWebSocketDemo/)
+- [http://39.105.150.229/UnityWebSocket/](http://39.105.150.229/UnityWebSocket/)
 
 ### UnityWebSocket 使用
 
