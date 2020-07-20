@@ -78,3 +78,6 @@
 #### 5. WebSocket 服务器
 
 - 使用官方提供的 Echo Test 服务器。参考 [Echo Test](http://www.websocket.org/echo.html)。
+
+#### 6. QQ 群交流
+- 1126457634 [入群通道](https://qm.qq.com/cgi-bin/qm/qr?k=E0GtLFvVbAX0pD0halNHlMboJgMDXHFq)
