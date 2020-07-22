@@ -9,7 +9,7 @@
 
 #### 1. Download the latest version
 
-- [https://github.com/y85171642/UnityWebSocket/releases](https://github.com/y85171642/UnityWebSocket/releases)
+- [https://github.com/psygame/UnityWebSocket/releases](https://github.com/psygame/UnityWebSocket/releases)
 
 #### 2. Usage:
 
