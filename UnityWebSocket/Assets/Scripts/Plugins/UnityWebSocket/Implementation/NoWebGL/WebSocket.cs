@@ -21,11 +21,10 @@ namespace UnityWebSocket.NoWebGL
                     return WebSocketState.Closed;
                 switch (socket.State)
                 {
-                    case System.Net.WebSockets.WebSocketState.Aborted:
                     case System.Net.WebSockets.WebSocketState.Closed:
-                    case System.Net.WebSockets.WebSocketState.CloseReceived:
                     case System.Net.WebSockets.WebSocketState.None:
                         return WebSocketState.Closed;
+                    case System.Net.WebSockets.WebSocketState.CloseReceived:
                     case System.Net.WebSockets.WebSocketState.CloseSent:
                         return WebSocketState.Closing;
                     case System.Net.WebSockets.WebSocketState.Connecting:
@@ -239,7 +238,7 @@ namespace UnityWebSocket.NoWebGL
                         case WebSocketMessageType.Close:
                             cts.Cancel();
                             TaskNew(WaitForClose, closeCts);
-                            HandleClose((ushort)result.CloseStatus, result.CloseStatusDescription, true);
+                            HandleClose((ushort)result.CloseStatus, result.CloseStatusDescription);
                             break;
                     }
                 }
@@ -265,9 +264,9 @@ namespace UnityWebSocket.NoWebGL
             OnMessage?.Invoke(this, new MessageEventArgs(opcode, rawData));
         }
 
-        private void HandleClose(ushort code, string reason, bool wasClean)
+        private void HandleClose(ushort code, string reason)
         {
-            OnClose?.Invoke(this, new CloseEventArgs(code, reason, wasClean));
+            OnClose?.Invoke(this, new CloseEventArgs(code, reason));
         }
 
         private void HandleError(Exception exception)

@@ -1,22 +1,13 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityWebSocket;
-using UnityWebSocket.Synchronized;
 
 public class TestWebSocket : MonoBehaviour
 {
     public string url = "ws://echo.websocket.org";
-    private WebSocket socket;
+    private IWebSocket socket;
 
-    private void Awake()
-    {
-        socket = new WebSocket();
-        socket.OnOpen += Socket_OnOpen;
-        socket.OnMessage += Socket_OnMessage;
-        socket.OnClose += Socket_OnClose;
-        socket.OnError += Socket_OnError;
-    }
-
-    private void Socket_OnOpen(object sender, System.EventArgs e)
+    private void Socket_OnOpen(object sender, OpenEventArgs e)
     {
         message += string.Format("Connected: {0}\n", url);
     }
@@ -48,7 +39,59 @@ public class TestWebSocket : MonoBehaviour
         GUI.matrix = Matrix4x4.TRS(new Vector3(0, 0, 0), Quaternion.identity, new Vector3(scale, scale, 1));
         var width = GUILayout.Width(Screen.width / scale - 10);
 
-        GUILayout.Label(string.Format("State: {0}", socket.ReadyState), width);
+        if (socket == null)
+        {
+            GUILayout.Label("demo version: 0.0.2", width);
+            if (GUILayout.Button("Init with Synchronized"))
+            {
+                socket = new UnityWebSocket.Synchronized.WebSocket();
+            }
+
+            if (GUILayout.Button("Init with Uniform"))
+            {
+                socket = new UnityWebSocket.Uniform.WebSocket();
+            }
+
+#if UNITY_EDITOR || !UNITY_WEBGL
+            if (GUILayout.Button("Init with NoWebGL"))
+            {
+                socket = new UnityWebSocket.NoWebGL.WebSocket();
+            }
+#else
+            if (GUILayout.Button("Init with WebGL"))
+            {
+                socket = new UnityWebSocket.WebGL.WebSocket();
+            }
+
+            if (GUILayout.Button("Init with WebGL2"))
+            {
+                socket = new UnityWebSocket.WebGL2.WebSocket();
+            }
+#endif
+            if (socket != null)
+            {
+                socket.OnOpen += Socket_OnOpen;
+                socket.OnMessage += Socket_OnMessage;
+                socket.OnClose += Socket_OnClose;
+                socket.OnError += Socket_OnError;
+            }
+            return;
+        }
+
+        GUILayout.BeginHorizontal();
+        GUILayout.Label(string.Format("State: {0}", socket.ReadyState));
+        if (GUILayout.Button("GC Collect"))
+        {
+            GC.Collect();
+        }
+        if (GUILayout.Button("Dispose"))
+        {
+            if (socket.ReadyState != WebSocketState.Closed)
+                socket.CloseAsync();
+            socket = null;
+            return;
+        }
+        GUILayout.EndHorizontal();
         GUILayout.Label("URL: ", width);
         url = GUILayout.TextField(url, width);
 

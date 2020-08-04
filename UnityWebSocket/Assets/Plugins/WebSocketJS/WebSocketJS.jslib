@@ -5,6 +5,7 @@
     $CLOSE_METHOD_NAME: {},
     $MESSAGE_METHOD_NAME: {},
     $ERROR_METHOD_NAME: {},
+    $MESSAGE_SPLIT_TAG: {},
     $webSocketMap: {},
 
     $Initialize: function()
@@ -15,6 +16,7 @@
         CLOSE_METHOD_NAME = "OnClose";
         MESSAGE_METHOD_NAME = "OnMessage";
         ERROR_METHOD_NAME = "OnError";
+        MESSAGE_SPLIT_TAG = "_#splt_@";
     },
 
     // call by unity
@@ -105,7 +107,7 @@
 
     $OnMessage: function(address, opcode, data)
     {
-        var combinedMsg = address + "_" + opcode + "_";
+        var combinedMsg = address + MESSAGE_SPLIT_TAG + opcode + MESSAGE_SPLIT_TAG;
         if(opcode == 2) // blob data
         {
             var reader = new FileReader();
@@ -141,13 +143,13 @@
     {
         if(webSocketMap.get(address))
             webSocketMap.delete(address);
-        var combinedMsg = address + "_" + code + "_" + reason + "_" + wasClean;
+        var combinedMsg = address + MESSAGE_SPLIT_TAG + code + MESSAGE_SPLIT_TAG + reason + MESSAGE_SPLIT_TAG + wasClean;
         SendMessage(RECEIVER_NAME, CLOSE_METHOD_NAME, combinedMsg);
     },
 
     $OnError: function(address, errorMsg)
     {
-        var combinedMsg =  address + "_" + errorMsg;
+        var combinedMsg =  address + MESSAGE_SPLIT_TAG + errorMsg;
         SendMessage(RECEIVER_NAME, ERROR_METHOD_NAME, combinedMsg);
     },
 };
