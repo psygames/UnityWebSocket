@@ -7,13 +7,19 @@ namespace UnityWebSocket
 {
     public class MessageEventArgs : EventArgs
     {
+        private byte[] _rawData;
         private string _data;
-        private bool _isSetDataStr;
 
         internal MessageEventArgs(Opcode opcode, byte[] rawData)
         {
             Opcode = opcode;
-            RawData = rawData;
+            _rawData = rawData;
+        }
+
+        internal MessageEventArgs(Opcode opcode, string data)
+        {
+            Opcode = opcode;
+            _data = data;
         }
 
         /// <summary>
@@ -39,6 +45,21 @@ namespace UnityWebSocket
             {
                 SetData();
                 return _data;
+            }
+        }
+
+        /// <summary>
+        /// Gets the message data as an array of <see cref="byte"/>.
+        /// </summary>
+        /// <value>
+        /// An array of <see cref="byte"/> that represents the message data.
+        /// </value>
+        public byte[] RawData
+        {
+            get
+            {
+                SetRawData();
+                return _rawData;
             }
         }
 
@@ -84,24 +105,28 @@ namespace UnityWebSocket
             }
         }
 
-        /// <summary>
-        /// Gets the message data as an array of <see cref="byte"/>.
-        /// </summary>
-        /// <value>
-        /// An array of <see cref="byte"/> that represents the message data.
-        /// </value>
-        public byte[] RawData { get; private set; }
-
         private void SetData()
         {
-            if (_isSetDataStr || Opcode == Opcode.Binary)
+            if (_data != null) return;
+
+            if (RawData == null)
             {
-                _isSetDataStr = true;
                 return;
             }
 
             _data = Encoding.UTF8.GetString(RawData);
-            _isSetDataStr = true;
+        }
+
+        private void SetRawData()
+        {
+            if (_rawData != null) return;
+
+            if (_data == null)
+            {
+                return;
+            }
+
+            _rawData = Encoding.UTF8.GetBytes(_data);
         }
     }
 }

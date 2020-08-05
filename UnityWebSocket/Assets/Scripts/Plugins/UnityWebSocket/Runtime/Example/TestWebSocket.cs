@@ -14,8 +14,15 @@ public class TestWebSocket : MonoBehaviour
 
     private void Socket_OnMessage(object sender, MessageEventArgs e)
     {
-        message += string.Format("Received: {0}\n", e.Data);
-        messageCount += 1;
+        if (e.IsBinary)
+        {
+            message += string.Format("Receive Bytes ({1}): {0}\n", e.Data, e.RawData.Length);
+        }
+        else if (e.IsText)
+        {
+            message += string.Format("Receive: {0}\n", e.Data);
+        }
+        receiveCount += 1;
     }
 
     private void Socket_OnClose(object sender, CloseEventArgs e)
@@ -30,8 +37,10 @@ public class TestWebSocket : MonoBehaviour
 
     string sendText = "";
     string message = "";
-    int messageCount;
+    int sendCount;
+    int receiveCount;
     Vector2 scrollPos;
+    bool showLog = true;
 
     private void OnGUI()
     {
@@ -41,31 +50,28 @@ public class TestWebSocket : MonoBehaviour
 
         if (socket == null)
         {
-            GUILayout.Label("demo version: 0.0.2", width);
+            GUILayout.Label("sdk version: 2.0.1", width);
             if (GUILayout.Button("Init with Synchronized"))
             {
-                socket = new UnityWebSocket.Synchronized.WebSocket();
+                socket = new UnityWebSocket.Synchronized.WebSocket(url);
             }
 
             if (GUILayout.Button("Init with Uniform"))
             {
-                socket = new UnityWebSocket.Uniform.WebSocket();
+                socket = new UnityWebSocket.Uniform.WebSocket(url);
             }
 
 #if UNITY_EDITOR || !UNITY_WEBGL
+#if !NET_LEGACY
             if (GUILayout.Button("Init with NoWebGL"))
             {
-                socket = new UnityWebSocket.NoWebGL.WebSocket();
+                socket = new UnityWebSocket.NoWebGL.WebSocket(url);
             }
+#endif
 #else
             if (GUILayout.Button("Init with WebGL"))
             {
-                socket = new UnityWebSocket.WebGL.WebSocket();
-            }
-
-            if (GUILayout.Button("Init with WebGL2"))
-            {
-                socket = new UnityWebSocket.WebGL2.WebSocket();
+                socket = new UnityWebSocket.WebGL.WebSocket(url);
             }
 #endif
             if (socket != null)
@@ -99,12 +105,14 @@ public class TestWebSocket : MonoBehaviour
         GUI.enabled = socket.ReadyState == WebSocketState.Closed;
         if (GUILayout.Button("Connect"))
         {
-            socket.ConnectAsync(url);
+            message += string.Format("Connecting...\n");
+            socket.ConnectAsync();
         }
 
         GUI.enabled = socket.ReadyState == WebSocketState.Open;
         if (GUILayout.Button("Close"))
         {
+            message += string.Format("Closing...\n");
             socket.CloseAsync();
         }
         GUILayout.EndHorizontal();
@@ -112,6 +120,7 @@ public class TestWebSocket : MonoBehaviour
         GUILayout.Label("Text: ");
         sendText = GUILayout.TextArea(sendText, GUILayout.MinHeight(50), width);
 
+        GUILayout.BeginHorizontal();
         if (GUILayout.Button("Send"))
         {
             if (!string.IsNullOrEmpty(sendText))
@@ -119,20 +128,44 @@ public class TestWebSocket : MonoBehaviour
                 socket.SendAsync(sendText, () =>
                 {
                     message += string.Format("Send: {0}\n", sendText);
+                    sendCount += 1;
                 });
             }
         }
+        if (GUILayout.Button("Send Bytes"))
+        {
+            if (!string.IsNullOrEmpty(sendText))
+            {
+                var bytes = System.Text.Encoding.UTF8.GetBytes(sendText);
+                socket.SendAsync(bytes, () =>
+                {
+                    message += string.Format("Send Bytes ({1}): {0}\n", sendText, bytes.Length);
+                    sendCount += 1;
+                });
+            }
+        }
+        GUILayout.EndHorizontal();
 
         GUI.enabled = true;
-        GUILayout.Label(string.Format("Message({0}): ", messageCount));
+        GUILayout.BeginHorizontal();
+        showLog = GUILayout.Toggle(showLog, "Show Log");
+        GUILayout.Label(string.Format("Send ({0}): ", sendCount));
+        GUILayout.Label(string.Format("Receive ({0}): ", receiveCount));
+        GUILayout.EndHorizontal();
+
         if (GUILayout.Button("Clear"))
         {
             message = "";
-            messageCount = 0;
+            receiveCount = 0;
+            sendCount = 0;
         }
 
-        scrollPos = GUILayout.BeginScrollView(scrollPos, GUILayout.MaxHeight(Screen.height / scale - 250), width);
-        GUILayout.Label(message);
-        GUILayout.EndScrollView();
+        if (showLog)
+        {
+            scrollPos = GUILayout.BeginScrollView(scrollPos, GUILayout.MaxHeight(Screen.height / scale - 250), width);
+            GUILayout.Label(message);
+            GUILayout.EndScrollView();
+        }
+
     }
 }

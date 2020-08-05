@@ -17,16 +17,15 @@ namespace UnityWebSocket.Uniform
 
         private readonly IWebSocket _rawSocket;
 
-        public WebSocket()
+        public WebSocket(string address)
         {
 #if !UNITY_EDITOR && UNITY_WEBGL
-            _rawSocket = new WebGL.WebSocket();
+            _rawSocket = new WebGL.WebSocket(address);
 #elif !NET_LEGACY
-            _rawSocket = new NoWebGL.WebSocket();
+            _rawSocket = new NoWebGL.WebSocket(address);
 #else
             throw new Exception("Scripting Runtime Version should be .NET 4.x, via Menu:\nPlayerSettings -> Other Settings -> Script Runtime Version -> .Net 4.x Equivalent");
 #endif
-
             _rawSocket.OnOpen += (o, e) =>
             {
                 if (OnOpen != null)
@@ -60,9 +59,9 @@ namespace UnityWebSocket.Uniform
             _rawSocket.SendAsync(data, completed);
         }
 
-        public void ConnectAsync(string address)
+        public void ConnectAsync()
         {
-            _rawSocket.ConnectAsync(address);
+            _rawSocket.ConnectAsync();
         }
 
         public void CloseAsync()

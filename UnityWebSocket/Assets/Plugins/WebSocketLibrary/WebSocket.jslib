@@ -23,7 +23,7 @@ var WebSocketLibrary =
 		onClose: null,
 
 		/* Debug mode */
-		debug: false
+		debug: true
 	},
 
 	/**
@@ -87,7 +87,8 @@ var WebSocketLibrary =
 		var id = webSocketManager.lastId++;
 		webSocketManager.instances[id] = {
 			url: urlStr,
-			ws: null
+			ws: null,
+			blobReader: null
 		};
 		return id;
 	},
@@ -111,6 +112,7 @@ var WebSocketLibrary =
 
 		// Remove reference
 		delete webSocketManager.instances[instanceId];
+
 		return 0;
 	},
 
@@ -126,6 +128,25 @@ var WebSocketLibrary =
 
 		if (instance.ws !== null)
 			return -2;
+
+		if (instance.blobReader !== null)
+			return -2;
+
+		instance.blobReader = new FileReader();
+		instance.blobReader.addEventListener("loadend", function()
+		{
+				var dataBuffer = new Uint8Array(instance.blobReader.result);
+				var buffer = _malloc(dataBuffer.length);
+				HEAPU8.set(dataBuffer, buffer);
+				try
+				{
+					Runtime.dynCall('viii', webSocketManager.onMessage, [ instanceId, buffer, dataBuffer.length ]);
+				}
+				finally
+				{
+					_free(buffer);
+				}
+		});
 
 		instance.ws = new WebSocket(instance.url);
 
@@ -161,22 +182,7 @@ var WebSocketLibrary =
 			}
 			else if (ev.data instanceof Blob)
 			{
-				var reader = new FileReader();
-				reader.addEventListener("loadend", function()
-				{
-						var dataBuffer = new Uint8Array(reader.result);
-						var buffer = _malloc(dataBuffer.length);
-						HEAPU8.set(dataBuffer, buffer);
-						try
-						{
-							Runtime.dynCall('viii', webSocketManager.onMessage, [ instanceId, buffer, dataBuffer.length ]);
-						}
-						finally
-						{
-							_free(buffer);
-						}
-				});
-				reader.readAsArrayBuffer(ev.data);
+				instance.blobReader.readAsArrayBuffer(ev.data);
 			}
 			else if(typeof ev.data == 'string')
 			{
@@ -227,9 +233,10 @@ var WebSocketLibrary =
 				console.log("[JSLIB WebSocket] Closed.");
 
 			if (webSocketManager.onClose)
-				Runtime.dynCall('vii', webSocketManager.onClose, [ instanceId, ev.code ]);
+				Runtime.dynCall('viii', webSocketManager.onClose, [ instanceId, ev.code, ev.reason ]);
 
 			delete instance.ws;
+			delete instance.blobReader;
 		};
 		return 0;
 	},

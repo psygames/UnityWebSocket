@@ -44,7 +44,7 @@ namespace UnityWebSocket
         ///   A series of reconnecting has failed.
         ///   </para>
         /// </exception>
-        void ConnectAsync(string address);
+        void ConnectAsync();
 
         /// <summary>
         /// Closes the connection asynchronously.

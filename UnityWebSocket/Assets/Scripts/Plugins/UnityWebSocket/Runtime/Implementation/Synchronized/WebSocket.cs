@@ -14,9 +14,9 @@ namespace UnityWebSocket.Synchronized
 
         private readonly Uniform.WebSocket _socket;
 
-        public WebSocket()
+        public WebSocket(string address)
         {
-            _socket = new Uniform.WebSocket();
+            _socket = new Uniform.WebSocket(address);
 
             _socket.OnOpen += (o, e) =>
             {
@@ -35,30 +35,11 @@ namespace UnityWebSocket.Synchronized
                 lock (eventArgsQueue) { eventArgsQueue.Enqueue(e); }
             };
 
-            UnityWebSocketManager.Instance.Add(this);
-
-#if UNITY_EDITOR
-            UnityWebSocketDebuger.Create(this);
-#endif
+            WebSocketManager.Instance.Add(this);
         }
-
 
         public void SendAsync(string data, Action completed = null)
         {
-#if UNITY_EDITOR
-            _socket.SendAsync(data, () =>
-            {
-                UnityWebSocketDebuger.Send(this, data);
-                if (completed != null)
-                {
-                    lock (sendCallbackQueue)
-                    {
-                        sendCallbackQueue.Enqueue(completed);
-                    }
-                }
-            });
-#else
-
             if (completed != null)
             {
                 _socket.SendAsync(data, () =>
@@ -73,25 +54,10 @@ namespace UnityWebSocket.Synchronized
             {
                 _socket.SendAsync(data);
             }
-#endif
         }
 
         public void SendAsync(byte[] data, Action completed = null)
         {
-#if UNITY_EDITOR
-            _socket.SendAsync(data, () =>
-            {
-                UnityWebSocketDebuger.Send(this, data);
-                if (completed != null)
-                {
-                    lock (sendCallbackQueue)
-                    {
-                        sendCallbackQueue.Enqueue(completed);
-                    }
-                }
-            });
-#else
-
             if (completed != null)
             {
                 _socket.SendAsync(data, () =>
@@ -106,12 +72,11 @@ namespace UnityWebSocket.Synchronized
             {
                 _socket.SendAsync(data);
             }
-#endif
         }
 
-        public void ConnectAsync(string address)
+        public void ConnectAsync()
         {
-            _socket.ConnectAsync(address);
+            _socket.ConnectAsync();
         }
 
         public void CloseAsync()
@@ -135,7 +100,6 @@ namespace UnityWebSocket.Synchronized
                     callback.Invoke();
                 }
             }
-
 
             while (eventArgsQueue.Count > 0)
             {

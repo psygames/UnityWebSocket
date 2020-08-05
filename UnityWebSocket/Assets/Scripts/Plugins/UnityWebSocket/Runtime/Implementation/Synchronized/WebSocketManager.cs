@@ -3,11 +3,11 @@ using UnityEngine;
 
 namespace UnityWebSocket.Synchronized
 {
-    public class UnityWebSocketManager : MonoBehaviour
+    public class WebSocketManager : MonoBehaviour
     {
         private const string rootName = "[UnityWebSocketManager]";
-        private static UnityWebSocketManager _instance;
-        public static UnityWebSocketManager Instance
+        private static WebSocketManager _instance;
+        public static WebSocketManager Instance
         {
             get
             {
@@ -17,7 +17,7 @@ namespace UnityWebSocket.Synchronized
             }
         }
 
-        internal UnityWebSocketManager()
+        internal WebSocketManager()
         { }
 
 
@@ -36,9 +36,9 @@ namespace UnityWebSocket.Synchronized
                 go = new GameObject(rootName);
             }
 
-            if (go.GetComponent<UnityWebSocketManager>() == null)
+            if (go.GetComponent<WebSocketManager>() == null)
             {
-                go.AddComponent<UnityWebSocketManager>();
+                go.AddComponent<WebSocketManager>();
             }
         }
 

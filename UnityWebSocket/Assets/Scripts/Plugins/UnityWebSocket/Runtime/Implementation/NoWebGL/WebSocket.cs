@@ -53,14 +53,18 @@ namespace UnityWebSocket.NoWebGL
             Task.Factory.StartNew(function, _cts.Token, TaskCreationOptions.LongRunning, TaskScheduler.Default);
         }
 
-        public void ConnectAsync(string address)
+        public WebSocket(string address)
+        {
+            this.Address = address;
+        }
+
+        public void ConnectAsync()
         {
             if (cts != null || socket != null)
             {
                 HandleError(new Exception("socket is busy."));
                 return;
             }
-            this.Address = address;
             var uri = new Uri(Address);
             cts = new CancellationTokenSource();
             socket = new ClientWebSocket();
@@ -271,7 +275,6 @@ namespace UnityWebSocket.NoWebGL
 
         private void HandleError(Exception exception)
         {
-            UnityEngine.Debug.LogError(exception.Message + "\n" + exception.StackTrace);
             OnError?.Invoke(this, new ErrorEventArgs(exception.Message));
         }
     }
