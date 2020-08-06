@@ -27,7 +27,7 @@ public class TestWebSocket : MonoBehaviour
 
     private void Socket_OnClose(object sender, CloseEventArgs e)
     {
-        message += string.Format("Closed: {0}\n", e.Reason);
+        message += string.Format("Closed, StatusCode: {0}, Reason: {1}\n", e.StatusCode, e.Reason);
     }
 
     private void Socket_OnError(object sender, ErrorEventArgs e)
@@ -103,14 +103,14 @@ public class TestWebSocket : MonoBehaviour
 
         GUILayout.BeginHorizontal();
         GUI.enabled = socket.ReadyState == WebSocketState.Closed;
-        if (GUILayout.Button("Connect"))
+        if (GUILayout.Button(socket.ReadyState == WebSocketState.Connecting ? "Connecting..." : "Connect"))
         {
             message += string.Format("Connecting...\n");
             socket.ConnectAsync();
         }
 
         GUI.enabled = socket.ReadyState == WebSocketState.Open;
-        if (GUILayout.Button("Close"))
+        if (GUILayout.Button(socket.ReadyState == WebSocketState.Closing ? "Closing..." : "Close"))
         {
             message += string.Format("Closing...\n");
             socket.CloseAsync();

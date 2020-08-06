@@ -23,7 +23,7 @@ var WebSocketLibrary =
 		onClose: null,
 
 		/* Debug mode */
-		debug: true
+		debug: false
 	},
 
 	/**
@@ -87,8 +87,7 @@ var WebSocketLibrary =
 		var id = webSocketManager.lastId++;
 		webSocketManager.instances[id] = {
 			url: urlStr,
-			ws: null,
-			blobReader: null
+			ws: null
 		};
 		return id;
 	},
@@ -129,25 +128,6 @@ var WebSocketLibrary =
 		if (instance.ws !== null)
 			return -2;
 
-		if (instance.blobReader !== null)
-			return -2;
-
-		instance.blobReader = new FileReader();
-		instance.blobReader.addEventListener("loadend", function()
-		{
-				var dataBuffer = new Uint8Array(instance.blobReader.result);
-				var buffer = _malloc(dataBuffer.length);
-				HEAPU8.set(dataBuffer, buffer);
-				try
-				{
-					Runtime.dynCall('viii', webSocketManager.onMessage, [ instanceId, buffer, dataBuffer.length ]);
-				}
-				finally
-				{
-					_free(buffer);
-				}
-		});
-
 		instance.ws = new WebSocket(instance.url);
 
 		instance.ws.onopen = function()
@@ -161,7 +141,7 @@ var WebSocketLibrary =
 		instance.ws.onmessage = function(ev)
 		{
 			if (webSocketManager.debug)
-				console.log("[JSLIB WebSocket] Received message:", ev.data);
+				console.log("[JSLIB WebSocket] Received message: ", ev.data);
 
 			if (webSocketManager.onMessage === null)
 				return;
@@ -182,12 +162,28 @@ var WebSocketLibrary =
 			}
 			else if (ev.data instanceof Blob)
 			{
-				instance.blobReader.readAsArrayBuffer(ev.data);
+				var reader = new FileReader();
+				reader.addEventListener("loadend", function()
+				{
+						var dataBuffer = new Uint8Array(reader.result);
+						var buffer = _malloc(dataBuffer.length);
+						HEAPU8.set(dataBuffer, buffer);
+						try
+						{
+							Runtime.dynCall('viii', webSocketManager.onMessage, [ instanceId, buffer, dataBuffer.length ]);
+						}
+						finally
+						{
+							reader = null;
+							_free(buffer);
+						}
+				});
+				reader.readAsArrayBuffer(ev.data);
 			}
 			else if(typeof ev.data == 'string')
 			{
-				var length = lengthBytesUTF8(ev.data);
-				var buffer = _malloc(length + 1);
+				var length = lengthBytesUTF8(ev.data) + 1;
+				var buffer = _malloc(length);
 				stringToUTF8(ev.data, buffer, length);
 				try
 				{
@@ -212,17 +208,16 @@ var WebSocketLibrary =
 			if (webSocketManager.onError)
 			{
 				var msg = "WebSocket error.";
-				var msgBytes = lengthBytesUTF8(msg);
-				var msgBuffer = _malloc(msgBytes + 1);
-				stringToUTF8(msg, msgBuffer, msgBytes);
-
+				var length = lengthBytesUTF8(msg) + 1;
+				var buffer = _malloc(length);
+				stringToUTF8(msg, buffer, length);
 				try
 				{
-					Runtime.dynCall('vii', webSocketManager.onError, [ instanceId, msgBuffer ]);
+					Runtime.dynCall('vii', webSocketManager.onError, [ instanceId, buffer ]);
 				}
 				finally
 				{
-					_free(msgBuffer);
+					_free(buffer);
 				}
 			}
 		};
@@ -230,13 +225,25 @@ var WebSocketLibrary =
 		instance.ws.onclose = function(ev)
 		{
 			if (webSocketManager.debug)
-				console.log("[JSLIB WebSocket] Closed.");
+				console.log("[JSLIB WebSocket] Closed, Code: " + ev.code + ", Reason: " + ev.reason);
 
 			if (webSocketManager.onClose)
-				Runtime.dynCall('viii', webSocketManager.onClose, [ instanceId, ev.code, ev.reason ]);
+			{
+				var msg = ev.reason;
+				var length = lengthBytesUTF8(msg) + 1;
+				var buffer = _malloc(length);
+				stringToUTF8(msg, buffer, length);
+				try
+				{
+					Runtime.dynCall('viii', webSocketManager.onClose, [ instanceId, ev.code, buffer ]);
+				}
+				finally
+				{
+					_free(buffer);
+				}
+			}
 
-			delete instance.ws;
-			delete instance.blobReader;
+			instance.ws = null;
 		};
 		return 0;
 	},

@@ -43,15 +43,7 @@ namespace UnityWebSocket.NoWebGL
 
         private ClientWebSocket socket;
         private CancellationTokenSource cts;
-        private readonly CancellationTokenSource closeCts = new CancellationTokenSource();
         private bool IsCtsCancel { get { return cts == null || cts.IsCancellationRequested; } }
-
-        private void TaskNew(Func<Task> function, CancellationTokenSource _cts = null)
-        {
-            if (_cts == null)
-                _cts = cts;
-            Task.Factory.StartNew(function, _cts.Token, TaskCreationOptions.LongRunning, TaskScheduler.Default);
-        }
 
         public WebSocket(string address)
         {
@@ -65,79 +57,14 @@ namespace UnityWebSocket.NoWebGL
                 HandleError(new Exception("socket is busy."));
                 return;
             }
-            var uri = new Uri(Address);
             cts = new CancellationTokenSource();
             socket = new ClientWebSocket();
-            TaskNew(ConnectThread);
-        }
-
-
-        private async Task ConnectThread()
-        {
-            try
-            {
-                var uri = new Uri(Address);
-                await socket.ConnectAsync(uri, cts.Token);
-                HandleOpen();
-                TaskNew(SendThread);
-                await ReceiveThread();
-            }
-            catch (Exception e)
-            {
-                HandleError(e);
-            }
+            Task.Run(ConnectThread);
         }
 
         public void CloseAsync()
         {
-            TaskNew(CloseThread);
-        }
-
-        private async Task CloseThread()
-        {
-            try
-            {
-                await socket.CloseAsync(WebSocketCloseStatus.NormalClosure, "Normal Closure", cts.Token);
-                if (!IsCtsCancel)
-                {
-                    cts.Cancel();
-                }
-            }
-            catch (Exception e)
-            {
-                HandleError(e);
-            }
-        }
-
-        private async Task WaitForClose()
-        {
-            try
-            {
-                while (!IsCtsCancel || isSendThreadRunning || isReceiveThreadRunning)
-                {
-                    await Task.Delay(1);
-                }
-            }
-            catch (Exception e)
-            {
-                HandleError(e);
-            }
-            finally
-            {
-                cts.Dispose();
-                socket.Dispose();
-                cts = null;
-                socket = null;
-            }
-        }
-
-        private readonly Queue<SendBuffer> sendCaches = new Queue<SendBuffer>();
-
-        class SendBuffer
-        {
-            public ArraySegment<byte> buffer;
-            public Action callback;
-            public WebSocketMessageType type;
+            Task.Run(CloseThread);
         }
 
         public void SendAsync(byte[] data, Action completed = null)
@@ -169,15 +96,85 @@ namespace UnityWebSocket.NoWebGL
             }
         }
 
+        private async Task ConnectThread()
+        {
+            // UnityEngine.Debug.Log("Connect Thread Start ...");
+
+            try
+            {
+                var uri = new Uri(Address);
+                await socket.ConnectAsync(uri, cts.Token);
+            }
+            catch (Exception e)
+            {
+                HandleError(e);
+                HandleClose((ushort)CloseStatusCode.Abnormal, e.Message);
+                SocketDispose();
+                return;
+            }
+
+            try
+            {
+                LongRunningTask(SendThread);
+                LongRunningTask(ReceiveThread);
+            }
+            catch (Exception e)
+            {
+                HandleError(e);
+            }
+
+            HandleOpen();
+
+            // UnityEngine.Debug.Log("Connect Thread Stop !");
+        }
+
+        private async void CloseThread()
+        {
+            // UnityEngine.Debug.Log("Close Thread Start ...");
+
+            try
+            {
+                await socket.CloseAsync(WebSocketCloseStatus.NormalClosure, "Normal Closure", cts.Token);
+            }
+            catch { }
+
+            // UnityEngine.Debug.Log("Close Thread Stop !");
+        }
+
+        private async void DisposeThread()
+        {
+            // UnityEngine.Debug.Log("Dispose Thread Start ...");
+
+            try
+            {
+                while (!IsCtsCancel || isSendThreadRunning || isReceiveThreadRunning)
+                {
+                    await Task.Delay(1);
+                }
+            }
+            catch (Exception e)
+            {
+                HandleError(e);
+            }
+            finally
+            {
+                SocketDispose();
+            }
+
+            // UnityEngine.Debug.Log("Dispose Thread Stop !");
+        }
+
         private bool isSendThreadRunning;
         private async Task SendThread()
         {
+            // UnityEngine.Debug.Log("Send Thread Start ...");
+
             try
             {
                 isSendThreadRunning = true;
+                SendBuffer buffer = null;
                 while (!IsCtsCancel)
                 {
-                    SendBuffer buffer = null;
                     if (sendCaches.Count <= 0)
                     {
                         await Task.Delay(1);
@@ -202,11 +199,18 @@ namespace UnityWebSocket.NoWebGL
             {
                 isSendThreadRunning = false;
             }
+
+            // UnityEngine.Debug.Log("Send Thread Stop !");
         }
 
         private bool isReceiveThreadRunning;
         private async Task ReceiveThread()
         {
+            // UnityEngine.Debug.Log("Receive Thread Start ...");
+
+            string closeReason = "";
+            ushort closeCode = 0;
+            bool isClosed = false;
             try
             {
                 isReceiveThreadRunning = true;
@@ -214,7 +218,7 @@ namespace UnityWebSocket.NoWebGL
                 var buffer = new byte[1024 * 1024];
                 var bufferCount = 0;
                 var segment = new ArraySegment<byte>(buffer, 0, buffer.Length);
-                while (!IsCtsCancel)
+                while (!IsCtsCancel && !isClosed)
                 {
                     WebSocketReceiveResult result = await socket.ReceiveAsync(segment, cts.Token);
                     bufferCount += result.Count;
@@ -240,9 +244,9 @@ namespace UnityWebSocket.NoWebGL
                             HandleMessage(Opcode.Text, data);
                             break;
                         case WebSocketMessageType.Close:
-                            cts.Cancel();
-                            TaskNew(WaitForClose, closeCts);
-                            HandleClose((ushort)result.CloseStatus, result.CloseStatusDescription);
+                            isClosed = true;
+                            closeCode = (ushort)result.CloseStatus;
+                            closeReason = result.CloseStatusDescription;
                             break;
                     }
                 }
@@ -250,31 +254,85 @@ namespace UnityWebSocket.NoWebGL
             catch (Exception e)
             {
                 HandleError(e);
+                closeCode = (ushort)CloseStatusCode.Abnormal;
+                closeReason = e.Message;
             }
             finally
             {
                 isReceiveThreadRunning = false;
             }
+
+            cts.Cancel();
+            await Task.Run(DisposeThread);
+            HandleClose(closeCode, closeReason);
+
+            // UnityEngine.Debug.Log("Receive Thread Stop !");
         }
 
+        private void LongRunningTask(Func<Task> function)
+        {
+            Task.Factory.StartNew(function, cts.Token, TaskCreationOptions.LongRunning, TaskScheduler.Default);
+        }
+
+        private void SocketDispose()
+        {
+            cts.Dispose();
+            socket.Dispose();
+            cts = null;
+            socket = null;
+        }
+
+        private readonly Queue<SendBuffer> sendCaches = new Queue<SendBuffer>();
+
+        class SendBuffer
+        {
+            public ArraySegment<byte> buffer;
+            public Action callback;
+            public WebSocketMessageType type;
+        }
 
         private void HandleOpen()
         {
-            OnOpen?.Invoke(this, new OpenEventArgs());
+            // UnityEngine.Debug.Log("OnOpen");
+            try
+            {
+                OnOpen?.Invoke(this, new OpenEventArgs());
+            }
+            catch (Exception e)
+            {
+                HandleError(e);
+            }
         }
 
         private void HandleMessage(Opcode opcode, byte[] rawData)
         {
-            OnMessage?.Invoke(this, new MessageEventArgs(opcode, rawData));
+            // UnityEngine.Debug.Log("OnMessage: " + opcode);
+            try
+            {
+                OnMessage?.Invoke(this, new MessageEventArgs(opcode, rawData));
+            }
+            catch (Exception e)
+            {
+                HandleError(e);
+            }
         }
 
         private void HandleClose(ushort code, string reason)
         {
-            OnClose?.Invoke(this, new CloseEventArgs(code, reason));
+            // UnityEngine.Debug.Log("OnClose: " + code + " " + reason);
+            try
+            {
+                OnClose?.Invoke(this, new CloseEventArgs(code, reason));
+            }
+            catch (Exception e)
+            {
+                HandleError(e);
+            }
         }
 
         private void HandleError(Exception exception)
         {
+            // UnityEngine.Debug.Log("OnError: " + exception.Message);
             OnError?.Invoke(this, new ErrorEventArgs(exception.Message));
         }
     }
