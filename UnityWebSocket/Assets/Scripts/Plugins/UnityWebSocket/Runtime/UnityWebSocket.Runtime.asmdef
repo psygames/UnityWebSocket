@@ -1,10 +1,8 @@
 {
-    "name": "UnityWebSocketEditor",
+    "name": "UnityWebSocket.Runtime",
     "references": [],
     "optionalUnityReferences": [],
-    "includePlatforms": [
-        "Editor"
-    ],
+    "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
     "overrideReferences": false,

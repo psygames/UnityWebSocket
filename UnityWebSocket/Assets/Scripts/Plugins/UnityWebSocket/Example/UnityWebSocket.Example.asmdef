@@ -1,6 +1,8 @@
 {
-    "name": "UnityWebSocket",
-    "references": [],
+    "name": "UnityWebSocket.Example",
+    "references": [
+        "UnityWebSocket.Runtime"
+    ],
     "optionalUnityReferences": [],
     "includePlatforms": [],
     "excludePlatforms": [],

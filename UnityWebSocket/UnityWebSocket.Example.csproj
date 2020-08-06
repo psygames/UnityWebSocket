@@ -9,10 +9,10 @@
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <RootNamespace></RootNamespace>
-    <ProjectGuid>{6A28B439-A869-D09C-7494-68B86591711A}</ProjectGuid>
+    <ProjectGuid>{3AECAA1E-A8E3-3AB7-80AF-814F496B0916}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <AssemblyName>Assembly-CSharp</AssemblyName>
+    <AssemblyName>UnityWebSocket.Example</AssemblyName>
     <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <BaseDirectory>.</BaseDirectory>
@@ -63,11 +63,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\Scripts\Plugins\UnityWebSocket\Example\TestWebSocket.cs" />
+    <Compile Include="Assets\Scripts\Plugins\UnityWebSocket\Example\Example.cs" />
     <None Include="Assets\Scripts\Plugins\UnityWebSocket\Example\UnityWebSocket.Example.asmdef" />
-    <Reference Include="Unity.PackageManagerUI.Editor">
-      <HintPath>/Users/yinlong/Documents/github/UnityWebSocket/UnityWebSocket/Library/ScriptAssemblies/Unity.PackageManagerUI.Editor.dll</HintPath>
-    </Reference>
     <Reference Include="UnityEngine.AIModule">
       <HintPath>/Applications/Unity/2018.4.21f1/Unity.app/Contents/Managed/UnityEngine/UnityEngine.AIModule.dll</HintPath>
     </Reference>
@@ -251,6 +248,12 @@
     <Reference Include="UnityEngine.UI">
       <HintPath>/Applications/Unity/2018.4.21f1/Unity.app/Contents/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>
     </Reference>
+    <Reference Include="UnityEditor.UI">
+      <HintPath>/Applications/Unity/2018.4.21f1/Unity.app/Contents/UnityExtensions/Unity/GUISystem/Editor/UnityEditor.UI.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEditor.TestRunner">
+      <HintPath>/Applications/Unity/2018.4.21f1/Unity.app/Contents/UnityExtensions/Unity/TestRunner/Editor/UnityEditor.TestRunner.dll</HintPath>
+    </Reference>
     <Reference Include="UnityEngine.TestRunner">
       <HintPath>/Applications/Unity/2018.4.21f1/Unity.app/Contents/UnityExtensions/Unity/TestRunner/UnityEngine.TestRunner.dll</HintPath>
     </Reference>
@@ -260,14 +263,38 @@
     <Reference Include="UnityEngine.Timeline">
       <HintPath>/Applications/Unity/2018.4.21f1/Unity.app/Contents/UnityExtensions/Unity/Timeline/RuntimeEditor/UnityEngine.Timeline.dll</HintPath>
     </Reference>
+    <Reference Include="UnityEditor.Timeline">
+      <HintPath>/Applications/Unity/2018.4.21f1/Unity.app/Contents/UnityExtensions/Unity/Timeline/Editor/UnityEditor.Timeline.dll</HintPath>
+    </Reference>
     <Reference Include="UnityEngine.Networking">
       <HintPath>/Applications/Unity/2018.4.21f1/Unity.app/Contents/UnityExtensions/Unity/Networking/UnityEngine.Networking.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEditor.Networking">
+      <HintPath>/Applications/Unity/2018.4.21f1/Unity.app/Contents/UnityExtensions/Unity/Networking/Editor/UnityEditor.Networking.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEditor.GoogleAudioSpatializer">
+      <HintPath>/Applications/Unity/2018.4.21f1/Unity.app/Contents/UnityExtensions/Unity/UnityGoogleAudioSpatializer/Editor/UnityEditor.GoogleAudioSpatializer.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.GoogleAudioSpatializer">
       <HintPath>/Applications/Unity/2018.4.21f1/Unity.app/Contents/UnityExtensions/Unity/UnityGoogleAudioSpatializer/RuntimeEditor/UnityEngine.GoogleAudioSpatializer.dll</HintPath>
     </Reference>
+    <Reference Include="UnityEditor.SpatialTracking">
+      <HintPath>/Applications/Unity/2018.4.21f1/Unity.app/Contents/UnityExtensions/Unity/UnitySpatialTracking/Editor/UnityEditor.SpatialTracking.dll</HintPath>
+    </Reference>
     <Reference Include="UnityEngine.SpatialTracking">
       <HintPath>/Applications/Unity/2018.4.21f1/Unity.app/Contents/UnityExtensions/Unity/UnitySpatialTracking/RuntimeEditor/UnityEngine.SpatialTracking.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEditor.VR">
+      <HintPath>/Applications/Unity/2018.4.21f1/Unity.app/Contents/UnityExtensions/Unity/UnityVR/Editor/UnityEditor.VR.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEditor.Graphs">
+      <HintPath>/Applications/Unity/2018.4.21f1/Unity.app/Contents/Managed/UnityEditor.Graphs.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEditor.WebGL.Extensions">
+      <HintPath>/Applications/Unity/2018.4.21f1/PlaybackEngines/WebGLSupport/UnityEditor.WebGL.Extensions.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEditor.OSXStandalone.Extensions">
+      <HintPath>/Applications/Unity/2018.4.21f1/Unity.app/Contents/PlaybackEngines/MacStandaloneSupport/UnityEditor.OSXStandalone.Extensions.dll</HintPath>
     </Reference>
     <Reference Include="netstandard">
       <HintPath>/Applications/Unity/2018.4.21f1/Unity.app/Contents/NetStandard/ref/2.0.0/netstandard.dll</HintPath>
@@ -619,10 +646,6 @@
     <ProjectReference Include="UnityWebSocket.Runtime.csproj">
       <Project>{1600FD27-F8F3-E01A-5597-A3E922150CA4}</Project>
       <Name>UnityWebSocket.Runtime</Name>
-    </ProjectReference>
-    <ProjectReference Include="UnityWebSocket.Editor.csproj">
-      <Project>{A5A4144C-6723-BE5C-957D-698FD90C4513}</Project>
-      <Name>UnityWebSocket.Editor</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

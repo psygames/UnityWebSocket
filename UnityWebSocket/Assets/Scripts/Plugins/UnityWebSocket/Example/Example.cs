@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityWebSocket;
 
-public class TestWebSocket : MonoBehaviour
+public class Example : MonoBehaviour
 {
     public string url = "ws://echo.websocket.org";
     private IWebSocket socket;
@@ -35,7 +35,7 @@ public class TestWebSocket : MonoBehaviour
         message += string.Format("Error: {0}\n", e.Message);
     }
 
-    string sendText = "";
+    string sendText = "测试Test123 \\/*1#&^`";
     string message = "";
     int sendCount;
     int receiveCount;
