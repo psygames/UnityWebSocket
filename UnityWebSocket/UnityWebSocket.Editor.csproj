@@ -63,7 +63,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\Scripts\Plugins\UnityWebSocket\Editor\WebSocketPlayerSettingCheck.cs" />
+    <Compile Include="Assets\Scripts\Plugins\UnityWebSocket\Editor\Help.cs" />
+    <Compile Include="Assets\Scripts\Plugins\UnityWebSocket\Editor\PlayerSettingCheck.cs" />
     <None Include="Assets\Scripts\Plugins\UnityWebSocket\Editor\UnityWebSocket.Editor.asmdef" />
     <Reference Include="UnityEngine.AIModule">
       <HintPath>/Applications/Unity/2018.4.21f1/Unity.app/Contents/Managed/UnityEngine/UnityEngine.AIModule.dll</HintPath>
@@ -656,6 +657,12 @@
     <Reference Include="Boo.Lang">
       <HintPath>/Applications/Unity/2018.4.21f1/Unity.app/Contents/MonoBleedingEdge/lib/mono/unityscript/Boo.Lang.dll</HintPath>
     </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="UnityWebSocket.Runtime.csproj">
+      <Project>{1600FD27-F8F3-E01A-5597-A3E922150CA4}</Project>
+      <Name>UnityWebSocket.Runtime</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="GenerateTargetFrameworkMonikerAttribute" />

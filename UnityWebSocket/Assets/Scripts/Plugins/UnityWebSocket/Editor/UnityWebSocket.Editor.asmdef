@@ -1,6 +1,8 @@
 {
     "name": "UnityWebSocket.Editor",
-    "references": [],
+    "references": [
+        "UnityWebSocket.Runtime"
+    ],
     "optionalUnityReferences": [],
     "includePlatforms": [
         "Editor"

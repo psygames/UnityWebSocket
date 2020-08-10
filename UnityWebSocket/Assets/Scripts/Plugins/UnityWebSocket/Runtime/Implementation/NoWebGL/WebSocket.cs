@@ -44,6 +44,8 @@ namespace UnityWebSocket.NoWebGL
         private ClientWebSocket socket;
         private CancellationTokenSource cts;
         private bool IsCtsCancel { get { return cts == null || cts.IsCancellationRequested; } }
+        private bool isSendThreadRunning;
+        private bool isReceiveThreadRunning;
 
         public WebSocket(string address)
         {
@@ -113,15 +115,8 @@ namespace UnityWebSocket.NoWebGL
                 return;
             }
 
-            try
-            {
-                LongRunningTask(SendThread);
-                LongRunningTask(ReceiveThread);
-            }
-            catch (Exception e)
-            {
-                HandleError(e);
-            }
+            LongRunningTask(SendThread);
+            LongRunningTask(ReceiveThread);
 
             HandleOpen();
 
@@ -145,26 +140,16 @@ namespace UnityWebSocket.NoWebGL
         {
             // UnityEngine.Debug.Log("Dispose Thread Start ...");
 
-            try
+            while (!IsCtsCancel || isSendThreadRunning || isReceiveThreadRunning)
             {
-                while (!IsCtsCancel || isSendThreadRunning || isReceiveThreadRunning)
-                {
-                    await Task.Delay(1);
-                }
+                await Task.Delay(1);
             }
-            catch (Exception e)
-            {
-                HandleError(e);
-            }
-            finally
-            {
-                SocketDispose();
-            }
+
+            SocketDispose();
 
             // UnityEngine.Debug.Log("Dispose Thread Stop !");
         }
 
-        private bool isSendThreadRunning;
         private async Task SendThread()
         {
             // UnityEngine.Debug.Log("Send Thread Start ...");
@@ -187,7 +172,7 @@ namespace UnityWebSocket.NoWebGL
                     if (!IsCtsCancel)
                     {
                         await socket.SendAsync(buffer.buffer, buffer.type, true, cts.Token);
-                        buffer.callback?.Invoke();
+                        HandleSent(buffer.callback);
                     }
                 }
             }
@@ -203,38 +188,50 @@ namespace UnityWebSocket.NoWebGL
             // UnityEngine.Debug.Log("Send Thread Stop !");
         }
 
-        private bool isReceiveThreadRunning;
         private async Task ReceiveThread()
         {
             // UnityEngine.Debug.Log("Receive Thread Start ...");
 
+            var bufferCap = 1024;
+            var buffer = new byte[bufferCap];
+            var received = 0;
+
             string closeReason = "";
             ushort closeCode = 0;
             bool isClosed = false;
+
             try
             {
                 isReceiveThreadRunning = true;
+                var segment = new ArraySegment<byte>(buffer);
 
-                var buffer = new byte[1024 * 1024];
-                var bufferCount = 0;
-                var segment = new ArraySegment<byte>(buffer, 0, buffer.Length);
                 while (!IsCtsCancel && !isClosed)
                 {
                     WebSocketReceiveResult result = await socket.ReceiveAsync(segment, cts.Token);
-                    bufferCount += result.Count;
-                    segment = new ArraySegment<byte>(buffer, bufferCount, buffer.Length - bufferCount);
+                    received += result.Count;
+
+                    if (received >= buffer.Length && !result.EndOfMessage)
+                    {
+                        bufferCap = bufferCap * 2;
+                        var newBuffer = new byte[bufferCap];
+                        Array.Copy(buffer, newBuffer, buffer.Length);
+                        buffer = newBuffer;
+                        newBuffer = null;
+                        // UnityEngine.Debug.Log("Expand Receive Buffer to " + bufferCap);
+                    }
 
                     if (!result.EndOfMessage)
+                    {
+                        segment = new ArraySegment<byte>(buffer, received, buffer.Length - received);
                         continue;
+                    }
 
-                    byte[] data = new byte[bufferCount];
-                    for (int i = 0; i < bufferCount; i++)
+                    byte[] data = new byte[received];
+                    for (int i = 0; i < received; i++)
                     {
                         data[i] = buffer[i];
                     }
 
-                    bufferCount = 0;
-                    segment = new ArraySegment<byte>(buffer, 0, buffer.Length);
                     switch (result.MessageType)
                     {
                         case WebSocketMessageType.Binary:
@@ -249,6 +246,8 @@ namespace UnityWebSocket.NoWebGL
                             closeReason = result.CloseStatusDescription;
                             break;
                     }
+                    received = 0;
+                    segment = new ArraySegment<byte>(buffer);
                 }
             }
             catch (Exception e)
@@ -260,6 +259,7 @@ namespace UnityWebSocket.NoWebGL
             finally
             {
                 isReceiveThreadRunning = false;
+                buffer = null;
             }
 
             cts.Cancel();
@@ -297,6 +297,19 @@ namespace UnityWebSocket.NoWebGL
             try
             {
                 OnOpen?.Invoke(this, new OpenEventArgs());
+            }
+            catch (Exception e)
+            {
+                HandleError(e);
+            }
+        }
+
+        private void HandleSent(Action action)
+        {
+            // UnityEngine.Debug.Log("OnOpen");
+            try
+            {
+                action?.Invoke();
             }
             catch (Exception e)
             {

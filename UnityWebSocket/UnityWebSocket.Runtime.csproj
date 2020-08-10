@@ -70,6 +70,7 @@
     <Compile Include="Assets\Scripts\Plugins\UnityWebSocket\Runtime\Core\MessageEventArgs.cs" />
     <Compile Include="Assets\Scripts\Plugins\UnityWebSocket\Runtime\Core\Opcode.cs" />
     <Compile Include="Assets\Scripts\Plugins\UnityWebSocket\Runtime\Core\OpenEventArgs.cs" />
+    <Compile Include="Assets\Scripts\Plugins\UnityWebSocket\Runtime\Core\Settings.cs" />
     <Compile Include="Assets\Scripts\Plugins\UnityWebSocket\Runtime\Core\WebSocketState.cs" />
     <Compile Include="Assets\Scripts\Plugins\UnityWebSocket\Runtime\Implementation\NoWebGL\WebSocket.cs" />
     <Compile Include="Assets\Scripts\Plugins\UnityWebSocket\Runtime\Implementation\Synchronized\WebSocket.cs" />

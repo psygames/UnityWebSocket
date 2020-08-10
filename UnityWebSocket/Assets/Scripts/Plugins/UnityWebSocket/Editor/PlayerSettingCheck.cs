@@ -2,34 +2,34 @@
 
 namespace UnityWebSocket.Editor
 {
-    public class WebSocketPlayerSettingCheck
+    public class PlayerSettingChecker
     {
 #if UNITY_2018_1_OR_NEWER
-        [MenuItem("UnityWebSocket/LinkerTarget/Wasm", false, 1)]
+        [MenuItem("Tools/UnityWebSocket/LinkerTarget/Wasm", false, 1)]
         private static void WebSocketSettingLinkerTargetWasm()
         {
             PlayerSettings.WebGL.linkerTarget = WebGLLinkerTarget.Wasm;
         }
 
-        [MenuItem("UnityWebSocket/LinkerTarget/Wasm", true, 1)]
+        [MenuItem("Tools/UnityWebSocket/LinkerTarget/Wasm", true, 1)]
         private static bool WebSocketSettingLinkerTargetWasmValidate()
         {
             return false;
         }
 
-        [MenuItem("UnityWebSocket/LinkerTarget/asm.js", false, 0)]
+        [MenuItem("Tools/UnityWebSocket/LinkerTarget/asm.js", false, 0)]
         private static void WebSocketSettingLinkerTargetAsm()
         {
             PlayerSettings.WebGL.linkerTarget = WebGLLinkerTarget.Asm;
         }
 
-        [MenuItem("UnityWebSocket/LinkerTarget/Both", false, 2)]
+        [MenuItem("Tools/UnityWebSocket/LinkerTarget/Both", false, 2)]
         private static void WebSocketSettingLinkerTargetBoth()
         {
             PlayerSettings.WebGL.linkerTarget = WebGLLinkerTarget.Both;
         }
 
-        [MenuItem("UnityWebSocket/CheckSettings", false, 10)]
+        // [MenuItem("Tools/UnityWebSocket/Check Settings", false, 10)]
         private static void CheckSettings()
         {
             if (PlayerSettings.WebGL.linkerTarget == WebGLLinkerTarget.Wasm)
