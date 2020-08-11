@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace UnityWebSocket.Synchronized
 {
-    public class WebSocketManager : MonoBehaviour
+    internal class WebSocketManager : MonoBehaviour
     {
         private const string rootName = "[UnityWebSocketManager]";
         private static WebSocketManager _instance;

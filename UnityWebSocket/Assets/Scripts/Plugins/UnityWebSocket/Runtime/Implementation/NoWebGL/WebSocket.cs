@@ -71,31 +71,15 @@ namespace UnityWebSocket.NoWebGL
 
         public void SendAsync(byte[] data, Action completed = null)
         {
-            var sendBuffer = new SendBuffer
-            {
-                buffer = new ArraySegment<byte>(data),
-                callback = completed,
-                type = WebSocketMessageType.Binary
-            };
-            lock (sendCaches)
-            {
-                sendCaches.Enqueue(sendBuffer);
-            }
+            var sendBuffer = SpawnBuffer(WebSocketMessageType.Binary, data, completed);
+            PushBuffer(sendBuffer);
         }
 
         public void SendAsync(string text, Action completed = null)
         {
             var data = Encoding.UTF8.GetBytes(text);
-            var sendBuffer = new SendBuffer
-            {
-                buffer = new ArraySegment<byte>(data),
-                callback = completed,
-                type = WebSocketMessageType.Text
-            };
-            lock (sendCaches)
-            {
-                sendCaches.Enqueue(sendBuffer);
-            }
+            var sendBuffer = SpawnBuffer(WebSocketMessageType.Text, data, completed);
+            PushBuffer(sendBuffer);
         }
 
         private async Task ConnectThread()
@@ -160,20 +144,20 @@ namespace UnityWebSocket.NoWebGL
                 SendBuffer buffer = null;
                 while (!IsCtsCancel)
                 {
-                    if (sendCaches.Count <= 0)
+                    if (sendBuffers.Count <= 0)
                     {
                         await Task.Delay(1);
                         continue;
                     }
-                    lock (sendCaches)
-                    {
-                        buffer = sendCaches.Dequeue();
-                    }
+                    buffer = PopBuffer();
                     if (!IsCtsCancel)
                     {
                         await socket.SendAsync(buffer.buffer, buffer.type, true, cts.Token);
                         HandleSent(buffer.callback);
                     }
+                    ReleaseBuffer(buffer);
+
+                    // UnityEngine.Debug.Log("SendBuffers: " + sendBuffers.Count + ", PoolelBuffers: " + pooledSendBuffers.Count);
                 }
             }
             catch (Exception e)
@@ -183,6 +167,10 @@ namespace UnityWebSocket.NoWebGL
             finally
             {
                 isSendThreadRunning = false;
+                while (sendBuffers.Count > 0)
+                {
+                    ReleaseBuffer(PopBuffer());
+                }
             }
 
             // UnityEngine.Debug.Log("Send Thread Stop !");
@@ -282,18 +270,74 @@ namespace UnityWebSocket.NoWebGL
             socket = null;
         }
 
-        private readonly Queue<SendBuffer> sendCaches = new Queue<SendBuffer>();
+        private readonly Queue<SendBuffer> sendBuffers = new Queue<SendBuffer>();
+        private readonly Queue<SendBuffer> pooledSendBuffers = new Queue<SendBuffer>();
 
         class SendBuffer
         {
+            public WebSocketMessageType type;
             public ArraySegment<byte> buffer;
             public Action callback;
-            public WebSocketMessageType type;
+        }
+
+        private void PushBuffer(SendBuffer sendBuffer)
+        {
+            lock (sendBuffers)
+            {
+                sendBuffers.Enqueue(sendBuffer);
+            }
+        }
+
+        private SendBuffer PopBuffer()
+        {
+            SendBuffer buffer;
+            lock (sendBuffers)
+            {
+                buffer = sendBuffers.Dequeue();
+            }
+            return buffer;
+        }
+
+        private void ReleaseBuffer(SendBuffer sendBuffer)
+        {
+            sendBuffer.buffer = default;
+            sendBuffer.callback = null;
+            lock (pooledSendBuffers)
+            {
+                pooledSendBuffers.Enqueue(sendBuffer);
+            }
+        }
+
+        private SendBuffer SpawnBuffer(WebSocketMessageType type, byte[] bytes, Action callback)
+        {
+            SendBuffer sendBuffer = null;
+            if (pooledSendBuffers.Count <= 0)
+            {
+                sendBuffer = new SendBuffer
+                {
+                    type = WebSocketMessageType.Text,
+                    buffer = new ArraySegment<byte>(bytes),
+                    callback = callback
+                };
+                return sendBuffer;
+            }
+
+            lock (pooledSendBuffers)
+            {
+                sendBuffer = pooledSendBuffers.Dequeue();
+            }
+
+            sendBuffer.type = type;
+            sendBuffer.buffer = new ArraySegment<byte>(bytes);
+            sendBuffer.callback = callback;
+
+            return sendBuffer;
         }
 
         private void HandleOpen()
         {
             // UnityEngine.Debug.Log("OnOpen");
+
             try
             {
                 OnOpen?.Invoke(this, new OpenEventArgs());
@@ -307,6 +351,7 @@ namespace UnityWebSocket.NoWebGL
         private void HandleSent(Action action)
         {
             // UnityEngine.Debug.Log("OnOpen");
+
             try
             {
                 action?.Invoke();
@@ -320,6 +365,7 @@ namespace UnityWebSocket.NoWebGL
         private void HandleMessage(Opcode opcode, byte[] rawData)
         {
             // UnityEngine.Debug.Log("OnMessage: " + opcode);
+
             try
             {
                 OnMessage?.Invoke(this, new MessageEventArgs(opcode, rawData));
@@ -333,6 +379,7 @@ namespace UnityWebSocket.NoWebGL
         private void HandleClose(ushort code, string reason)
         {
             // UnityEngine.Debug.Log("OnClose: " + code + " " + reason);
+
             try
             {
                 OnClose?.Invoke(this, new CloseEventArgs(code, reason));
@@ -346,6 +393,7 @@ namespace UnityWebSocket.NoWebGL
         private void HandleError(Exception exception)
         {
             // UnityEngine.Debug.Log("OnError: " + exception.Message);
+
             OnError?.Invoke(this, new ErrorEventArgs(exception.Message));
         }
     }

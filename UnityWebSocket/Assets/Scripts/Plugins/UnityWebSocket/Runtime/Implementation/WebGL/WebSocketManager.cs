@@ -8,7 +8,7 @@ namespace UnityWebSocket.WebGL
     /// <summary>
     /// Class providing static access methods to work with JSLIB WebSocket
     /// </summary>
-    public static class WebSocketManager
+    internal static class WebSocketManager
     {
         /* Map of websocket instances */
         private static Dictionary<int, WebSocket> instances = new Dictionary<int, WebSocket>();
