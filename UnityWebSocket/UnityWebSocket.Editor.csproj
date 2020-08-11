@@ -64,7 +64,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\UnityWebSocket\Editor\Help.cs" />
-    <Compile Include="Assets\UnityWebSocket\Editor\PlayerSettingCheck.cs" />
+    <Compile Include="Assets\UnityWebSocket\Editor\PlayerSettingChecker.cs" />
+    <Compile Include="Assets\UnityWebSocket\Editor\VersionChecker.cs" />
     <None Include="Assets\UnityWebSocket\Editor\UnityWebSocket.Editor.asmdef" />
     <Reference Include="UnityEngine.AIModule">
       <HintPath>/Applications/Unity/2018.4.21f1/Unity.app/Contents/Managed/UnityEngine/UnityEngine.AIModule.dll</HintPath>
