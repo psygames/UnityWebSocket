@@ -9,12 +9,12 @@ namespace UnityWebSocket.Editor
     {
 #if UNITY_2018_1_OR_NEWER
         static UnityWebRequest req;
-        static bool checkSkip = true;
+        static bool forceCheck = false;
 
         [InitializeOnLoadMethod]
         public static void OnInit()
         {
-            checkSkip = true;
+            forceCheck = false;
             BeginCheck();
         }
 
@@ -31,7 +31,7 @@ namespace UnityWebSocket.Editor
                 EditorApplication.update -= Update;
                 var latestVersion = req.url.Substring(req.url.LastIndexOf("/v") + 2);
                 var vKey = "UnityWebSocket_Version_Skip_v" + latestVersion;
-                if (checkSkip && EditorPrefs.GetBool(vKey, false))
+                if (!forceCheck && EditorPrefs.GetBool(vKey, false))
                     return;
 
                 if (EditorPrefs.HasKey(vKey))
@@ -41,26 +41,46 @@ namespace UnityWebSocket.Editor
 
                 if (Settings.VERSION != latestVersion)
                 {
-                    if (EditorUtility.DisplayDialog("UnityWebSocket"
+                    var text = req.downloadHandler.text;
+                    var st = text.IndexOf("content=\"v2");
+                    st = st > 0 ? text.IndexOf("\n", st) : -1;
+                    var end = st > 0 ? text.IndexOf("\" />", st) : -1;
+                    var changeLog = "";
+                    if (st > 0 && end > st)
+                    {
+                        changeLog = text.Substring(st + 1, end - st - 1).Trim();
+                        changeLog = changeLog.Replace("\r", "");
+                        changeLog = changeLog.Replace("\n", "\n- ");
+                        changeLog = "\nCHANGE LOG: \n- " + changeLog + "\n";
+                    }
+
+                    var code = EditorUtility.DisplayDialogComplex("UnityWebSocket"
                         , "UnityWebSocket new version found v" + latestVersion
                         + ", your current version is v" + Settings.VERSION + ".\n"
-                        + "Upgrade UnityWebSocket now?",
-                        "Upgrade Now", "Skip this Version"))
+                        + "Upgrade UnityWebSocket now?\n"
+                        + changeLog,
+                        "Upgrade Now", "Remind Me Later", "Skip this Version");
+
+                    if (code == 0)
                     {
                         Application.OpenURL(Settings.GITHUB + "/releases");
                     }
-                    else
+                    else if (code == 2)
                     {
                         EditorPrefs.SetBool(vKey, true);
                     }
                 }
+                else if (forceCheck)
+                {
+                    EditorUtility.DisplayDialog("UnityWebSocket", "Your current version v" + Settings.VERSION + " is the Latest version.", "OK");
+                }
             }
         }
 
-        [MenuItem("Tools/UnityWebSocket/Check Updates")]
+        [MenuItem("Tools/UnityWebSocket/Check Updates", priority = 10)]
         static void CheckUpdates()
         {
-            checkSkip = false;
+            forceCheck = true;
             BeginCheck();
         }
 
