@@ -13,7 +13,6 @@ public class Example : MonoBehaviour
     int receiveCount;
     Vector2 scrollPos;
     bool logMessage = true;
-    bool showLog = true;
 
     private void OnGUI()
     {
@@ -119,7 +118,6 @@ public class Example : MonoBehaviour
 
         GUI.enabled = true;
         GUILayout.BeginHorizontal();
-        showLog = GUILayout.Toggle(showLog, "Show Log");
         logMessage = GUILayout.Toggle(logMessage, "Log Message");
         GUILayout.Label(string.Format("Send ({0}): ", sendCount));
         GUILayout.Label(string.Format("Receive ({0}): ", receiveCount));
@@ -132,17 +130,19 @@ public class Example : MonoBehaviour
             sendCount = 0;
         }
 
-        if (showLog)
-        {
-            scrollPos = GUILayout.BeginScrollView(scrollPos, GUILayout.MaxHeight(Screen.height / scale - 250), width);
-            GUILayout.Label(log);
-            GUILayout.EndScrollView();
-        }
+        scrollPos = GUILayout.BeginScrollView(scrollPos, GUILayout.MaxHeight(Screen.height / scale - 270), width);
+        GUILayout.Label(log);
+        GUILayout.EndScrollView();
     }
 
     private void AddLog(string str)
     {
         log += str;
+        // max log
+        if (log.Length > 32 * 1024)
+        {
+            log = log.Substring(16 * 1024);
+        }
     }
 
     private void Socket_OnOpen(object sender, OpenEventArgs e)
