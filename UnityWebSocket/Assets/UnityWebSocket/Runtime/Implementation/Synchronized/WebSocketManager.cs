@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-namespace UnityWebSocket.Synchronized
+namespace UnityWebSocket
 {
     internal class WebSocketManager : MonoBehaviour
     {

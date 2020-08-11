@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace UnityWebSocket.Synchronized
+namespace UnityWebSocket
 {
     public class WebSocket : IWebSocket
     {

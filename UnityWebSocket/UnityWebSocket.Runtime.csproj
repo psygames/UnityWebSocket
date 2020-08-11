@@ -63,22 +63,22 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\Scripts\Plugins\UnityWebSocket\Runtime\Core\CloseEventArgs.cs" />
-    <Compile Include="Assets\Scripts\Plugins\UnityWebSocket\Runtime\Core\CloseStatusCode.cs" />
-    <Compile Include="Assets\Scripts\Plugins\UnityWebSocket\Runtime\Core\ErrorEventArgs.cs" />
-    <Compile Include="Assets\Scripts\Plugins\UnityWebSocket\Runtime\Core\IWebSocket.cs" />
-    <Compile Include="Assets\Scripts\Plugins\UnityWebSocket\Runtime\Core\MessageEventArgs.cs" />
-    <Compile Include="Assets\Scripts\Plugins\UnityWebSocket\Runtime\Core\Opcode.cs" />
-    <Compile Include="Assets\Scripts\Plugins\UnityWebSocket\Runtime\Core\OpenEventArgs.cs" />
-    <Compile Include="Assets\Scripts\Plugins\UnityWebSocket\Runtime\Core\Settings.cs" />
-    <Compile Include="Assets\Scripts\Plugins\UnityWebSocket\Runtime\Core\WebSocketState.cs" />
-    <Compile Include="Assets\Scripts\Plugins\UnityWebSocket\Runtime\Implementation\NoWebGL\WebSocket.cs" />
-    <Compile Include="Assets\Scripts\Plugins\UnityWebSocket\Runtime\Implementation\Synchronized\WebSocket.cs" />
-    <Compile Include="Assets\Scripts\Plugins\UnityWebSocket\Runtime\Implementation\Synchronized\WebSocketManager.cs" />
-    <Compile Include="Assets\Scripts\Plugins\UnityWebSocket\Runtime\Implementation\Uniform\WebSocket.cs" />
-    <Compile Include="Assets\Scripts\Plugins\UnityWebSocket\Runtime\Implementation\WebGL\WebSocket.cs" />
-    <Compile Include="Assets\Scripts\Plugins\UnityWebSocket\Runtime\Implementation\WebGL\WebSocketManager.cs" />
-    <None Include="Assets\Scripts\Plugins\UnityWebSocket\Runtime\UnityWebSocket.Runtime.asmdef" />
+    <Compile Include="Assets\UnityWebSocket\Runtime\Core\CloseEventArgs.cs" />
+    <Compile Include="Assets\UnityWebSocket\Runtime\Core\CloseStatusCode.cs" />
+    <Compile Include="Assets\UnityWebSocket\Runtime\Core\ErrorEventArgs.cs" />
+    <Compile Include="Assets\UnityWebSocket\Runtime\Core\IWebSocket.cs" />
+    <Compile Include="Assets\UnityWebSocket\Runtime\Core\MessageEventArgs.cs" />
+    <Compile Include="Assets\UnityWebSocket\Runtime\Core\Opcode.cs" />
+    <Compile Include="Assets\UnityWebSocket\Runtime\Core\OpenEventArgs.cs" />
+    <Compile Include="Assets\UnityWebSocket\Runtime\Core\Settings.cs" />
+    <Compile Include="Assets\UnityWebSocket\Runtime\Core\WebSocketState.cs" />
+    <Compile Include="Assets\UnityWebSocket\Runtime\Implementation\NoWebGL\WebSocket.cs" />
+    <Compile Include="Assets\UnityWebSocket\Runtime\Implementation\Synchronized\WebSocket.cs" />
+    <Compile Include="Assets\UnityWebSocket\Runtime\Implementation\Synchronized\WebSocketManager.cs" />
+    <Compile Include="Assets\UnityWebSocket\Runtime\Implementation\Uniform\WebSocket.cs" />
+    <Compile Include="Assets\UnityWebSocket\Runtime\Implementation\WebGL\WebSocket.cs" />
+    <Compile Include="Assets\UnityWebSocket\Runtime\Implementation\WebGL\WebSocketManager.cs" />
+    <None Include="Assets\UnityWebSocket\Runtime\UnityWebSocket.Runtime.asmdef" />
     <Reference Include="UnityEngine.AIModule">
       <HintPath>/Applications/Unity/2018.4.21f1/Unity.app/Contents/Managed/UnityEngine/UnityEngine.AIModule.dll</HintPath>
     </Reference>

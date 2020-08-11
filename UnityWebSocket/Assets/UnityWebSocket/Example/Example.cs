@@ -7,7 +7,7 @@ public class Example : MonoBehaviour
     public string url = "ws://echo.websocket.org";
     private IWebSocket socket;
 
-    string sendText = "测试Test123 \\/*1#&^`";
+    string sendText = "Test123 \\/*1#&^`";
     string log = "";
     int sendCount;
     int receiveCount;
@@ -26,7 +26,7 @@ public class Example : MonoBehaviour
         GUILayout.Label("SDK Version: " + Settings.VERSION, width);
         var stateColor = state == WebSocketState.Closed ? "red" : state == WebSocketState.Open ? "#11ff11" : "#aa4444";
         var richText = new GUIStyle() { richText = true };
-        GUILayout.Label(string.Format(" <color={1}>●</color> <color=white>State: {0}</color>", state, stateColor), richText);
+        GUILayout.Label(string.Format(" <color=white>State:</color> <color={1}>{0}</color>", state, stateColor), richText);
 
         GUI.enabled = state == WebSocketState.Closed;
         GUILayout.Label("URL: ", width);
@@ -36,7 +36,7 @@ public class Example : MonoBehaviour
         GUI.enabled = state == WebSocketState.Closed;
         if (GUILayout.Button(state == WebSocketState.Connecting ? "Connecting..." : "Connect"))
         {
-            socket = new UnityWebSocket.Synchronized.WebSocket(url);
+            socket = new WebSocket(url);
             socket.OnOpen += Socket_OnOpen;
             socket.OnMessage += Socket_OnMessage;
             socket.OnClose += Socket_OnClose;
@@ -88,7 +88,7 @@ public class Example : MonoBehaviour
             {
                 for (int i = 0; i < 100; i++)
                 {
-                    var text = (i+1).ToString() + ". " + sendText;
+                    var text = (i + 1).ToString() + ". " + sendText;
                     socket.SendAsync(text, () =>
                     {
                         if (logMessage)
@@ -104,7 +104,7 @@ public class Example : MonoBehaviour
             {
                 for (int i = 0; i < 100; i++)
                 {
-                    var text = (i+1).ToString() + ". " + sendText;
+                    var text = (i + 1).ToString() + ". " + sendText;
                     var bytes = System.Text.Encoding.UTF8.GetBytes(text);
                     socket.SendAsync(bytes, () =>
                     {
