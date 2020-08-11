@@ -1,5 +1,13 @@
 ## 版本记录
 
+#### v2.1
+- 修改WebGL平台Unity - JS通信方式，使用回调方式替换SendMessage方式。
+- WebGL平台内存管理，内存优化，主动 malloc 和 free 内存。
+- 非WebGL平台内存管理，内存优化，使用对象池方式重复利用对象。
+- 添加 辅助工具，包括：Help，About，Check Updates 等。
+- 添加 Assembly Define 支持，规范项目依赖，非必要接口使用 internal 关键字不予暴露。
+- 目录结构重新整理，使用根路径下唯一UnityWebSocket文件夹作为插件唯一存放位置。
+
 #### v2.0
 - 移除 websocket-sharp 插件，使用 .Net 4.x 内置的 ClientWebSocket 作为非 WebGL 平台下 WebSocket 插件。
 - 添加**同步方式**的WebSocket ，使用者不必再考虑**异步回调**中使用 Unity 组件的问题。
