@@ -1,7 +1,6 @@
 ﻿using UnityEditor;
 using UnityEngine;
 using UnityEngine.Networking;
-using UnityWebSocket;
 
 namespace UnityWebSocket.Editor
 {
