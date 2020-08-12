@@ -23,7 +23,6 @@
   ```csharp
   // the namespace
   using UnityWebSocket;
-  using UnityWebSocket.Synchronized;
 
   // create instance
   WebSocket scoket = new WebSocket();
@@ -46,7 +45,7 @@
   socket.CloseAsync();
   ```
 
-- more detail usage, see the [Example](UnityWebSocket/Assets/Scripts/Plugins/UnityWebSocket/Example/TestWebSocket.cs) code in project。
+- more detail usage, see the [Example.cs](UnityWebSocket/Assets/UnityWebSocket/Example/Example.cs) code in project。
 
 #### 3. Attention(Warning)
 
@@ -54,7 +53,7 @@
 
   namespace | platform | sync style |  description  
   -|-|-|-
-  UnityWebSocket.Synchronized | all | synchronized(no block) | **[recommend]** no need consider the problem by using unity component in asynchronized callback.
+  UnityWebSocket | all | synchronized(no block) | **[recommend]** no need consider the problem by using unity component in asynchronized callback.
   UnityWebSocket.Uniform | all | asynchronized | consider the problem by using unity component in asynchronized callback.
   UnityWebSocket.WebGL | WebGL only | asynchronized | only run in WebGL platform.
   UnityWebSocket.NoWebGL | WebGL except | asynchronized  | only run in not WebGL platforms.
@@ -63,16 +62,12 @@
 
 - WebSocket.jslib, syntax follow to [asm.js](http://www.ruanyifeng.com/blog/2017/09/asmjs_emscripten.html)。
 
-      Path: Plugins/WebSocketJS/WebSocketJS.jslib
+      Path: Plugins/WebGL/WebSocket.jslib
       Fucntion：Unity will deploy it to web js runtime on WebGL platform.
-
-- WebSocketReceiver.cs
-
-      Function: interact with jslib. this script set as DonDestroyOnLoad.
 
 - Example Scene
 
-      Function: show how to use UnityWebSocket.
+      Function: Example how to use UnityWebSocket.
 
 #### 5. WebSocket Server
 

@@ -23,7 +23,6 @@
   ```csharp
   // 命名空间
   using UnityWebSocket;
-  using UnityWebSocket.Synchronized;
 
   // 创建实例
   WebSocket scoket = new WebSocket();
@@ -46,7 +45,7 @@
   socket.CloseAsync();
   ```
 
-- 详细使用方法可参考项目中的 [Example](UnityWebSocket/Assets/Scripts/Plugins/UnityWebSocket/Example/TestWebSocket.cs) 示例代码。
+- 详细使用方法可参考项目中的 [Example.cs](UnityWebSocket/Assets/UnityWebSocket/Example/Example.cs) 示例代码。
 
 #### 3. 注意（Warning）
 
@@ -54,7 +53,7 @@
 
   命名空间 | 平台 | 方式 |  说明  
   -|-|-|-
-  UnityWebSocket.Synchronized | 全平台 | 同步(无阻塞) | **[推荐]** 无需考虑异步回调使用 Unity 组件的问题。
+  UnityWebSocket | 全平台 | 同步(无阻塞) | **[推荐]** 无需考虑异步回调使用 Unity 组件的问题。
   UnityWebSocket.Uniform | 全平台 | 异步 | 需要考虑异步回调使用 Unity 组件的问题。
   UnityWebSocket.WebGL | WebGL平台 | 异步 | 仅支持WebGL平台下的通信。
   UnityWebSocket.NoWebGL | 非WebGL平台 | 异步  | 仅支持非WebGL平台下的通信。
@@ -63,13 +62,8 @@
 
 - WebSocket.jslib 语法格式需要遵循 [asm.js](http://www.ruanyifeng.com/blog/2017/09/asmjs_emscripten.html)。
 
-      路径：Plugins/WebSocketJS/WebSocketJS.jslib
+      路径：Plugins/WebGL/WebSocket.jslib
       作用：Unity发布WebGL版本会将其加入到js运行库中。
-
-- WebSocketReceiver.cs
-
-      作用：与 jslib 交互，负责收发多个WebSocket消息。
-      该脚本在使用WebSocket时会自动加载到场景中，并添加到DonDestroyOnLoad。
 
 - Example 场景
 
