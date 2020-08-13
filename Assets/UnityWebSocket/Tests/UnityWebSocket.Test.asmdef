@@ -1,5 +1,5 @@
 {
-    "name": "UnityWebSocket.Example",
+    "name": "UnityWebSocket.Test",
     "references": [
         "UnityWebSocket.Runtime"
     ],

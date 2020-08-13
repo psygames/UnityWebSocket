@@ -1,8 +1,7 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityWebSocket;
 
-public class Example : MonoBehaviour
+public class UnityWebSocketTest : MonoBehaviour
 {
     public string url = "ws://echo.websocket.org";
     private IWebSocket socket;
