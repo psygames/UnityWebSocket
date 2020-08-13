@@ -35,7 +35,7 @@ namespace UnityWebSocket.Editor
             if (PlayerSettings.WebGL.linkerTarget == WebGLLinkerTarget.Wasm)
             {
                 EditorUtility.DisplayDialog("Warning"
-                    , "On WebGL platform WebGL Linker Target should be asm.js or Both, via Menu:\nUnityWebSocket -> LinkerTarget -> asm.js or Both"
+                    , "On WebGL platform WebGL Linker Target should be asm.js or Both, via Menu:\nTools -> UnityWebSocket -> LinkerTarget -> asm.js or Both"
                     , "OK");
             }
             else if (PlayerSettings.scriptingRuntimeVersion == ScriptingRuntimeVersion.Legacy)
