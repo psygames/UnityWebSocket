@@ -7,8 +7,14 @@
 
 [Bb]uilds/
 
+[Ll]ogs/
+
 bin/
 
 # Visual Studio 2017 cache directory
 
 .vs/
+
+*.csproj
+
+*.sln
