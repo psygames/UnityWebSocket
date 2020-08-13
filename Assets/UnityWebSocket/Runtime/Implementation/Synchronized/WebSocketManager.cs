@@ -30,7 +30,7 @@ namespace UnityWebSocket
 
         public static void AutoCreateInstance()
         {
-            GameObject go = GameObject.Find("/"+ rootName);
+            GameObject go = GameObject.Find("/" + rootName);
             if (go == null)
             {
                 go = new GameObject(rootName);
