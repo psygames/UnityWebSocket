@@ -2,9 +2,26 @@
   "name": "com.psygame.unitywebsocket",
   "displayName": "UnityWebSocket",
   "version": "2.2.0",
-  "unity": "2018.3",
+  "unity": "2018.1",
   "description": "The Best Unity WebSocket Plugin for All Platforms.",
   "keywords": [ "websocket", "webgl", "socket", "jslib" ],
   "category": "network",
-  "dependencies": {}
+  "dependencies": {},
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/psygame/UnityWebSocket.git"
+  },
+  "author": {
+    "name": "psygame",
+    "email": "799329256@qq.com",
+    "url": "https://github.com/psygame"
+  },
+  "samples": [
+    {
+      "displayName": "Demo",
+      "description": "Demo Scene",
+      "path": "Samples~/Demo"
+    }
+  ]
 }
