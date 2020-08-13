@@ -6,12 +6,6 @@
   "description": "The Best Unity WebSocket Plugin for All Platforms.",
   "keywords": [ "websocket", "webgl", "socket", "jslib" ],
   "category": "network",
-  "dependencies": {},
-  "samples": [
-    {
-      "displayName": "Demo Scene",
-      "description": "Demo Scene",
-      "path": "Samples~/DemoScene"
-    }
+  "dependencies": {}
   ]
 }
