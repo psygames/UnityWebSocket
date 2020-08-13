@@ -1,0 +1,17 @@
+{
+  "name": "com.psygame.unitywebsocket",
+  "displayName": "UnityWebSocket",
+  "version": "2.2.0",
+  "unity": "2018.3",
+  "description": "The Best Unity WebSocket Plugin for All Platforms.",
+  "keywords": [ "websocket", "webgl", "socket", "jslib" ],
+  "category": "network",
+  "dependencies": {},
+  "samples": [
+    {
+      "displayName": "Demo Scene",
+      "description": "Demo Scene",
+      "path": "Samples~/DemoScene"
+    }
+  ]
+}
