@@ -1,5 +1,8 @@
 ## 版本记录
 
+#### v2.2
+- 拆分 Git 库，添加对 PackageManager 支持，添加对 OpenUpm 的支持。
+
 #### v2.1
 - 修改WebGL平台Unity - JS通信方式，使用回调方式替换SendMessage方式。
 - WebGL平台内存管理，内存优化，主动 malloc 和 free 内存。

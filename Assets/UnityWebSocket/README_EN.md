@@ -77,7 +77,7 @@ You can install it via [openupm-cli](https://github.com/openupm/openupm-cli).
   socket.CloseAsync();
   ```
 
-- more detail usage, see the [UnityWebSocketTest.cs](Assets/UnityWebSocket/Tests/UnityWebSocketTest.cs) code in project。
+- more detail usage, see the [UnityWebSocketTest.cs](Tests/UnityWebSocketTest.cs) code in project。
 
 #### 3. Attention(Warning)
 
