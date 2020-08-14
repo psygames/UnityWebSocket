@@ -16,21 +16,21 @@
 
 - This package is available on [OpenUPM](https://openupm.com).
 You can install it via [openupm-cli](https://github.com/openupm/openupm-cli).
-```
-openupm add com.psygame.unitywebsocket
-```
+  ```
+  openupm add com.psygame.unitywebsocket
+  ```
 
 #### Using Git
 
 - Find the manifest.json file in the Packages folder of your project and edit it to look like this:
-```js
-{
- "dependencies": {
- "com.psygame.unitywebsocket": "https://github.com/psygame/UnityWebSocket.git",
- ...
- },
-}
-```
+  ```js
+  {
+   "dependencies": {
+   "com.psygame.unitywebsocket": "https://github.com/psygame/UnityWebSocket.git",
+   ...
+   },
+  }
+  ```
 
 - To update the package, change suffix `#{version}` to the target version.
   * e.g. `"com.psygame.unitywebsocket": "https://github.com/psygame/UnityWebSocket.git#2.2.0",`
@@ -39,8 +39,8 @@ openupm add com.psygame.unitywebsocket
 
 #### Using Unity Package
 
-1. Download a UnityWebSocket.unitypackage file from [Releases](https://github.com/psygame/UnityWebSocket/releases) page.
-2. Import it into your Unity project.
+- Download a UnityWebSocket.unitypackage file from [Releases](https://github.com/psygame/UnityWebSocket/releases) page.
+- Import it into your Unity project.
 
 
 ## Usage:

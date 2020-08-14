@@ -16,22 +16,22 @@
 
 - SDK已上传至 [OpenUPM](https://openupm.com).
 您可以使用 [openupm-cli](https://github.com/openupm/openupm-cli) 进行安装。
-```
-openupm add com.psygame.unitywebsocket
-```
+  ```
+  openupm add com.psygame.unitywebsocket
+  ```
 
 
 #### 使用 Git 安装
 
 - 在您的项目根路径的 Packages 文件夹中找到 manifest.json 文件，参考如下方式进行修改:
-```js
-{
- "dependencies": {
- "com.psygame.unitywebsocket": "https://github.com/psygame/UnityWebSocket.git",
- ...
- },
-}
-```
+  ```js
+  {
+   "dependencies": {
+   "com.psygame.unitywebsocket": "https://github.com/psygame/UnityWebSocket.git",
+   ...
+   },
+  }
+  ```
 
 - 可通过修改链接后缀 `#{version}` 来安装对应版本.
   * 示例： `"com.psygame.unitywebsocket": "https://github.com/psygame/UnityWebSocket.git#2.2.0",`
@@ -41,8 +41,8 @@ openupm add com.psygame.unitywebsocket
 
 #### 使用 Unity Package 安装
 
-1. 在 [Releases](https://github.com/psygame/UnityWebSocket/releases) 页面下载对应版本的 UnityWebSocket.unitypackage 安装包。
-2. 在您的项目中导入即可。
+-  在 [Releases](https://github.com/psygame/UnityWebSocket/releases) 页面中，下载对应版本的 UnityWebSocket.unitypackage 安装包。
+- 在您的项目中导入安装包。
 
 
 ## 使用方法
