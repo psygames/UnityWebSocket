@@ -2,6 +2,7 @@
 using UnityEditor;
 using UnityEngine.Networking;
 using System.IO;
+using System;
 
 namespace UnityWebSocket.Editor
 {
@@ -35,18 +36,10 @@ namespace UnityWebSocket.Editor
 
         private void DrawLogo()
         {
-            var logoPath = Path.Combine(Application.dataPath, "../Packages/UnityWebSocket/Scripts/Editor/logo.png");
-            if (!File.Exists(logoPath))
-                logoPath = Path.Combine(Application.dataPath, "UnityWebSocket/Scripts/Editor/logo.png");
-
-            if (File.Exists(logoPath))
-            {
-                var logo = new Texture2D(1200, 1200);
-                logo.LoadImage(File.ReadAllBytes(logoPath));
-                var logoPos = new Rect(10, 10, 66, 66);
-                GUI.DrawTexture(logoPos, logo);
-            }
-
+            var logo = new Texture2D(1200, 1200);
+            logo.LoadImage(Convert.FromBase64String(LOGO_BASE64.VALUE));
+            var logoPos = new Rect(10, 10, 66, 66);
+            GUI.DrawTexture(logoPos, logo);
 
             var title = "<color=#3A9AD8><b>UnityWebSocket</b></color>";
             var titlePos = new Rect(80, 28, 500, 50);
@@ -324,5 +317,27 @@ namespace UnityWebSocket.Editor
 #endif
         }
 
+    }
+
+    internal static class LOGO_BASE64
+    {
+        public const string VALUE = "iVBORw0KGgoAAAANSUhEUgAAAEIAAABCCAMAAADUivDaAAAAq1BMVEUAAABKmtcvjtYzl" +
+             "9szmNszl9syl9k0mNs0mNwzmNs0mNszl9szl9s0mNs0mNwzmNw0mNwyltk0mNw0mNwzl9s0mNsymNs0mNszmNwzmNwzm" +
+             "NszmNs0mNwzl9w0mNwzmNw0mNs0mNs0mNwzl9wzmNs0mNwzmNs0mNwzl90zmNszmNszl9szmNsxmNszmNszmNw0mNwzm" +
+             "Nw0mNs2neM4pe41mt43ouo2oOY5qfM+UHlaAAAAMnRSTlMAAwXN3sgI+/069MSCK6M/MA74h9qfFHB8STWMJ9OSdmNcI" +
+             "8qya1IeF+/U0EIa57mqmFTYJe4AAAN3SURBVFjD7ZbpkppAFEa/bgVBREF2kEVGFNeZsM77P1kadURnJkr8k1Qlx1Khu" +
+             "/pw7+2lwH/+YcgfMBBLG7VocwDamzH+wJBB8Qhjve2f0TdrGwjei6o4Ub/nM/APw5Z7vvSB/qrCrqbD6fBEVtigeMxks" +
+             "fX9zWbj+z1jhqgSBplQ50eGo4614WXlRAzgrRhmtSfvxAn7pB0N5ObaKKZZuU5/d37IBcBgUQwqDuf7Z2gUmVAl4NGNr" +
+             "/UeHxV5n39ulbaKLI86h6HilmM5M1aN126lpNhtl59yeTsp8nUMvpNC1J3bh5FtfVRk+bJrJunn5d4U4piJ/Vw9eXgsj" +
+             "4ZpZaCjg9waZkIpnBWLJ44OwoNu60F2UnSaEkKv4XnAlCpm6B4F/aKMDiyGi2L8SEEAVdxNLuzmgV7nFwObEe2xQVuX+" +
+             "RV1lWetga3w+cN1sXgvm4cJH8OEgZC1DPKhfF/BIymmQrMjq/x65FUeEkDup8GxoexZmznHCvANtXU/CAq13yimhQGtm" +
+             "H4VCPnBBL1fTKo3CqEcvq7Lb/OwHxWTYlyw+JmjKoVvDLVOQB4pVsM8K8smgvLCxZDlIijwyOEc+nr/msMwK0+GQWGBd" +
+             "tmhjv8icTds1s2ammaFh04QLLe69NK7guP6mTDMaw3o6nAX/Z7EXUskPSvWEWg4srVlp5NTDXv9Lce9HGN5eeG4nj5Yz" +
+             "ACteU2wQLo4MBtJfd1nw5nG1/s9zwUQ6pykL1TQjqdeuvQW0naz2XKLYL4Cwzr4vj+OQdD96CSp7Lrynp4aeFF0xdm5q" +
+             "6OFtFfPv7URxpWJNjd/N+3+I9+1klMav12Qtgbt9R2JaIopjkzaPtOFq4KxUpqfUMSFnQrySWjLoQzRZS4HMH84ME1ej" +
+             "S1YJpQZ3B+sR1uCQJSBdGdCk1eAEgORR88KK05W8dh2MA+A/SKCYu3mCJ0Ek7HBx4HHeuwYy5G3x8hSMTJcOMFbinCsn" +
+             "hO1V1aszGULvA0g4UFsb4VA0hAFcyo6cgLsAoT7uUtGAH5wQKQle0wuLyxLTaNyJEYwxw4wSljLK1TP8CAaOyhBMMEsj" +
+             "OBoXgo7VGElFkSWL+vef1RF2YNXeRWYzQBTpkhC8KaZHhuIogArkQLKClBZjU26B2IZgGz+cpZkHl8g3fYUaW/YP2kb2" +
+             "M/V97JY/vZN859n+QmO7XtC9Bf2jAAAAABJRU5ErkJggg==";
     }
 }
