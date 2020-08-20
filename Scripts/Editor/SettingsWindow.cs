@@ -120,7 +120,7 @@ namespace UnityWebSocket.Editor
                 {
                     var end_index = txt.IndexOf(",", index);
                     var old_str = txt.Substring(index, end_index - index);
-                    var new_str = string.Format("\"{0}\": \"{1}#{2}\"", Settings.PACKAGE_NAME, Settings.UPM_URL, Settings.VERSION);
+                    var new_str = string.Format("\"{0}\": \"{1}#{2}\"", Settings.PACKAGE_NAME, Settings.UPM_URL, latestVersion);
                     txt = txt.Replace(old_str, new_str);
                     File.WriteAllText(packagePath, txt);
                     AssetDatabase.Refresh();
