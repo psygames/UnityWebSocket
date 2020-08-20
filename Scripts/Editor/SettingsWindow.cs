@@ -35,17 +35,18 @@ namespace UnityWebSocket.Editor
 
         private void DrawLogo()
         {
-            var logo = AssetDatabase.LoadAssetAtPath<Texture2D>("Packages/UnityWebSocket/Scripts/Editor/logo.png");
-            if (logo == null)
-            {
-                logo = AssetDatabase.LoadAssetAtPath<Texture2D>("Assets/UnityWebSocket/Scripts/Editor/logo.png");
-            }
+            var logoPath = Path.Combine(Application.dataPath, "../Packages/UnityWebSocket/Scripts/Editor/logo.png");
+            if (!File.Exists(logoPath))
+                logoPath = Path.Combine(Application.dataPath, "UnityWebSocket/Scripts/Editor/logo.png");
 
-            if (logo != null)
+            if (File.Exists(logoPath))
             {
+                var logo = new Texture2D(1200, 1200);
+                logo.LoadImage(File.ReadAllBytes(logoPath));
                 var logoPos = new Rect(10, 10, 66, 66);
                 GUI.DrawTexture(logoPos, logo);
             }
+
 
             var title = "<color=#3A9AD8><b>UnityWebSocket</b></color>";
             var titlePos = new Rect(80, 28, 500, 50);
