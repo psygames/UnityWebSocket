@@ -263,7 +263,7 @@ namespace UnityWebSocket.Editor
                 if (Settings.VERSION != latestVersion)
                 {
                     var text = req.downloadHandler.text;
-                    var st = text.IndexOf("content=\"v" + latestVersion);
+                    var st = text.IndexOf("content=\"" + latestVersion);
                     st = st > 0 ? text.IndexOf("\n", st) : -1;
                     var end = st > 0 ? text.IndexOf("\" />", st) : -1;
                     if (st > 0 && end > st)
