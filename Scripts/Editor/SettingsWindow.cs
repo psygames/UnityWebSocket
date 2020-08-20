@@ -35,9 +35,17 @@ namespace UnityWebSocket.Editor
 
         private void DrawLogo()
         {
-            var logo = AssetDatabase.LoadAssetAtPath<Texture2D>("Assets/UnityWebSocket/Scripts/Editor/logo.png");
-            var logoPos = new Rect(10, 10, 66, 66);
-            GUI.DrawTexture(logoPos, logo);
+            var logo = AssetDatabase.LoadAssetAtPath<Texture2D>("Packages/UnityWebSocket/Scripts/Editor/logo.png");
+            if (logo == null)
+            {
+                logo = AssetDatabase.LoadAssetAtPath<Texture2D>("Assets/UnityWebSocket/Scripts/Editor/logo.png");
+            }
+
+            if (logo != null)
+            {
+                var logoPos = new Rect(10, 10, 66, 66);
+                GUI.DrawTexture(logoPos, logo);
+            }
 
             var title = "<color=#3A9AD8><b>UnityWebSocket</b></color>";
             var titlePos = new Rect(80, 28, 500, 50);
@@ -299,7 +307,7 @@ namespace UnityWebSocket.Editor
             isDecompressionFallbackFixed = true;
 
 #if UNITY_2018_1_OR_NEWER
-            isLinkTargetFixed = PlayerSettings.WebGL.linkerTarget == WebGLLinkerTarget.Both;
+            isLinkTargetFixed = PlayerSettings.WebGL.linkerTarget == (WebGLLinkerTarget)2;
 #endif
 
 #if !UNITY_2019_3_OR_NEWER
