@@ -250,7 +250,7 @@ namespace UnityWebSocket.Editor
             if (req.isDone)
             {
                 EditorApplication.update -= VersionCheckUpdate;
-                latestVersion = req.url.Substring(req.url.LastIndexOf("/v") + 2);
+                latestVersion = req.url.Substring(req.url.LastIndexOf("/") + 1);
 
                 if (Settings.VERSION != latestVersion)
                 {
