@@ -5,6 +5,8 @@
   <img src="https://s1.ax1x.com/2020/08/21/dYIAQU.png" width=20%/>
 </div>
 
+[![openupm](https://img.shields.io/npm/v/com.psygame.unitywebsocket?label=openupm&registry_uri=https://package.openupm.com)](https://openupm.com/packages/com.psygame.unitywebsocket/)
+
 ## **Online Demo**
 
 - **[http://39.105.150.229/UnityWebSocket/](http://39.105.150.229/UnityWebSocket/)**
