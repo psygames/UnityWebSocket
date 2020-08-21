@@ -2,7 +2,7 @@
 [(English)](README_EN.md)
 
 <div align=center>
-  <img src="https://s1.ax1x.com/2020/08/21/dYIAQU.png" width=30%/>
+  <img src="https://s1.ax1x.com/2020/08/21/dYIAQU.png" width=20%/>
 </div>
 
 ## **在线示例**
