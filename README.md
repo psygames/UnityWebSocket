@@ -40,7 +40,7 @@
   ```
 
   可通过修改链接后缀 `#{version}` 来安装对应版本。
-  示例： `"com.psygame.unitywebsocket": "https://github.com/psygame/UnityWebSocket.git#2.3.0",`
+  * 示例： `"com.psygame.unitywebsocket": "https://github.com/psygame/UnityWebSocket.git#2.3.0",`
 
 
 - **通过 Unity Package 安装**
