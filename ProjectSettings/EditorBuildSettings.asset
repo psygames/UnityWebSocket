@@ -4,11 +4,5 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes:
-  - enabled: 0
-    path: 
-    guid: 00000000000000000000000000000000
-  - enabled: 1
-    path: Assets/UnityWebSocket/Samples~/Demo.unity
-    guid: b9e0f303577eab04b8c94ba1bfe99d69
+  m_Scenes: []
   m_configObjects: {}
