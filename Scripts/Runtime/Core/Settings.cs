@@ -1,6 +1,6 @@
 ﻿namespace UnityWebSocket
 {
-    public static class Settings
+    internal static class Settings
     {
         public const string GITHUB = "https://github.com/psygame/UnityWebSocket";
         public const string QQ_GROUP = "1126457634";
