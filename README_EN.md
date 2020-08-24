@@ -14,12 +14,12 @@
 
 ## **Quick Start**
 
-#### Requirements
+#### **Requirements**
 
 - Unity 2018.3 or later
 - No other SDK are required
 
-#### Installation
+#### **Installation**
 
 - **Using OpenUPM**
 
@@ -50,7 +50,7 @@
   Import it into your Unity project.
 
 
-#### Usage:
+#### **Usage**
 
 - Easy to use
 
@@ -81,7 +81,7 @@
 
 - more detail usage, see the [UnityWebSocketTest.cs](Tests/UnityWebSocketTest.cs) code in project。
 
-#### 3. Attention(Warning)
+#### **Attention(Warning)**
 
 - there are many **WebSocket** class in different namespace, use in different situations.
 
