@@ -6,11 +6,11 @@ using System;
 
 namespace UnityWebSocket.Editor
 {
-    public class SettingsWindow : EditorWindow
+    internal class SettingsWindow : EditorWindow
     {
         static SettingsWindow window = null;
         [MenuItem("Tools/UnityWebSocket", priority = 1)]
-        public static void Open()
+        internal static void Open()
         {
             if (window != null)
             {
@@ -68,9 +68,13 @@ namespace UnityWebSocket.Editor
             {
                 GUI.Label(new Rect(440, 30, 150, 10), "Checking Update...", TextStyle(alignment: TextAnchor.MiddleCenter));
             }
+            else if (latestVersion == "unknown")
+            {
+
+            }
             else
             {
-                GUI.Label(new Rect(440, 30, 150, 10), "Latest Version: " + latestVersion, TextStyle(alignment: TextAnchor.MiddleCenter));
+                GUI.Label(new Rect(440, 30, 150, 10), "  Latest Version: " + latestVersion, TextStyle(alignment: TextAnchor.MiddleCenter));
                 if (Settings.VERSION == latestVersion)
                 {
                     if (GUI.Button(new Rect(440, 50, 150, 18), "Check Update"))
@@ -104,17 +108,34 @@ namespace UnityWebSocket.Editor
 
         private void UpdateVersion()
         {
-            // via git
             var packagePath = Path.Combine(Application.dataPath, "../Packages/manifest.json");
             if (File.Exists(packagePath))
             {
                 var txt = File.ReadAllText(packagePath);
-                var index = txt.IndexOf("\"" + Settings.PACKAGE_NAME + "\"");
+                // via git
+                var index = txt.IndexOf("\"" + Settings.PACKAGE_NAME + "\": \"" + Settings.GITHUB + ".git");
                 if (index != -1)
                 {
-                    var end_index = txt.IndexOf(",", index);
-                    var old_str = txt.Substring(index, end_index - index);
+                    var end_index = txt.IndexOf("\"", index + 1);
+                    end_index = txt.IndexOf("\"", end_index + 1);
+                    end_index = txt.IndexOf("\"", end_index + 1);
+                    var old_str = txt.Substring(index, end_index - index + 1);
                     var new_str = string.Format("\"{0}\": \"{1}#{2}\"", Settings.PACKAGE_NAME, Settings.UPM_URL, latestVersion);
+                    txt = txt.Replace(old_str, new_str);
+                    File.WriteAllText(packagePath, txt);
+                    AssetDatabase.Refresh();
+                    return;
+                }
+
+                // via upm
+                index = txt.IndexOf("\"" + Settings.PACKAGE_NAME + "\": \"");
+                if (index != -1 && txt.IndexOf("openupm") != -1)
+                {
+                    var end_index = txt.IndexOf("\"", index + 1);
+                    end_index = txt.IndexOf("\"", end_index + 1);
+                    end_index = txt.IndexOf("\"", end_index + 1);
+                    var old_str = txt.Substring(index, end_index - index + 1);
+                    var new_str = string.Format("\"{0}\": \"{1}\"", Settings.PACKAGE_NAME, latestVersion);
                     txt = txt.Replace(old_str, new_str);
                     File.WriteAllText(packagePath, txt);
                     AssetDatabase.Refresh();
@@ -123,7 +144,7 @@ namespace UnityWebSocket.Editor
             }
 
             // via releases
-            Application.OpenURL(Settings.GITHUB);
+            Application.OpenURL(Settings.GITHUB+"/releases");
         }
 
         private void DrawFixSettings()
@@ -145,7 +166,7 @@ namespace UnityWebSocket.Editor
 #endif
                 EditorGUI.HelpBox(new Rect(10, 90, 580, 60), str, MessageType.Info);
                 GUI.enabled = false;
-                GUI.Button(new Rect(440, 158, 150, 18), "Auto Fix");
+                GUI.Button(new Rect(440, 158, 150, 18), "All Fixed");
                 GUI.enabled = true;
                 return;
             }
@@ -241,11 +262,13 @@ namespace UnityWebSocket.Editor
             EditorApplication.update += VersionCheckUpdate;
             req.SendWebRequest();
         }
+
         private void VersionCheckUpdate()
         {
             if (req == null || req.isNetworkError || req.isHttpError)
             {
                 EditorApplication.update -= VersionCheckUpdate;
+                latestVersion = "unknown";
                 return;
             }
 
@@ -275,10 +298,10 @@ namespace UnityWebSocket.Editor
     }
 
 
-    public static class PlayerSettingsChecker
+    internal static class PlayerSettingsChecker
     {
         [InitializeOnLoadMethod]
-        public static void OnInit()
+        internal static void OnInit()
         {
             bool isLinkTargetFixed;
             bool isMemorySizeFixed;
@@ -321,7 +344,7 @@ namespace UnityWebSocket.Editor
 
     internal static class LOGO_BASE64
     {
-        public const string VALUE = "iVBORw0KGgoAAAANSUhEUgAAAEIAAABCCAMAAADUivDaAAAAq1BMVEUAAABKmtcvjtYzl" +
+        internal const string VALUE = "iVBORw0KGgoAAAANSUhEUgAAAEIAAABCCAMAAADUivDaAAAAq1BMVEUAAABKmtcvjtYzl" +
              "9szmNszl9syl9k0mNs0mNwzmNs0mNszl9szl9s0mNs0mNwzmNw0mNwyltk0mNw0mNwzl9s0mNsymNs0mNszmNwzmNwzm" +
              "NszmNs0mNwzl9w0mNwzmNw0mNs0mNs0mNwzl9wzmNs0mNwzmNs0mNwzl90zmNszmNszl9szmNsxmNszmNszmNw0mNwzm" +
              "Nw0mNs2neM4pe41mt43ouo2oOY5qfM+UHlaAAAAMnRSTlMAAwXN3sgI+/069MSCK6M/MA74h9qfFHB8STWMJ9OSdmNcI" +
