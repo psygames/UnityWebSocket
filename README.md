@@ -53,7 +53,8 @@
 ### **使用方法**
 
 - 代码示例
-```csharp
+
+  ```csharp
   // 命名空间
   using UnityWebSocket;
 
@@ -70,8 +71,8 @@
   string address = "ws://echo.websocket.org";
   socket.ConnectAsync(address);
 
-  // 发送数据（两种发送方式）
-  socket.SendAsync(str); // 发送类型 String 类型数据
+  // 发送数据（两种方式）
+  socket.SendAsync(str); // 发送 string 类型数据
   socket.SendAsync(bytes); // 发送 byte[] 类型数据
 
   // 关闭连接
@@ -79,7 +80,6 @@
   ```
 
 - 详细使用方法可参考项目中的 [UnityWebSocketTest.cs](Tests/UnityWebSocketTest.cs) 示例代码。
-
 
 
 ### **注意（Warning）**

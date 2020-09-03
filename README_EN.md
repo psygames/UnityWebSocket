@@ -14,12 +14,12 @@
 
 ## **Quick Start**
 
-#### **Requirements**
+### **Requirements**
 
 - Unity 2018.3 or later
 - No other SDK are required
 
-#### **Installation**
+### **Installation**
 
 - **Using OpenUPM**
 
@@ -43,14 +43,13 @@
   To update the package, change suffix `#{version}` to the target version.
   * e.g. `"com.psygame.unitywebsocket": "https://github.com/psygame/UnityWebSocket.git#2.3.0",`
 
-
 - **Using Unity Package**
 
   Download an `UnityWebSocket.unitypackage` file from [Releases](https://github.com/psygame/UnityWebSocket/releases) page.
   Import it into your Unity project.
 
 
-#### **Usage**
+### **Usage**
 
 - Easy to use
 
@@ -71,8 +70,8 @@
   string address = "ws://echo.websocket.org";
   socket.ConnectAsync(address);
 
-  // send data (tow ways)
-  socket.SendAsync(str); // send String data
+  // send data (two ways)
+  socket.SendAsync(str); // send string data
   socket.SendAsync(bytes); // send byte[] data
 
   // close connection
@@ -81,7 +80,8 @@
 
 - more detail usage, see the [UnityWebSocketTest.cs](Tests/UnityWebSocketTest.cs) code in project。
 
-#### **Attention(Warning)**
+
+### **Attention(Warning)**
 
 - there are many **WebSocket** class in different namespace, use in different situations.
 
