@@ -36,6 +36,7 @@ namespace UnityWebSocket.Editor
             DrawSeparator(186);
             DrawHelper();
             DrawFooter();
+
             //TODO: Suggest Package Installation
             //TODO: Environment Check
         }
@@ -288,8 +289,8 @@ namespace UnityWebSocket.Editor
 
         private void DrawFooter()
         {
-            EditorGUI.DropShadowLabel(new Rect(10, 230, 400, 10), "Developed by " + Settings.AUHTOR, TextStyle(10, TextAnchor.MiddleCenter));
-            EditorGUI.DropShadowLabel(new Rect(10, 250, 400, 10), "All rights reserved", TextStyle(10, TextAnchor.MiddleCenter));
+            EditorGUI.DropShadowLabel(new Rect(10, 230, 400, 20), "Developed by " + Settings.AUHTOR);
+            EditorGUI.DropShadowLabel(new Rect(10, 250, 400, 20), "All rights reserved");
         }
 
         UnityWebRequest req;
