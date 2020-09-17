@@ -58,7 +58,8 @@
   using UnityWebSocket;
 
   // 创建实例
-  WebSocket scoket = new WebSocket();
+  string address = "ws://echo.websocket.org";
+  WebSocket scoket = new WebSocket(address);
 
   // 注册回调
   scoket.OnOpen += OnOpen;
@@ -67,8 +68,7 @@
   socket.OnError += OnError;
 
   // 连接
-  string address = "ws://echo.websocket.org";
-  socket.ConnectAsync(address);
+  socket.ConnectAsync();
 
   // 发送数据（两种发送方式）
   socket.SendAsync(str); // 发送类型 String 类型数据
