@@ -58,7 +58,8 @@
   using UnityWebSocket;
 
   // create instance
-  WebSocket scoket = new WebSocket();
+  string address = "ws://echo.websocket.org";
+  WebSocket scoket = new WebSocket(address);
 
   // register callback
   scoket.OnOpen += OnOpen;
@@ -67,8 +68,7 @@
   socket.OnError += OnError;
 
   // connect
-  string address = "ws://echo.websocket.org";
-  socket.ConnectAsync(address);
+  socket.ConnectAsync();
 
   // send data (two ways)
   socket.SendAsync(str); // send string data
