@@ -49,14 +49,14 @@ namespace UnityWebSocket.Uniform
         }
 
 
-        public void SendAsync(string data, Action completed = null)
+        public void SendAsync(string data)
         {
-            _rawSocket.SendAsync(data, completed);
+            _rawSocket.SendAsync(data);
         }
 
-        public void SendAsync(byte[] data, Action completed = null)
+        public void SendAsync(byte[] data)
         {
-            _rawSocket.SendAsync(data, completed);
+            _rawSocket.SendAsync(data);
         }
 
         public void ConnectAsync()

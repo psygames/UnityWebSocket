@@ -69,22 +69,18 @@ namespace UnityWebSocket.WebGL
                 HandleOnError(WebSocketManager.GetErrorMessageFromCode(ret));
         }
 
-        public void SendAsync(string text, Action completed = null)
+        public void SendAsync(string text)
         {
             int ret = WebSocketManager.WebSocketSendStr(instanceID, text);
             if (ret < 0)
                 HandleOnError(WebSocketManager.GetErrorMessageFromCode(ret));
-            if (completed != null)
-                completed.Invoke();
         }
 
-        public void SendAsync(byte[] data, Action completed = null)
+        public void SendAsync(byte[] data)
         {
             int ret = WebSocketManager.WebSocketSend(instanceID, data, data.Length);
             if (ret < 0)
                 HandleOnError(WebSocketManager.GetErrorMessageFromCode(ret));
-            if (completed != null)
-                completed.Invoke();
         }
     }
 }

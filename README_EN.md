@@ -78,7 +78,7 @@
   socket.CloseAsync();
   ```
 
-- more detail usage, see the [UnityWebSocketTest.cs](Tests/UnityWebSocketTest.cs) code in project。
+- more detail usage, see the [UnityWebSocketDemo.cs](Samples~/Demo/UnityWebSocketDemo.cs) code in project。
 
 
 ### **Attention(Warning)**

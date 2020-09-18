@@ -79,7 +79,7 @@
   socket.CloseAsync();
   ```
 
-- 详细使用方法可参考项目中的 [UnityWebSocketTest.cs](Tests/UnityWebSocketTest.cs) 示例代码。
+- 详细使用方法可参考项目中的 [UnityWebSocketDemo.cs](Samples~/Demo/UnityWebSocketDemo.cs) 示例代码。
 
 
 ### **注意（Warning）**
