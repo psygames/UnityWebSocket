@@ -356,7 +356,7 @@ namespace UnityWebSocket.NoWebGL
             {
                 sendBuffer = new SendBuffer
                 {
-                    type = WebSocketMessageType.Text,
+                    type = type,
                     buffer = new ArraySegment<byte>(bytes),
                 };
                 return sendBuffer;
