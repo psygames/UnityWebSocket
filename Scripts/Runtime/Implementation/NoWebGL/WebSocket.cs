@@ -397,7 +397,7 @@ namespace UnityWebSocket.NoWebGL
             OnError?.Invoke(this, new ErrorEventArgs(exception.Message));
         }
 
-        [System.Diagnostics.Conditional("UNITY_EDITOR")]
+        [System.Diagnostics.Conditional("UNITYWEBSOCKET_NOWEBGL_LOG")]
         private void Log(string msg)
         {
             UnityEngine.Debug.Log($"<color=yellow>[UnityWebSocket]</color>" +

@@ -1,7 +1,7 @@
 {
   "name": "com.psygame.unitywebsocket",
   "displayName": "UnityWebSocket",
-  "version": "2.4.0",
+  "version": "2.4.1",
   "unity": "2018.3",
   "description": "The Best Unity WebSocket Plugin for All Platforms.",
   "keywords": [
