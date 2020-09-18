@@ -50,7 +50,7 @@ namespace UnityWebSocket.NoWebGL
         /// <summary>
         /// run the socket async method on main thread, if you want.
         /// </summary>
-        public static bool runOnMainThread { get; private set; } = false;
+        public static bool runOnMainThread { get; set; } = false;
 
         #region APIs
         public WebSocket(string address)
