@@ -17,10 +17,6 @@ namespace UnityWebSocket
             }
         }
 
-        internal WebSocketManager()
-        { }
-
-
         void Awake()
         {
             DontDestroyOnLoad(gameObject);
@@ -46,19 +42,36 @@ namespace UnityWebSocket
 
         public void Add(WebSocket socket)
         {
-            sockets.Add(socket);
+            lock (sockets)
+            {
+                if (!sockets.Contains(socket))
+                    sockets.Add(socket);
+            }
         }
 
-        public void Remove(WebSocket socket)
-        {
-            sockets.Remove(socket);
-        }
-
+        float clearCheckTimeStamp = 0;
         private void Update()
         {
-            foreach (var ws in sockets)
+            if (sockets.Count <= 0)
+                return;
+
+            bool clearCheck = Time.realtimeSinceStartup - clearCheckTimeStamp >= 60;
+
+            lock (sockets)
             {
-                ws.Update();
+                for (int i = sockets.Count - 1; i >= 0; i--)
+                {
+                    sockets[i].Update();
+                    if (clearCheck && sockets[i].ReadyState == WebSocketState.Closed)
+                    {
+                        sockets.RemoveAt(i);
+                    }
+                }
+            }
+
+            if (clearCheck)
+            {
+                clearCheckTimeStamp = Time.realtimeSinceStartup;
             }
         }
     }

@@ -59,7 +59,7 @@ namespace UnityWebSocket
         }
 
         private readonly Queue<EventArgs> eventArgsQueue = new Queue<EventArgs>();
-        public void Update()
+        internal void Update()
         {
             while (eventArgsQueue.Count > 0)
             {
