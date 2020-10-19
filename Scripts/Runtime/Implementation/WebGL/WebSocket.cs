@@ -1,3 +1,4 @@
+#if UNITY_EDITOR || UNITY_WEBGL
 using System;
 
 namespace UnityWebSocket.WebGL
@@ -84,3 +85,4 @@ namespace UnityWebSocket.WebGL
         }
     }
 }
+#endif
