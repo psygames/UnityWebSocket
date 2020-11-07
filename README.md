@@ -24,10 +24,7 @@
 
 - **通过 OpenUPM 安装**
 
-  插件已托管至 [OpenUPM](https://openupm.com) ，您可以使用 [openupm-cli](https://github.com/openupm/openupm-cli) 进行安装。
-  ```
-  openupm add com.psygame.unitywebsocket
-  ```
+  插件已托管至 [OpenUPM](https://openupm.com/packages/com.psygame.unitywebsocket/) ，您可以使用 [openupm package installer](https://package-installer.glitch.me/v1/installer/OpenUPM/com.psygame.unitywebsocket?registry=https%3A%2F%2Fpackage.openupm.com) 进行安装。
 
 - **通过 Git 安装**
 
