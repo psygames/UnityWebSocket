@@ -23,10 +23,7 @@
 
 - **Using OpenUPM**
 
-  This package is available on [OpenUPM](https://openupm.com). You can install it via [openupm-cli](https://github.com/openupm/openupm-cli).
-  ```
-  openupm add com.psygame.unitywebsocket
-  ```
+  This package is available on [OpenUPM](https://openupm.com/packages/com.psygame.unitywebsocket/). You can install it via [openupm package installer](https://package-installer.glitch.me/v1/installer/OpenUPM/com.psygame.unitywebsocket?registry=https%3A%2F%2Fpackage.openupm.com).
 
 - **Using Git**
 
