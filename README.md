@@ -57,12 +57,12 @@
 
   // 创建实例
   string address = "ws://echo.websocket.org";
-  WebSocket scoket = new WebSocket(address);
+  WebSocket socket = new WebSocket(address);
 
   // 注册回调
-  scoket.OnOpen += OnOpen;
-  scoket.OnClose += OnClose;
-  scoket.OnMessage += OnMessage;
+  socket.OnOpen += OnOpen;
+  socket.OnClose += OnClose;
+  socket.OnMessage += OnMessage;
   socket.OnError += OnError;
 
   // 连接
