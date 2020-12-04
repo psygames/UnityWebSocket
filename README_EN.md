@@ -56,12 +56,12 @@
 
   // create instance
   string address = "ws://echo.websocket.org";
-  WebSocket scoket = new WebSocket(address);
+  WebSocket socket = new WebSocket(address);
 
   // register callback
-  scoket.OnOpen += OnOpen;
-  scoket.OnClose += OnClose;
-  scoket.OnMessage += OnMessage;
+  socket.OnOpen += OnOpen;
+  socket.OnClose += OnClose;
+  socket.OnMessage += OnMessage;
   socket.OnError += OnError;
 
   // connect
