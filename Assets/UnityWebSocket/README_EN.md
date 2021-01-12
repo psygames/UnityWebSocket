@@ -9,7 +9,7 @@
 
 ## **Online Demo**
 
-- **[http://39.105.150.229/UnityWebSocket/](http://39.105.150.229/UnityWebSocket/)**
+- **[https://psygame.github.io/UnityWebSocket/](https://psygame.github.io/UnityWebSocket/)**
 
 
 ## **Quick Start**
