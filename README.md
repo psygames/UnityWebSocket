@@ -7,7 +7,7 @@
 
 ## **在线示例**
 
-- **[http://39.105.150.229/UnityWebSocket/](http://39.105.150.229/UnityWebSocket/)**
+- **[https://psygame.github.io/UnityWebSocket/](https://psygame.github.io/UnityWebSocket/)**
 
 
 ## **快速开始**
@@ -56,12 +56,12 @@
   using UnityWebSocket;
 
   // 创建实例
-  WebSocket scoket = new WebSocket();
+  WebSocket socket = new WebSocket();
 
   // 注册回调
-  scoket.OnOpen += OnOpen;
-  scoket.OnClose += OnClose;
-  scoket.OnMessage += OnMessage;
+  socket.OnOpen += OnOpen;
+  socket.OnClose += OnClose;
+  socket.OnMessage += OnMessage;
   socket.OnError += OnError;
 
   // 连接

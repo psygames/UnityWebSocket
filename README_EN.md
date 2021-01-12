@@ -7,7 +7,7 @@
 
 ## **Online Demo**
 
-- **[http://39.105.150.229/UnityWebSocket/](http://39.105.150.229/UnityWebSocket/)**
+- **[https://psygame.github.io/UnityWebSocket/](https://psygame.github.io/UnityWebSocket/)**
 
 
 ## **Quick Start**
@@ -57,12 +57,12 @@
   using UnityWebSocket;
 
   // create instance
-  WebSocket scoket = new WebSocket();
+  WebSocket socket = new WebSocket();
 
   // register callback
-  scoket.OnOpen += OnOpen;
-  scoket.OnClose += OnClose;
-  scoket.OnMessage += OnMessage;
+  socket.OnOpen += OnOpen;
+  socket.OnClose += OnClose;
+  socket.OnMessage += OnMessage;
   socket.OnError += OnError;
 
   // connect
