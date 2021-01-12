@@ -3,7 +3,7 @@ using UnityWebSocket;
 
 public class UnityWebSocketDemo : MonoBehaviour
 {
-    public string url = "ws://echo.websocket.org";
+    public string url = "wss://echo.websocket.org";
     private IWebSocket socket;
 
     string sendText = "Test123 \\/*1#&^`";
