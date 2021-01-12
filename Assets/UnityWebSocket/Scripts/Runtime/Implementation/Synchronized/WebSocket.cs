@@ -38,40 +38,14 @@ namespace UnityWebSocket
             WebSocketManager.Instance.Add(this);
         }
 
-        public void SendAsync(string data, Action completed = null)
+        public void SendAsync(string data)
         {
-            if (completed != null)
-            {
-                _socket.SendAsync(data, () =>
-                {
-                    lock (sendCallbackQueue)
-                    {
-                        sendCallbackQueue.Enqueue(completed);
-                    }
-                });
-            }
-            else
-            {
-                _socket.SendAsync(data);
-            }
+            _socket.SendAsync(data);
         }
 
-        public void SendAsync(byte[] data, Action completed = null)
+        public void SendAsync(byte[] data)
         {
-            if (completed != null)
-            {
-                _socket.SendAsync(data, () =>
-                {
-                    lock (sendCallbackQueue)
-                    {
-                        sendCallbackQueue.Enqueue(completed);
-                    }
-                });
-            }
-            else
-            {
-                _socket.SendAsync(data);
-            }
+            _socket.SendAsync(data);
         }
 
         public void ConnectAsync()
@@ -85,22 +59,8 @@ namespace UnityWebSocket
         }
 
         private readonly Queue<EventArgs> eventArgsQueue = new Queue<EventArgs>();
-        private readonly Queue<Action> sendCallbackQueue = new Queue<Action>();
-        public void Update()
+        internal void Update()
         {
-            while (sendCallbackQueue.Count > 0)
-            {
-                Action callback;
-                lock (sendCallbackQueue)
-                {
-                    callback = sendCallbackQueue.Dequeue();
-                }
-                if (callback != null)
-                {
-                    callback.Invoke();
-                }
-            }
-
             while (eventArgsQueue.Count > 0)
             {
                 EventArgs e;

@@ -14,20 +14,17 @@
 
 ## **快速开始**
 
-#### **安装环境**
+### **安装环境**
 
 - Unity 2018.3 或更高。
 - 无其他SDK依赖。
 
 
-#### **安装方法**
+### **安装方法**
 
 - **通过 OpenUPM 安装**
 
-  插件已托管至 [OpenUPM](https://openupm.com) ，您可以使用 [openupm-cli](https://github.com/openupm/openupm-cli) 进行安装。
-  ```
-  openupm add com.psygame.unitywebsocket
-  ```
+  插件已托管至 [OpenUPM](https://openupm.com/packages/com.psygame.unitywebsocket/) ，您可以使用 [openupm package installer](https://package-installer.glitch.me/v1/installer/OpenUPM/com.psygame.unitywebsocket?registry=https%3A%2F%2Fpackage.openupm.com) 进行安装。
 
 - **通过 Git 安装**
 
@@ -50,39 +47,39 @@
   在 [Releases](https://github.com/psygame/UnityWebSocket/releases) 页面中，下载对应版本的 `UnityWebSocket.unitypackage` 安装包，然后导入到您的项目中。
 
 
-#### **使用方法**
+### **使用方法**
 
 - 代码示例
-```csharp
+
+  ```csharp
   // 命名空间
   using UnityWebSocket;
 
   // 创建实例
   string address = "ws://echo.websocket.org";
-  WebSocket scoket = new WebSocket(address);
+  WebSocket socket = new WebSocket(address);
 
   // 注册回调
-  scoket.OnOpen += OnOpen;
-  scoket.OnClose += OnClose;
-  scoket.OnMessage += OnMessage;
+  socket.OnOpen += OnOpen;
+  socket.OnClose += OnClose;
+  socket.OnMessage += OnMessage;
   socket.OnError += OnError;
 
   // 连接
   socket.ConnectAsync();
 
-  // 发送数据（两种发送方式）
-  socket.SendAsync(str); // 发送类型 String 类型数据
+  // 发送数据（两种方式）
+  socket.SendAsync(str); // 发送 string 类型数据
   socket.SendAsync(bytes); // 发送 byte[] 类型数据
 
   // 关闭连接
   socket.CloseAsync();
   ```
 
-- 详细使用方法可参考项目中的 [UnityWebSocketTest.cs](Tests/UnityWebSocketTest.cs) 示例代码。
+- 详细使用方法可参考项目中的 [UnityWebSocketDemo.cs](Samples~/Demo/UnityWebSocketDemo.cs) 示例代码。
 
 
-
-#### **注意（Warning）**
+### **注意（Warning）**
 
 - 插件中多个命名空间中存在 **WebSocket** 类，适用不同环境，请根据自身需求选择。
 
@@ -93,5 +90,5 @@
   UnityWebSocket.WebGL | WebGL平台 | 异步 | 仅支持WebGL平台下的通信。
   UnityWebSocket.NoWebGL | 非WebGL平台 | 异步  | 仅支持非WebGL平台下的通信。
 
-#### **QQ 交流群**
+### **QQ 交流群**
 - 1126457634 >>> [入群通道](https://qm.qq.com/cgi-bin/qm/qr?k=KcexYJ9aYwogFXbj2aN0XHH5b2G7ICmd) <<<

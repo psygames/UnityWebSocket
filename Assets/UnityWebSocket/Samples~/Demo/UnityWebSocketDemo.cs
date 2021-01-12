@@ -1,9 +1,9 @@
 ﻿using UnityEngine;
 using UnityWebSocket;
 
-public class UnityWebSocketTest : MonoBehaviour
+public class UnityWebSocketDemo : MonoBehaviour
 {
-    public string url = "ws://echo.websocket.org";
+    public string url = "wss://echo.websocket.org";
     private IWebSocket socket;
 
     string sendText = "Test123 \\/*1#&^`";
@@ -59,12 +59,10 @@ public class UnityWebSocketTest : MonoBehaviour
         {
             if (!string.IsNullOrEmpty(sendText))
             {
-                socket.SendAsync(sendText, () =>
-                {
-                    if (logMessage)
-                        AddLog(string.Format("Send: {0}\n", sendText));
-                    sendCount += 1;
-                });
+                socket.SendAsync(sendText);
+                if (logMessage)
+                    AddLog(string.Format("Send: {0}\n", sendText));
+                sendCount += 1;
             }
         }
         if (GUILayout.Button("Send Bytes"))
@@ -72,12 +70,11 @@ public class UnityWebSocketTest : MonoBehaviour
             if (!string.IsNullOrEmpty(sendText))
             {
                 var bytes = System.Text.Encoding.UTF8.GetBytes(sendText);
-                socket.SendAsync(bytes, () =>
-                {
-                    if (logMessage)
-                        AddLog(string.Format("Send Bytes ({1}): {0}\n", sendText, bytes.Length));
-                    sendCount += 1;
-                });
+                socket.SendAsync(bytes);
+
+                if (logMessage)
+                    AddLog(string.Format("Send Bytes ({1}): {0}\n", sendText, bytes.Length));
+                sendCount += 1;
             }
         }
         if (GUILayout.Button("Send x100"))
@@ -87,12 +84,11 @@ public class UnityWebSocketTest : MonoBehaviour
                 for (int i = 0; i < 100; i++)
                 {
                     var text = (i + 1).ToString() + ". " + sendText;
-                    socket.SendAsync(text, () =>
-                    {
-                        if (logMessage)
-                            AddLog(string.Format("Send: {0}\n", text));
-                        sendCount += 1;
-                    });
+                    socket.SendAsync(text);
+
+                    if (logMessage)
+                        AddLog(string.Format("Send: {0}\n", text));
+                    sendCount += 1;
                 }
             }
         }
@@ -104,12 +100,10 @@ public class UnityWebSocketTest : MonoBehaviour
                 {
                     var text = (i + 1).ToString() + ". " + sendText;
                     var bytes = System.Text.Encoding.UTF8.GetBytes(text);
-                    socket.SendAsync(bytes, () =>
-                    {
-                        if (logMessage)
-                            AddLog(string.Format("Send Bytes ({1}): {0}\n", text, bytes.Length));
-                        sendCount += 1;
-                    });
+                    socket.SendAsync(bytes);
+                    if (logMessage)
+                        AddLog(string.Format("Send Bytes ({1}): {0}\n", text, bytes.Length));
+                    sendCount += 1;
                 }
             }
         }
@@ -174,4 +168,11 @@ public class UnityWebSocketTest : MonoBehaviour
         AddLog(string.Format("Error: {0}\n", e.Message));
     }
 
+    private void OnApplicationQuit()
+    {
+        if (socket != null && socket.ReadyState != WebSocketState.Closed)
+        {
+            socket.CloseAsync();
+        }
+    }
 }

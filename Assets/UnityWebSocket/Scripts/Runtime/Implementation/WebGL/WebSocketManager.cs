@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if UNITY_EDITOR || UNITY_WEBGL
+using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using AOT;
@@ -170,3 +171,4 @@ namespace UnityWebSocket.WebGL
         }
     }
 }
+#endif

@@ -14,19 +14,16 @@
 
 ## **Quick Start**
 
-#### **Requirements**
+### **Requirements**
 
 - Unity 2018.3 or later
 - No other SDK are required
 
-#### **Installation**
+### **Installation**
 
 - **Using OpenUPM**
 
-  This package is available on [OpenUPM](https://openupm.com). You can install it via [openupm-cli](https://github.com/openupm/openupm-cli).
-  ```
-  openupm add com.psygame.unitywebsocket
-  ```
+  This package is available on [OpenUPM](https://openupm.com/packages/com.psygame.unitywebsocket/). You can install it via [openupm package installer](https://package-installer.glitch.me/v1/installer/OpenUPM/com.psygame.unitywebsocket?registry=https%3A%2F%2Fpackage.openupm.com).
 
 - **Using Git**
 
@@ -43,14 +40,13 @@
   To update the package, change suffix `#{version}` to the target version.
   * e.g. `"com.psygame.unitywebsocket": "https://github.com/psygame/UnityWebSocket.git#2.3.0",`
 
-
 - **Using Unity Package**
 
   Download an `UnityWebSocket.unitypackage` file from [Releases](https://github.com/psygame/UnityWebSocket/releases) page.
   Import it into your Unity project.
 
 
-#### **Usage**
+### **Usage**
 
 - Easy to use
 
@@ -60,28 +56,29 @@
 
   // create instance
   string address = "ws://echo.websocket.org";
-  WebSocket scoket = new WebSocket(address);
+  WebSocket socket = new WebSocket(address);
 
   // register callback
-  scoket.OnOpen += OnOpen;
-  scoket.OnClose += OnClose;
-  scoket.OnMessage += OnMessage;
+  socket.OnOpen += OnOpen;
+  socket.OnClose += OnClose;
+  socket.OnMessage += OnMessage;
   socket.OnError += OnError;
 
   // connect
   socket.ConnectAsync();
 
-  // send data (tow ways)
-  socket.SendAsync(str); // send String data
+  // send data (two ways)
+  socket.SendAsync(str); // send string data
   socket.SendAsync(bytes); // send byte[] data
 
   // close connection
   socket.CloseAsync();
   ```
 
-- more detail usage, see the [UnityWebSocketTest.cs](Tests/UnityWebSocketTest.cs) code in project。
+- more detail usage, see the [UnityWebSocketDemo.cs](Samples~/Demo/UnityWebSocketDemo.cs) code in project。
 
-#### **Attention(Warning)**
+
+### **Attention(Warning)**
 
 - there are many **WebSocket** class in different namespace, use in different situations.
 

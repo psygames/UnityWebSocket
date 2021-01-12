@@ -12,7 +12,7 @@ PlayerSettings:
   targetDevice: 2
   useOnDemandResources: 0
   accelerometerFrequency: 60
-  companyName: com.redstone
+  companyName: com.psygame
   productName: UnityWebsocket
   defaultCursor: {fileID: 0}
   cursorHotspot: {x: 0, y: 0}
@@ -118,6 +118,8 @@ PlayerSettings:
   switchNVNShaderPoolsGranularity: 33554432
   switchNVNDefaultPoolsGranularity: 16777216
   switchNVNOtherPoolsGranularity: 16777216
+  switchNVNMaxPublicTextureIDCount: 0
+  switchNVNMaxPublicSamplerIDCount: 0
   vulkanEnableSetSRGBWrite: 0
   useSecurityBuild: 0
   m_SupportedAspectRatios:
@@ -126,7 +128,7 @@ PlayerSettings:
     16:10: 1
     16:9: 1
     Others: 1
-  bundleVersion: 1.0
+  bundleVersion: 2.4.5
   preloadedAssets: []
   metroInputSource: 0
   wsaTransparentSwapchain: 0
@@ -240,6 +242,7 @@ PlayerSettings:
   metalEditorSupport: 1
   metalAPIValidation: 1
   iOSRenderExtraFrameOnPause: 0
+  iosCopyPluginsCodeInsteadOfSymlink: 0
   appleDeveloperTeamID: 
   iOSManualSigningProvisioningProfileID: 
   tvOSManualSigningProvisioningProfileID: 
@@ -450,6 +453,7 @@ PlayerSettings:
   ps4ShareFilePath: 
   ps4ShareOverlayImagePath: 
   ps4PrivacyGuardImagePath: 
+  ps4ExtraSceSysFile: 
   ps4NPtitleDatPath: 
   ps4RemotePlayKeyAssignment: -1
   ps4RemotePlayKeyMappingDir: 
@@ -490,6 +494,8 @@ PlayerSettings:
   ps4disableAutoHideSplash: 0
   ps4videoRecordingFeaturesUsed: 0
   ps4contentSearchFeaturesUsed: 0
+  ps4CompatibilityPS5: 0
+  ps4GPU800MHz: 1
   ps4attribEyeToEyeDistanceSettingVR: 0
   ps4IncludedModules: []
   monoEnv: 
