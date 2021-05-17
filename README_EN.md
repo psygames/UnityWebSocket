@@ -9,7 +9,7 @@
 
 ## **Online Demo**
 
-- **[https://psygame.github.io/UnityWebSocket/](https://psygame.github.io/UnityWebSocket/)**
+- **[https://psygames.github.io/UnityWebSocket/](https://psygames.github.io/UnityWebSocket/)**
 
 
 ## **Quick Start**
@@ -31,18 +31,18 @@
   ```js
   {
    "dependencies": {
-   "com.psygame.unitywebsocket": "https://github.com/psygame/UnityWebSocket.git",
+   "com.psygame.unitywebsocket": "https://github.com/psygames/UnityWebSocket.git",
    ...
    },
   }
   ```
 
   To update the package, change suffix `#{version}` to the target version.
-  * e.g. `"com.psygame.unitywebsocket": "https://github.com/psygame/UnityWebSocket.git#2.3.0",`
+  * e.g. `"com.psygame.unitywebsocket": "https://github.com/psygames/UnityWebSocket.git#2.3.0",`
 
 - **Using Unity Package**
 
-  Download an `UnityWebSocket.unitypackage` file from [Releases](https://github.com/psygame/UnityWebSocket/releases) page.
+  Download an `UnityWebSocket.unitypackage` file from [Releases](https://github.com/psygames/UnityWebSocket/releases) page.
   Import it into your Unity project.
 
 

@@ -9,7 +9,7 @@
 
 ## **在线示例**
 
-- **[https://psygame.github.io/UnityWebSocket/](https://psygame.github.io/UnityWebSocket/)**
+- **[https://psygames.github.io/UnityWebSocket/](https://psygames.github.io/UnityWebSocket/)**
 
 
 ## **快速开始**
@@ -32,19 +32,19 @@
   ```js
   {
    "dependencies": {
-   "com.psygame.unitywebsocket": "https://github.com/psygame/UnityWebSocket.git",
+   "com.psygame.unitywebsocket": "https://github.com/psygames/UnityWebSocket.git",
    ...
    },
   }
   ```
 
   可通过修改链接后缀 `#{version}` 来安装对应版本。
-  * 示例： `"com.psygame.unitywebsocket": "https://github.com/psygame/UnityWebSocket.git#2.3.0",`
+  * 示例： `"com.psygame.unitywebsocket": "https://github.com/psygames/UnityWebSocket.git#2.4.5",`
 
 
 - **通过 Unity Package 安装**
 
-  在 [Releases](https://github.com/psygame/UnityWebSocket/releases) 页面中，下载对应版本的 `UnityWebSocket.unitypackage` 安装包，然后导入到您的项目中。
+  在 [Releases](https://github.com/psygames/UnityWebSocket/releases) 页面中，下载对应版本的 `UnityWebSocket.unitypackage` 安装包，然后导入到您的项目中。
 
 
 ### **使用方法**
