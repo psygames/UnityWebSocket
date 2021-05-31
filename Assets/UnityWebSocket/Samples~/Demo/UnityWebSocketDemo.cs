@@ -3,15 +3,16 @@ using UnityWebSocket;
 
 public class UnityWebSocketDemo : MonoBehaviour
 {
-    public string url = "wss://echo.websocket.org";
+    public string address = "ws://echo.websocket.org";
+    public string sendText = "Hello World!";
+    public bool logMessage = true;
+
     private IWebSocket socket;
 
-    string sendText = "Test123 \\/*1#&^`";
-    string log = "";
-    int sendCount;
-    int receiveCount;
-    Vector2 scrollPos;
-    bool logMessage = true;
+    private string log = "";
+    private int sendCount;
+    private int receiveCount;
+    private Vector2 scrollPos;
 
     private void OnGUI()
     {
@@ -27,14 +28,14 @@ public class UnityWebSocketDemo : MonoBehaviour
         GUILayout.Label(string.Format(" <color=white>State:</color> <color={1}>{0}</color>", state, stateColor), richText);
 
         GUI.enabled = state == WebSocketState.Closed;
-        GUILayout.Label("URL: ", width);
-        url = GUILayout.TextField(url, width);
+        GUILayout.Label("Address: ", width);
+        address = GUILayout.TextField(address, width);
 
         GUILayout.BeginHorizontal();
         GUI.enabled = state == WebSocketState.Closed;
         if (GUILayout.Button(state == WebSocketState.Connecting ? "Connecting..." : "Connect"))
         {
-            socket = new WebSocket(url);
+            socket = new WebSocket(address);
             socket.OnOpen += Socket_OnOpen;
             socket.OnMessage += Socket_OnMessage;
             socket.OnClose += Socket_OnClose;
@@ -112,8 +113,8 @@ public class UnityWebSocketDemo : MonoBehaviour
         GUI.enabled = true;
         GUILayout.BeginHorizontal();
         logMessage = GUILayout.Toggle(logMessage, "Log Message");
-        GUILayout.Label(string.Format("Send ({0}): ", sendCount));
-        GUILayout.Label(string.Format("Receive ({0}): ", receiveCount));
+        GUILayout.Label(string.Format("Send Count: {0}", sendCount));
+        GUILayout.Label(string.Format("Receive Count: {0}", receiveCount));
         GUILayout.EndHorizontal();
 
         if (GUILayout.Button("Clear"))
@@ -140,7 +141,7 @@ public class UnityWebSocketDemo : MonoBehaviour
 
     private void Socket_OnOpen(object sender, OpenEventArgs e)
     {
-        AddLog(string.Format("Connected: {0}\n", url));
+        AddLog(string.Format("Connected: {0}\n", address));
     }
 
     private void Socket_OnMessage(object sender, MessageEventArgs e)

@@ -70,10 +70,10 @@ namespace UnityWebSocket.Editor
 
         private void DrawVersion()
         {
-            GUI.Label(new Rect(440, 10, 150, 10), "Current Version: " + Settings.VERSION, TextStyle(alignment: TextAnchor.MiddleCenter));
+            GUI.Label(new Rect(440, 10, 150, 10), "Current Version: " + Settings.VERSION, TextStyle(alignment: TextAnchor.MiddleLeft));
             if (string.IsNullOrEmpty(latestVersion))
             {
-                GUI.Label(new Rect(440, 30, 150, 10), "Checking Update...", TextStyle(alignment: TextAnchor.MiddleCenter));
+                GUI.Label(new Rect(440, 30, 150, 10), "Checking for Updates...", TextStyle(alignment: TextAnchor.MiddleLeft));
             }
             else if (latestVersion == "unknown")
             {
@@ -81,7 +81,7 @@ namespace UnityWebSocket.Editor
             }
             else
             {
-                GUI.Label(new Rect(440, 30, 150, 10), "  Latest Version: " + latestVersion, TextStyle(alignment: TextAnchor.MiddleCenter));
+                GUI.Label(new Rect(440, 30, 150, 10), "Latest Version: " + latestVersion, TextStyle(alignment: TextAnchor.MiddleLeft));
                 if (Settings.VERSION == latestVersion)
                 {
                     if (GUI.Button(new Rect(440, 50, 150, 18), "Check Update"))
@@ -133,21 +133,6 @@ namespace UnityWebSocket.Editor
                     AssetDatabase.Refresh();
                     return;
                 }
-
-                // via upm
-                index = txt.IndexOf("\"" + Settings.PACKAGE_NAME + "\": \"");
-                if (index != -1 && txt.IndexOf("openupm") != -1)
-                {
-                    var end_index = txt.IndexOf("\"", index + 1);
-                    end_index = txt.IndexOf("\"", end_index + 1);
-                    end_index = txt.IndexOf("\"", end_index + 1);
-                    var old_str = txt.Substring(index, end_index - index + 1);
-                    var new_str = string.Format("\"{0}\": \"{1}\"", Settings.PACKAGE_NAME, latestVersion);
-                    txt = txt.Replace(old_str, new_str);
-                    File.WriteAllText(packagePath, txt);
-                    AssetDatabase.Refresh();
-                    return;
-                }
             }
 
             // via releases
@@ -192,21 +177,17 @@ namespace UnityWebSocket.Editor
 
         private void DrawFixSettings()
         {
-            bool isRuntimeVersionFixed;
             bool isLinkTargetFixed;
             bool isMemorySizeFixed;
             bool isDecompressionFallbackFixed;
-            PlayerSettingsChecker.GetSettingsFixed(out isRuntimeVersionFixed, out isLinkTargetFixed, out isMemorySizeFixed, out isDecompressionFallbackFixed);
-            bool isAllFixed = isRuntimeVersionFixed && isLinkTargetFixed && isMemorySizeFixed && isDecompressionFallbackFixed;
+            PlayerSettingsChecker.GetSettingsFixed(out isLinkTargetFixed, out isMemorySizeFixed, out isDecompressionFallbackFixed);
+            bool isAllFixed = isLinkTargetFixed && isMemorySizeFixed && isDecompressionFallbackFixed;
             if (isAllFixed)
             {
                 var str = "All Settings Fixed:";
                 str += "\n√  PlayerSettings.WebGL.linkerTarget = " + PlayerSettings.WebGL.linkerTarget + ";";
                 str += "\n√  PlayerSettings.WebGL.memorySize = " + PlayerSettings.WebGL.memorySize + ";";
                 str += "\n√  PlayerSettings.WebGL.decompressionFallback = true;";
-#if !UNITY_2019_3_OR_NEWER
-                str += "\n√  PlayerSettings.scriptingRuntimeVersion = ScriptingRuntimeVersion.Latest;";
-#endif
                 EditorGUI.HelpBox(new Rect(10, 90, 580, 62), str, MessageType.Info);
                 GUI.enabled = false;
                 GUI.Button(new Rect(440, 158, 150, 18), "All Fixed");
@@ -230,13 +211,6 @@ namespace UnityWebSocket.Editor
             else
                 fixStr += "\n×  PlayerSettings.WebGL.decompressionFallback = false;";
 
-#if !UNITY_2019_3_OR_NEWER
-            if (isRuntimeVersionFixed)
-                fixStr += "\n√  PlayerSettings.scriptingRuntimeVersion = ScriptingRuntimeVersion.Latest;";
-            else
-                fixStr += "\n×  PlayerSettings.scriptingRuntimeVersion = ScriptingRuntimeVersion.Legacy; (Need Manual Fix)";
-#endif
-
             EditorGUI.HelpBox(new Rect(10, 90, 580, 62), fixStr, MessageType.Warning);
 
             if (GUI.Button(new Rect(440, 158, 150, 18), "Auto Fix"))
@@ -253,9 +227,6 @@ namespace UnityWebSocket.Editor
                 if (!isDecompressionFallbackFixed)
                     PlayerSettings.WebGL.decompressionFallback = true;
 #endif
-
-                if (!isRuntimeVersionFixed)
-                    EditorUtility.DisplayDialog("UnityWebSocket", "ScriptingRuntimeVersion (.Net 4.x) Need Manual Fix.", "OK");
             }
         }
 
@@ -347,9 +318,8 @@ namespace UnityWebSocket.Editor
             bool isLinkTargetFixed;
             bool isMemorySizeFixed;
             bool isDecompressionFallbackFixed;
-            bool isRuntimeVersionFixed;
-            GetSettingsFixed(out isRuntimeVersionFixed, out isLinkTargetFixed, out isMemorySizeFixed, out isDecompressionFallbackFixed);
-            bool isAllFixed = isRuntimeVersionFixed && isLinkTargetFixed && isMemorySizeFixed && isDecompressionFallbackFixed;
+            GetSettingsFixed(out isLinkTargetFixed, out isMemorySizeFixed, out isDecompressionFallbackFixed);
+            bool isAllFixed = isLinkTargetFixed && isMemorySizeFixed && isDecompressionFallbackFixed;
 
             if (!isAllFixed)
             {
@@ -367,19 +337,14 @@ namespace UnityWebSocket.Editor
             return false;
         }
 
-        internal static void GetSettingsFixed(out bool isRuntimeVersionFixed, out bool isLinkTargetFixed, out bool isMemorySizeFixed, out bool isDecompressionFallbackFixed)
+        internal static void GetSettingsFixed(out bool isLinkTargetFixed, out bool isMemorySizeFixed, out bool isDecompressionFallbackFixed)
         {
-            isRuntimeVersionFixed = true;
             isLinkTargetFixed = true;
             isMemorySizeFixed = true;
             isDecompressionFallbackFixed = true;
 
 #if UNITY_2018_1_OR_NEWER
             isLinkTargetFixed = _IsInArray(SettingsWindow.LINKER_TARGET, (int)PlayerSettings.WebGL.linkerTarget);
-#endif
-
-#if !UNITY_2019_3_OR_NEWER
-            isRuntimeVersionFixed = PlayerSettings.scriptingRuntimeVersion == ScriptingRuntimeVersion.Latest;
 #endif
 
             isMemorySizeFixed = _IsInArray(SettingsWindow.ASM_MEMORY_SIZE, PlayerSettings.WebGL.memorySize);

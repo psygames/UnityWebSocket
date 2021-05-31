@@ -5,26 +5,25 @@
   <img src="https://s1.ax1x.com/2020/08/21/dYIAQU.png" width=20%/>
 </div>
 
+[![openupm](https://img.shields.io/npm/v/com.psygame.unitywebsocket?label=openupm&registry_uri=https://package.openupm.com)](https://openupm.com/packages/com.psygame.unitywebsocket/)
+
 ## **Online Demo**
 
-- **[https://psygame.github.io/UnityWebSocket/](https://psygame.github.io/UnityWebSocket/)**
+- **[https://psygames.github.io/UnityWebSocket/](https://psygames.github.io/UnityWebSocket/)**
 
 
 ## **Quick Start**
 
-#### Requirements
+### **Requirements**
 
 - Unity 2018.3 or later
 - No other SDK are required
 
-#### Installation
+### **Installation**
 
 - **Using OpenUPM**
 
-  This package is available on [OpenUPM](https://openupm.com). You can install it via [openupm-cli](https://github.com/openupm/openupm-cli).
-  ```
-  openupm add com.psygame.unitywebsocket
-  ```
+  This package is available on [OpenUPM](https://openupm.com/packages/com.psygame.unitywebsocket/). You can install it via [openupm package installer](https://package-installer.glitch.me/v1/installer/OpenUPM/com.psygame.unitywebsocket?registry=https%3A%2F%2Fpackage.openupm.com).
 
 - **Using Git**
 
@@ -32,23 +31,22 @@
   ```js
   {
    "dependencies": {
-   "com.psygame.unitywebsocket": "https://github.com/psygame/UnityWebSocket.git",
+   "com.psygame.unitywebsocket": "https://github.com/psygames/UnityWebSocket.git",
    ...
    },
   }
   ```
 
   To update the package, change suffix `#{version}` to the target version.
-  * e.g. `"com.psygame.unitywebsocket": "https://github.com/psygame/UnityWebSocket.git#2.3.0",`
-
+  * e.g. `"com.psygame.unitywebsocket": "https://github.com/psygames/UnityWebSocket.git#2.3.0",`
 
 - **Using Unity Package**
 
-  Download an `UnityWebSocket.unitypackage` file from [Releases](https://github.com/psygame/UnityWebSocket/releases) page.
+  Download an `UnityWebSocket.unitypackage` file from [Releases](https://github.com/psygames/UnityWebSocket/releases) page.
   Import it into your Unity project.
 
 
-#### Usage:
+### **Usage**
 
 - Easy to use
 
@@ -57,7 +55,8 @@
   using UnityWebSocket;
 
   // create instance
-  WebSocket socket = new WebSocket();
+  string address = "ws://echo.websocket.org";
+  WebSocket socket = new WebSocket(address);
 
   // register callback
   socket.OnOpen += OnOpen;
@@ -66,20 +65,20 @@
   socket.OnError += OnError;
 
   // connect
-  string address = "ws://echo.websocket.org";
-  socket.ConnectAsync(address);
+  socket.ConnectAsync();
 
-  // send data (tow ways)
-  socket.SendAsync(str); // send String data
+  // send data (two ways)
+  socket.SendAsync(str); // send string data
   socket.SendAsync(bytes); // send byte[] data
 
   // close connection
   socket.CloseAsync();
   ```
 
-- more detail usage, see the [UnityWebSocketTest.cs](Assets/UnityWebSocket/Tests/UnityWebSocketTest.cs) code in project。
+- more detail usage, see the [UnityWebSocketDemo.cs](Samples~/Demo/UnityWebSocketDemo.cs) code in project。
 
-#### 3. Attention(Warning)
+
+### **Attention(Warning)**
 
 - there are many **WebSocket** class in different namespace, use in different situations.
 

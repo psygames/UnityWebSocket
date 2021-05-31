@@ -21,10 +21,10 @@ namespace UnityWebSocket.Uniform
         {
 #if !UNITY_EDITOR && UNITY_WEBGL
             _rawSocket = new WebGL.WebSocket(address);
-#elif !NET_LEGACY
-            _rawSocket = new NoWebGL.WebSocket(address);
+#elif NET_LEGACY || UNITY_WEB_SOCKET_SHARP
+            _rawSocket = new NoWebGL.Sharp.WebSocket(address);
 #else
-            throw new Exception("Scripting Runtime Version should be .NET 4.x, via Menu:\nPlayerSettings -> Other Settings -> Script Runtime Version -> .Net 4.x Equivalent");
+            _rawSocket = new NoWebGL.Default.WebSocket(address);
 #endif
             _rawSocket.OnOpen += (o, e) =>
             {

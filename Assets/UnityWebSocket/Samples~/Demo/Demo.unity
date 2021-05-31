@@ -155,7 +155,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c1b55962346f6de40bd5e924df2854fb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  url: wss://echo.websocket.org
+  address: ws://echo.websocket.org
+  sendText: Hello World!
+  logMessage: 1
 --- !u!1 &902376145
 GameObject:
   m_ObjectHideFlags: 0
