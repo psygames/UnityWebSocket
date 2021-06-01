@@ -1,4 +1,4 @@
-﻿namespace UnityWebSocket
+﻿namespace UnityWebSocket.Editor
 {
     public static class Settings
     {

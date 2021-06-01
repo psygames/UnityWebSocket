@@ -11,7 +11,7 @@ namespace UnityWebSocket.Editor
         internal static readonly int[] ASM_MEMORY_SIZE = new int[] { 256, 512, 1024 };
         internal static readonly int[] LINKER_TARGET = new int[] { 0, 2 };
         static SettingsWindow window = null;
-        [MenuItem("Tools/UnityWebSocket", priority = 1)]
+        [MenuItem("Tools/UnityWebSocket/Preferences...", priority = 100)]
         internal static void Open()
         {
             if (window != null)
@@ -36,9 +36,6 @@ namespace UnityWebSocket.Editor
             DrawSeparator(186);
             DrawHelper();
             DrawFooter();
-
-            //TODO: Suggest Package Installation
-            //TODO: Environment Check
         }
 
         private void DrawLogo()
@@ -149,8 +146,8 @@ namespace UnityWebSocket.Editor
                     ms_index = i;
                 memoryArrayStr[i] = ASM_MEMORY_SIZE[i].ToString();
             }
-            GUI.Label(new Rect(10, 160, 80, 18), "Memory Size: ", TextStyle());
-            ms_index = EditorGUI.Popup(new Rect(100, 160, 70, 18), ms_index, memoryArrayStr);
+            GUI.Label(new Rect(330, 90, 100, 18), "Memory Size:", TextStyle(10, TextAnchor.MiddleRight));
+            ms_index = EditorGUI.Popup(new Rect(440, 90, 150, 18), ms_index, memoryArrayStr);
             if (ms_index >= 0 && ASM_MEMORY_SIZE[ms_index] != PlayerSettings.WebGL.memorySize)
             {
                 PlayerSettings.WebGL.memorySize = ASM_MEMORY_SIZE[ms_index];
@@ -167,8 +164,8 @@ namespace UnityWebSocket.Editor
                     _index = i;
                 lstStr[i] = ((WebGLLinkerTarget)LINKER_TARGET[i]).ToString();
             }
-            GUI.Label(new Rect(220, 160, 80, 18), "Linker Target: ", TextStyle());
-            _index = EditorGUI.Popup(new Rect(310, 160, 70, 18), _index, lstStr);
+            GUI.Label(new Rect(330, 110, 100, 18), "Linker Target:", TextStyle(10, TextAnchor.MiddleRight));
+            _index = EditorGUI.Popup(new Rect(440, 110, 150, 18), _index, lstStr);
             if (_index >= 0 && LINKER_TARGET[_index] != (int)PlayerSettings.WebGL.linkerTarget)
             {
                 PlayerSettings.WebGL.linkerTarget = (WebGLLinkerTarget)LINKER_TARGET[_index];
@@ -188,7 +185,7 @@ namespace UnityWebSocket.Editor
                 str += "\n√  PlayerSettings.WebGL.linkerTarget = " + PlayerSettings.WebGL.linkerTarget + ";";
                 str += "\n√  PlayerSettings.WebGL.memorySize = " + PlayerSettings.WebGL.memorySize + ";";
                 str += "\n√  PlayerSettings.WebGL.decompressionFallback = true;";
-                EditorGUI.HelpBox(new Rect(10, 90, 580, 62), str, MessageType.Info);
+                EditorGUI.HelpBox(new Rect(10, 90, 330, 86), str, MessageType.Info);
                 GUI.enabled = false;
                 GUI.Button(new Rect(440, 158, 150, 18), "All Fixed");
                 GUI.enabled = true;
@@ -211,7 +208,7 @@ namespace UnityWebSocket.Editor
             else
                 fixStr += "\n×  PlayerSettings.WebGL.decompressionFallback = false;";
 
-            EditorGUI.HelpBox(new Rect(10, 90, 580, 62), fixStr, MessageType.Warning);
+            EditorGUI.HelpBox(new Rect(10, 90, 330, 86), fixStr, MessageType.Warning);
 
             if (GUI.Button(new Rect(440, 158, 150, 18), "Auto Fix"))
             {

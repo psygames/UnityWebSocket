@@ -22,7 +22,7 @@ public class UnityWebSocketDemo : MonoBehaviour
 
         WebSocketState state = socket == null ? WebSocketState.Closed : socket.ReadyState;
 
-        GUILayout.Label("SDK Version: " + Settings.VERSION, width);
+        GUILayout.Label("SDK Version: 2.5.0", width);
         var stateColor = state == WebSocketState.Closed ? "red" : state == WebSocketState.Open ? "#11ff11" : "#aa4444";
         var richText = new GUIStyle() { richText = true };
         GUILayout.Label(string.Format(" <color=white>State:</color> <color={1}>{0}</color>", state, stateColor), richText);

@@ -5,7 +5,7 @@ namespace UnityWebSocket
 {
     internal class WebSocketManager : MonoBehaviour
     {
-        private const string rootName = "[UnityWebSocketManager]";
+        private const string rootName = "[UnityWebSocket]";
         private static WebSocketManager _instance;
         public static WebSocketManager Instance
         {

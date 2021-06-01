@@ -515,7 +515,8 @@ PlayerSettings:
   webGLCompressionFormat: 1
   webGLLinkerTarget: 2
   webGLThreadsSupport: 0
-  scriptingDefineSymbols: {}
+  scriptingDefineSymbols:
+    1: UNITY_WEB_SOCKET_SHARP
   platformArchitecture: {}
   scriptingBackend:
     Standalone: 0
