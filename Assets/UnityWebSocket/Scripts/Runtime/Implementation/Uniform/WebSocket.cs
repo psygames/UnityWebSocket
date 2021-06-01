@@ -23,6 +23,8 @@ namespace UnityWebSocket.Uniform
             _rawSocket = new WebGL.WebSocket(address);
 #elif NET_LEGACY || UNITY_WEB_SOCKET_SHARP
             _rawSocket = new NoWebGL.Sharp.WebSocket(address);
+#elif UNITY_WEB_SOCKET_NINJA
+            _rawSocket = new NoWebGL.Ninja.WebSocket(address);
 #else
             _rawSocket = new NoWebGL.Default.WebSocket(address);
 #endif
