@@ -1,7 +1,7 @@
-﻿using System;
-using System.IO;
+﻿using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
+using WebSocketSharp.Server;
 
 namespace UnityWebSocket.Editor
 {
@@ -21,35 +21,106 @@ namespace UnityWebSocket.Editor
             window.Show();
         }
 
-        private void WalkFolder(string path, Action<string> callback)
+        private void OnDestroy()
         {
-            foreach (var file in Directory.GetFiles(path, "*.cs"))
+            if (server != null && server.IsListening)
             {
-                callback.Invoke(file);
-            }
-
-            foreach (var folder in Directory.GetDirectories(path))
-            {
-                WalkFolder(folder, callback);
+                server.Stop();
             }
         }
 
-        private string targetpath = "";
-        private string fixDef = "#if !NET_LEGACY && (UNITY_EDITOR || !UNTIY_WEBGL)";
+        private WebSocketServer server;
+        private List<string> logs = new List<string>();
+        private Vector2 scroll;
+        private bool needRepaint;
+        private string address = "ws://0.0.0.0";
+
         private void OnGUI()
         {
-            targetpath = EditorGUILayout.TextField("Path: ", targetpath);
-            fixDef = EditorGUILayout.TextField("Fix Def: ", fixDef);
-            if (GUILayout.Button("Fix"))
+            Color lastColor = GUI.color;
+            window = this;
+            bool isStart = server != null && server.IsListening;
+
+            EditorGUILayout.BeginHorizontal();
+            EditorGUI.BeginDisabledGroup(isStart);
+            EditorGUILayout.LabelField("Listening on:", GUILayout.Width(80));
+            address = EditorGUILayout.TextField(address);
+            EditorGUI.EndDisabledGroup();
+            EditorGUILayout.EndHorizontal();
+            if (GUILayout.Button("Clear Logs", GUILayout.Width(120)))
             {
-                WalkFolder(targetpath, (file) =>
+                logs.Clear();
+            }
+
+            scroll = EditorGUILayout.BeginScrollView(scroll, "box");
+            foreach (var log in new List<string>(logs))
+            {
+                EditorGUILayout.LabelField(log);
+            }
+            EditorGUILayout.EndScrollView();
+
+            if (!isStart)
+            {
+                GUI.color = Color.green;
+                if (GUILayout.Button("Start", GUILayout.Height(30)))
                 {
-                    var str = File.ReadAllText(file);
-                    if (str.StartsWith(fixDef)) return;
-                    str = fixDef + "\r\n" + str + "\r\n#endif\r\n";
-                    File.WriteAllText(file, str);
-                    Debug.Log("fix: " + file);
-                });
+                    server = new WebSocketServer();
+                    server.AddWebSocketService<TestServer>("/");
+                    server.Start();
+                }
+            }
+            else
+            {
+                GUI.color = Color.red;
+                if (GUILayout.Button("Stop", GUILayout.Height(30)))
+                {
+                    server.Stop();
+                }
+            }
+
+            GUI.color = lastColor;
+        }
+
+        private void OnInspectorUpdate()
+        {
+            if (needRepaint && window != null)
+            {
+                window.Repaint();
+                needRepaint = false;
+            }
+        }
+
+        internal static void Log(string log)
+        {
+            if (window == null) return;
+            window.logs.Add(log);
+            window.needRepaint = true;
+        }
+
+        public class TestServer : WebSocketBehavior
+        {
+            protected override void OnOpen()
+            {
+                Log(ID + ": Connected");
+            }
+
+            protected override void OnMessage(WebSocketSharp.MessageEventArgs e)
+            {
+                if (e.IsBinary)
+                    Log(ID + ": SendMessage bytes(" + e.RawData.Length + ")");
+                else
+                    Log(ID + ": SendMessage [" + e.Data + "]");
+                Send(e.RawData);
+            }
+
+            protected override void OnClose(WebSocketSharp.CloseEventArgs e)
+            {
+                Log(ID + ": Closed, Code: " + e.Code + ", Reason: " + e.Reason);
+            }
+
+            protected override void OnError(WebSocketSharp.ErrorEventArgs e)
+            {
+                Log(ID + ": Error, Message: " + e.Message);
             }
         }
     }

@@ -14,6 +14,13 @@ public class UnityWebSocketDemo : MonoBehaviour
     private int receiveCount;
     private Vector2 scrollPos;
 
+#if !UNITY_EDITOR && UNITY_WEBGL
+    private void Awake()
+    {
+        address = "ws://echo.websocket.org";
+    }
+#endif
+
     private void OnGUI()
     {
         var scale = Screen.width / 800f;
@@ -161,7 +168,7 @@ public class UnityWebSocketDemo : MonoBehaviour
 
     private void Socket_OnClose(object sender, CloseEventArgs e)
     {
-        AddLog(string.Format("Closed, StatusCode: {0}, Reason: {1}\n", e.StatusCode, e.Reason));
+        AddLog(string.Format("Closed: StatusCode: {0}, Reason: {1}\n", e.StatusCode, e.Reason));
     }
 
     private void Socket_OnError(object sender, ErrorEventArgs e)
