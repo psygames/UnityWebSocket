@@ -1,4 +1,5 @@
-﻿using System;
+#if !NET_LEGACY && (UNITY_EDITOR || !UNTIY_WEBGL)
+using System;
 
 namespace Ninja.WebSockets.Exceptions
 {
@@ -24,3 +25,5 @@ namespace Ninja.WebSockets.Exceptions
         }
     }
 }
+
+#endif

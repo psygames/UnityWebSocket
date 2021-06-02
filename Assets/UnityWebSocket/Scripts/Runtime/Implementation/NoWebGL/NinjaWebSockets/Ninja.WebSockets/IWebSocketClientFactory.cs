@@ -1,4 +1,5 @@
-﻿using System;
+#if !NET_LEGACY && (UNITY_EDITOR || !UNTIY_WEBGL)
+using System;
 using System.IO;
 using System.Net.WebSockets;
 using System.Threading;
@@ -43,3 +44,5 @@ namespace Ninja.WebSockets
         Task<WebSocket> ConnectAsync(Stream responseStream, string secWebSocketKey, WebSocketClientOptions options, CancellationToken token = default(CancellationToken));
     }
 }
+
+#endif

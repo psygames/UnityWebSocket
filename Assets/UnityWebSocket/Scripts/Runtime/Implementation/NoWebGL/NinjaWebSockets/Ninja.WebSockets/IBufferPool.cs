@@ -1,4 +1,5 @@
-﻿using System.IO;
+#if !NET_LEGACY && (UNITY_EDITOR || !UNTIY_WEBGL)
+using System.IO;
 
 namespace Ninja.WebSockets
 {
@@ -12,3 +13,5 @@ namespace Ninja.WebSockets
         MemoryStream GetBuffer();
     }
 }
+
+#endif

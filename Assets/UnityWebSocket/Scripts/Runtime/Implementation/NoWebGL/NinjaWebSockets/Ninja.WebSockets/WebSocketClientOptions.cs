@@ -1,4 +1,5 @@
-﻿using System;
+#if !NET_LEGACY && (UNITY_EDITOR || !UNTIY_WEBGL)
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -64,3 +65,5 @@ namespace Ninja.WebSockets
         }
     }
 }
+
+#endif

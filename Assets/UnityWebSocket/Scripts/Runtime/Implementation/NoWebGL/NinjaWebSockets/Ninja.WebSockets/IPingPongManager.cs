@@ -1,4 +1,5 @@
-﻿using System;
+#if !NET_LEGACY && (UNITY_EDITOR || !UNTIY_WEBGL)
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -22,3 +23,5 @@ namespace Ninja.WebSockets
         Task SendPing(ArraySegment<byte> payload, CancellationToken cancellation);
     }
 }
+
+#endif

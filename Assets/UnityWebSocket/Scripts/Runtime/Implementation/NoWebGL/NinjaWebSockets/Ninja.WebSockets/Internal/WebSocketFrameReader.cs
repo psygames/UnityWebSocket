@@ -1,4 +1,5 @@
-﻿// ---------------------------------------------------------------------
+#if !NET_LEGACY && (UNITY_EDITOR || !UNTIY_WEBGL)
+// ---------------------------------------------------------------------
 // Copyright 2018 David Haig
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy 
@@ -208,3 +209,5 @@ namespace Ninja.WebSockets.Internal
         }
     }
 }
+
+#endif

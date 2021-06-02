@@ -1,4 +1,5 @@
-﻿using Ninja.WebSockets.Exceptions;
+#if !NET_LEGACY && (UNITY_EDITOR || !UNTIY_WEBGL)
+using Ninja.WebSockets.Exceptions;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -248,3 +249,5 @@ namespace Ninja.WebSockets
         }
     }
 }
+
+#endif

@@ -1,4 +1,5 @@
-﻿using System;
+#if !NET_LEGACY && (UNITY_EDITOR || !UNTIY_WEBGL)
+using System;
 using System.Net.WebSockets;
 
 namespace Ninja.WebSockets.Internal
@@ -32,3 +33,5 @@ namespace Ninja.WebSockets.Internal
         }
     }
 }
+
+#endif

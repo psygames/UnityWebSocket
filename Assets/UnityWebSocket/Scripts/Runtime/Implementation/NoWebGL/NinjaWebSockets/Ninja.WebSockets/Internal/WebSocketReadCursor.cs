@@ -1,4 +1,5 @@
-﻿namespace Ninja.WebSockets.Internal
+#if !NET_LEGACY && (UNITY_EDITOR || !UNTIY_WEBGL)
+namespace Ninja.WebSockets.Internal
 {
     internal class WebSocketReadCursor
     {
@@ -18,3 +19,5 @@
         }
     }
 }
+
+#endif

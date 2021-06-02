@@ -1,4 +1,5 @@
-﻿using System.IO;
+#if !NET_LEGACY && (UNITY_EDITOR || !UNTIY_WEBGL)
+using System.IO;
 using System.Net.WebSockets;
 using System.Threading;
 using System.Threading.Tasks;
@@ -38,3 +39,5 @@ namespace Ninja.WebSockets
         Task<WebSocket> AcceptWebSocketAsync(WebSocketHttpContext context, WebSocketServerOptions options, CancellationToken token = default(CancellationToken));
     }
 }
+
+#endif
