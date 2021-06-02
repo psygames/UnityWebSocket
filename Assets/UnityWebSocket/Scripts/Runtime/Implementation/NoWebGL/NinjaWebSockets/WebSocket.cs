@@ -5,8 +5,9 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Net.WebSockets;
+using Ninja.WebSockets;
 
-namespace UnityWebSocket.NoWebGL.Default
+namespace UnityWebSocket.NoWebGL.Ninja
 {
     public class WebSocket : IWebSocket
     {
@@ -16,6 +17,8 @@ namespace UnityWebSocket.NoWebGL.Default
         {
             get
             {
+                if (isConnectAsyncRunning)
+                    return WebSocketState.Connecting;
                 if (socket == null)
                     return WebSocketState.Closed;
                 switch (socket.State)
@@ -40,9 +43,11 @@ namespace UnityWebSocket.NoWebGL.Default
         public event EventHandler<ErrorEventArgs> OnError;
         public event EventHandler<MessageEventArgs> OnMessage;
 
-        private ClientWebSocket socket;
+        private WebSocketClientFactory factory = new WebSocketClientFactory();
+        private System.Net.WebSockets.WebSocket socket;
         private CancellationTokenSource cts;
         private bool IsCtsCancel { get { return cts == null || cts.IsCancellationRequested; } }
+        private bool isConnectAsyncRunning;
         private bool isSendAsyncRunning;
         private bool isReceiveAsyncRunning;
 
@@ -66,7 +71,6 @@ namespace UnityWebSocket.NoWebGL.Default
                 return;
             }
             cts = new CancellationTokenSource();
-            socket = new ClientWebSocket();
             RunConnectAsync();
         }
 
@@ -138,8 +142,9 @@ namespace UnityWebSocket.NoWebGL.Default
 
             try
             {
+                isConnectAsyncRunning = true;
                 var uri = new Uri(Address);
-                await socket.ConnectAsync(uri, cts.Token);
+                socket = await factory.ConnectAsync(uri, cts.Token);
             }
             catch (Exception e)
             {
@@ -147,6 +152,10 @@ namespace UnityWebSocket.NoWebGL.Default
                 HandleClose((ushort)CloseStatusCode.Abnormal, e.Message);
                 SocketDispose();
                 return;
+            }
+            finally
+            {
+                isConnectAsyncRunning = false;
             }
 
             RunSendAsync();
