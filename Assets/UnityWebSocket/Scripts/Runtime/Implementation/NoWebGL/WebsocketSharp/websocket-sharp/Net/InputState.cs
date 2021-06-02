@@ -1,3 +1,4 @@
+#if UNITY_EDITOR || !UNTIY_WEBGL
 #region License
 /*
  * InputState.cs
@@ -47,3 +48,5 @@ namespace WebSocketSharp.Net
     Headers
   }
 }
+
+#endif

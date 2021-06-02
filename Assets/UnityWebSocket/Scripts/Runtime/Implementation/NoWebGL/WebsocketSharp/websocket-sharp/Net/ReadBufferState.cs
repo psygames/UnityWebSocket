@@ -1,3 +1,4 @@
+#if UNITY_EDITOR || !UNTIY_WEBGL
 #region License
 /*
  * ReadBufferState.cs
@@ -124,3 +125,5 @@ namespace WebSocketSharp.Net
     #endregion
   }
 }
+
+#endif

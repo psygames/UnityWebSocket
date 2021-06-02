@@ -1,3 +1,4 @@
+#if UNITY_EDITOR || !UNTIY_WEBGL
 #region License
 /*
  * WebSocketFrame.cs
@@ -893,3 +894,5 @@ Extended Payload Length: {7}
     #endregion
   }
 }
+
+#endif

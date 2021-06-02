@@ -1,3 +1,4 @@
+#if UNITY_EDITOR || !UNTIY_WEBGL
 #region License
 /*
  * WebSocket.cs
@@ -4091,3 +4092,5 @@ namespace WebSocketSharp
     #endregion
   }
 }
+
+#endif

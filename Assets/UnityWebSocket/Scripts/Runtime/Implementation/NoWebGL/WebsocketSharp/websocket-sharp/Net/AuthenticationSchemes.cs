@@ -1,3 +1,4 @@
+#if UNITY_EDITOR || !UNTIY_WEBGL
 #region License
 /*
  * AuthenticationSchemes.cs
@@ -64,3 +65,5 @@ namespace WebSocketSharp.Net
     Anonymous = 0x8000
   }
 }
+
+#endif

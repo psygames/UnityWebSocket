@@ -1,3 +1,4 @@
+#if UNITY_EDITOR || !UNTIY_WEBGL
 #region License
 /*
  * AuthenticationResponse.cs
@@ -321,3 +322,5 @@ namespace WebSocketSharp.Net
     #endregion
   }
 }
+
+#endif

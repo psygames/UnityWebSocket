@@ -1,3 +1,4 @@
+#if UNITY_EDITOR || !UNTIY_WEBGL
 #region License
 /*
  * ByteOrder.cs
@@ -45,3 +46,5 @@ namespace WebSocketSharp
     Big
   }
 }
+
+#endif

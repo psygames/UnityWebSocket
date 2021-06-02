@@ -1,3 +1,4 @@
+#if UNITY_EDITOR || !UNTIY_WEBGL
 #region License
 /*
  * HttpListenerAsyncResult.cs
@@ -189,3 +190,5 @@ namespace WebSocketSharp.Net
     #endregion
   }
 }
+
+#endif

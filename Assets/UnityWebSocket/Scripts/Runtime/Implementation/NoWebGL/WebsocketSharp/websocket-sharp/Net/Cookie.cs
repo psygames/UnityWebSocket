@@ -1,3 +1,4 @@
+#if UNITY_EDITOR || !UNTIY_WEBGL
 #region License
 /*
  * Cookie.cs
@@ -1014,3 +1015,5 @@ namespace WebSocketSharp.Net
     #endregion
   }
 }
+
+#endif

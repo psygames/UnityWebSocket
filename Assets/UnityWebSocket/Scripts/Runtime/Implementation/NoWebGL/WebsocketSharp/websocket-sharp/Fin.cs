@@ -1,3 +1,4 @@
+#if UNITY_EDITOR || !UNTIY_WEBGL
 #region License
 /*
  * Fin.cs
@@ -49,3 +50,5 @@ namespace WebSocketSharp
     Final = 0x1
   }
 }
+
+#endif

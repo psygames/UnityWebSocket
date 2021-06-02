@@ -1,3 +1,4 @@
+#if UNITY_EDITOR || !UNTIY_WEBGL
 #region License
 /*
  * RequestStream.cs
@@ -316,3 +317,5 @@ namespace WebSocketSharp.Net
     #endregion
   }
 }
+
+#endif

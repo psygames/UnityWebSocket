@@ -1,3 +1,4 @@
+#if UNITY_EDITOR || !UNTIY_WEBGL
 #region License
 /*
  * HttpBasicIdentity.cs
@@ -80,3 +81,5 @@ namespace WebSocketSharp.Net
     #endregion
   }
 }
+
+#endif

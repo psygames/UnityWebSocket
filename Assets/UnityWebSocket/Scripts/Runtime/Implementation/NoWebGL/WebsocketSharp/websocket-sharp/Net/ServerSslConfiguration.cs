@@ -1,4 +1,5 @@
-﻿#region License
+#if UNITY_EDITOR || !UNTIY_WEBGL
+#region License
 /*
  * ServerSslConfiguration.cs
  *
@@ -234,3 +235,5 @@ namespace WebSocketSharp.Net
     #endregion
   }
 }
+
+#endif

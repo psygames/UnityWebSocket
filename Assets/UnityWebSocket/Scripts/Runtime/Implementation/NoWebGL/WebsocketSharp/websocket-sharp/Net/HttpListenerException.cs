@@ -1,3 +1,4 @@
+#if UNITY_EDITOR || !UNTIY_WEBGL
 #region License
 /*
  * HttpListenerException.cs
@@ -125,3 +126,5 @@ namespace WebSocketSharp.Net
     #endregion
   }
 }
+
+#endif

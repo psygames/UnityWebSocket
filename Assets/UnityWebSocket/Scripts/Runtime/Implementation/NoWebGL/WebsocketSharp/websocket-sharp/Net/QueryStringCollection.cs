@@ -1,3 +1,4 @@
+#if UNITY_EDITOR || !UNTIY_WEBGL
 #region License
 /*
  * QueryStringCollection.cs
@@ -148,3 +149,5 @@ namespace WebSocketSharp.Net
     #endregion
   }
 }
+
+#endif

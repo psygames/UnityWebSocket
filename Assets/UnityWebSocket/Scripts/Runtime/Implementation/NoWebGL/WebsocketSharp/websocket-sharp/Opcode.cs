@@ -1,3 +1,4 @@
+#if UNITY_EDITOR || !UNTIY_WEBGL
 #region License
 /*
  * Opcode.cs
@@ -66,3 +67,5 @@ namespace WebSocketSharp
     Pong = 0xa
   }
 }
+
+#endif

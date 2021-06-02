@@ -1,3 +1,4 @@
+#if UNITY_EDITOR || !UNTIY_WEBGL
 #region License
 /*
  * LogLevel.cs
@@ -61,3 +62,5 @@ namespace WebSocketSharp
     Fatal
   }
 }
+
+#endif

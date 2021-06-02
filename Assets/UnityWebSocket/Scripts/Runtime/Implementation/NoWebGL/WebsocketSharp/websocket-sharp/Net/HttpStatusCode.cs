@@ -1,3 +1,4 @@
+#if UNITY_EDITOR || !UNTIY_WEBGL
 #region License
 /*
  * HttpStatusCode.cs
@@ -344,3 +345,5 @@ namespace WebSocketSharp.Net
     HttpVersionNotSupported = 505,
   }
 }
+
+#endif

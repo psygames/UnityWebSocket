@@ -1,3 +1,4 @@
+#if UNITY_EDITOR || !UNTIY_WEBGL
 #region License
 /*
  * EndPointManager.cs
@@ -259,3 +260,5 @@ namespace WebSocketSharp.Net
     #endregion
   }
 }
+
+#endif

@@ -1,3 +1,4 @@
+#if UNITY_EDITOR || !UNTIY_WEBGL
 #region License
 /*
  * CookieCollection.cs
@@ -819,3 +820,5 @@ namespace WebSocketSharp.Net
     #endregion
   }
 }
+
+#endif

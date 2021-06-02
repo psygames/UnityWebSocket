@@ -1,3 +1,4 @@
+#if UNITY_EDITOR || !UNTIY_WEBGL
 #region License
 /*
  * HttpDigestIdentity.cs
@@ -185,3 +186,5 @@ namespace WebSocketSharp.Net
     #endregion
   }
 }
+
+#endif

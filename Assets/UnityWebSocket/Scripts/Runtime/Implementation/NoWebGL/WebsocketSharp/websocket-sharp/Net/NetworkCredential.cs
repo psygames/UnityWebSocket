@@ -1,3 +1,4 @@
+#if UNITY_EDITOR || !UNTIY_WEBGL
 #region License
 /*
  * NetworkCredential.cs
@@ -207,3 +208,5 @@ namespace WebSocketSharp.Net
     #endregion
   }
 }
+
+#endif

@@ -1,3 +1,4 @@
+#if UNITY_EDITOR || !UNTIY_WEBGL
 #region License
 /*
  * HttpHeaderType.cs
@@ -42,3 +43,5 @@ namespace WebSocketSharp.Net
     MultiValueInResponse = 1 << 5
   }
 }
+
+#endif

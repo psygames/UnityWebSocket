@@ -1,3 +1,4 @@
+#if UNITY_EDITOR || !UNTIY_WEBGL
 #region License
 /*
  * HttpRequest.cs
@@ -215,3 +216,5 @@ namespace WebSocketSharp
     #endregion
   }
 }
+
+#endif

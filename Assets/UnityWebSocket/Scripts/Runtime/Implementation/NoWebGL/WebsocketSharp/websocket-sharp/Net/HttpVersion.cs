@@ -1,3 +1,4 @@
+#if UNITY_EDITOR || !UNTIY_WEBGL
 #region License
 /*
  * HttpVersion.cs
@@ -71,3 +72,5 @@ namespace WebSocketSharp.Net
     #endregion
   }
 }
+
+#endif

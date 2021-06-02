@@ -1,3 +1,4 @@
+#if UNITY_EDITOR || !UNTIY_WEBGL
 #region License
 /*
  * Rsv.cs
@@ -49,3 +50,5 @@ namespace WebSocketSharp
     On = 0x1
   }
 }
+
+#endif

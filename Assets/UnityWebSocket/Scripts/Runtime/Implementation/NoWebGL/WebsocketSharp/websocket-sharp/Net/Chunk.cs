@@ -1,3 +1,4 @@
+#if UNITY_EDITOR || !UNTIY_WEBGL
 #region License
 /*
  * Chunk.cs
@@ -91,3 +92,5 @@ namespace WebSocketSharp.Net
     #endregion
   }
 }
+
+#endif

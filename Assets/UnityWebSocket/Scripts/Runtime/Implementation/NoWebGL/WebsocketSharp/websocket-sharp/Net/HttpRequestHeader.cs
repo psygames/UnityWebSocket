@@ -1,3 +1,4 @@
+#if UNITY_EDITOR || !UNTIY_WEBGL
 #region License
 /*
  * HttpRequestHeader.cs
@@ -231,3 +232,5 @@ namespace WebSocketSharp.Net
     SecWebSocketVersion
   }
 }
+
+#endif

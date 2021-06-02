@@ -1,3 +1,4 @@
+#if UNITY_EDITOR || !UNTIY_WEBGL
 #region License
 /*
  * CloseStatusCode.cs
@@ -118,3 +119,5 @@ namespace WebSocketSharp
     TlsHandshakeFailure = 1015
   }
 }
+
+#endif
