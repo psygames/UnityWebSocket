@@ -17,7 +17,7 @@ namespace UnityWebSocket.Editor
             }
 
             window = GetWindow<TestServerWindow>(true, "Test Server");
-            window.minSize = window.maxSize = new Vector2(600, 310);
+            window.minSize = window.maxSize = new Vector2(600, 500);
             window.Show();
         }
 
@@ -107,9 +107,9 @@ namespace UnityWebSocket.Editor
             protected override void OnMessage(WebSocketSharp.MessageEventArgs e)
             {
                 if (e.IsBinary)
-                    Log(ID + ": SendMessage bytes(" + e.RawData.Length + ")");
+                    Log(ID + ": Received: bytes(" + e.RawData.Length + ")");
                 else
-                    Log(ID + ": SendMessage [" + e.Data + "]");
+                    Log(ID + ": Received: " + e.Data + "");
                 Send(e.RawData);
             }
 
