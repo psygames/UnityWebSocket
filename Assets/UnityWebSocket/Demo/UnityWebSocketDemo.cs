@@ -3,7 +3,7 @@ using UnityWebSocket;
 
 public class UnityWebSocketDemo : MonoBehaviour
 {
-    public string address = "ws://echo.websocket.org";
+    public string address = "ws://127.0.0.1";
     public string sendText = "Hello World!";
     public bool logMessage = true;
 
@@ -17,7 +17,7 @@ public class UnityWebSocketDemo : MonoBehaviour
 #if !UNITY_EDITOR && UNITY_WEBGL
     private void Awake()
     {
-        address = "ws://echo.websocket.org";
+        address = "wss://echo.websocket.org";
     }
 #endif
 

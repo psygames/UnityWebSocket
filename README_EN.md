@@ -14,7 +14,7 @@
 
 ### **Installation**
 
-- Download an `UnityWebSocket.unitypackage` file from [Releases](https://github.com/psygames/UnityWebSocket/releases) page.
+- Download latest `UnityWebSocket.unitypackage` file from [Releases](https://github.com/psygames/UnityWebSocket/releases) page.
   Import it into your Unity project.
 
 
