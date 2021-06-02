@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if UNITY_EDITOR || !UNTIY_WEBGL
+using System;
 
 namespace UnityWebSocket.NoWebGL.Sharp
 {
@@ -61,3 +62,4 @@ namespace UnityWebSocket.NoWebGL.Sharp
         }
     }
 }
+#endif

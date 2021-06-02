@@ -516,7 +516,7 @@ PlayerSettings:
   webGLLinkerTarget: 2
   webGLThreadsSupport: 0
   scriptingDefineSymbols:
-    1: UNITY_WEB_SOCKET_SHARP
+    1: 
   platformArchitecture: {}
   scriptingBackend:
     Standalone: 0
