@@ -62,7 +62,10 @@ namespace UnityWebSocket.Editor
             GUILayout.Label("");
             if (GUILayout.Button("Test On Browser", GUILayout.Width(140)))
             {
-                Application.OpenURL("https://localhost:" + port);
+                if (secure)
+                    Application.OpenURL("https://localhost:" + port);
+                else
+                    Application.OpenURL("http://localhost:" + port);
             }
             EditorGUILayout.EndHorizontal();
             scroll = EditorGUILayout.BeginScrollView(scroll, "box");

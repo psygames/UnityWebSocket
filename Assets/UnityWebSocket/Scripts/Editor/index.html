@@ -134,7 +134,10 @@
                 addMsg("Client", TalkWords.value, 1);
             }
             var Address = document.getElementById("address");
-            Address.value = "wss://localhost:5963";
+            if (window.location.protocol == "https:")
+                Address.value = "wss://" + window.location.host;
+            else
+                Address.value = "ws://" + window.location.host;
             var ConnectSub = document.getElementById("connectsub");
             ConnectSub.onclick = function () {
                 if (ConnectSub.value == "关闭") {
