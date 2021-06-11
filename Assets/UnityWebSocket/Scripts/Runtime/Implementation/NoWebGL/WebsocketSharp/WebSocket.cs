@@ -37,9 +37,7 @@ namespace UnityWebSocket.NoWebGL.Sharp
             };
             if (socket.IsSecure)
             {
-                socket.SslConfiguration.EnabledSslProtocols = 
-                    (System.Security.Authentication.SslProtocols)
-                    ((int)socket.SslConfiguration.EnabledSslProtocols | 192 | 768 | 3072);
+                socket.SslConfiguration.EnabledSslProtocols = (System.Security.Authentication.SslProtocols)4092;
             }
         }
 

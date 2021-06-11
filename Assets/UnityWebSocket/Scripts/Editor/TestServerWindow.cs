@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.Security.Authentication;
+using System.Security.Cryptography.X509Certificates;
 using UnityEditor;
 using UnityEngine;
 using WebSocketSharp.Server;
@@ -70,9 +72,11 @@ namespace UnityWebSocket.Editor
                     server = new WebSocketServer(port, secure);
                     if (secure)
                     {
+                        var certPath = "Assets/UnityWebSocket/Scripts/Editor/cert.pfx";
+                        var certPwd = "123456";
                         server.SslConfiguration.ServerCertificate =
-                            new System.Security.Cryptography.X509Certificates.
-                            X509Certificate2("Assets/UnityWebSocket/Scripts/Editor/cert.pfx", "123456");
+                            new X509Certificate2(certPath, certPwd);
+                        server.SslConfiguration.EnabledSslProtocols = (SslProtocols)4092;
                     }
                     server.AddWebSocketService<TestServer>("/");
                     server.Start();
