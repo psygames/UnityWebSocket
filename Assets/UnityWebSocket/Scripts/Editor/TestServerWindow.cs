@@ -48,16 +48,23 @@ namespace UnityWebSocket.Editor
             EditorGUILayout.BeginHorizontal();
             EditorGUI.BeginDisabledGroup(isStart);
             EditorGUILayout.LabelField("Listening on port:", GUILayout.Width(110));
-            port = EditorGUILayout.IntField(port);
+            port = EditorGUILayout.IntField(port, GUILayout.Width(80));
+            EditorGUILayout.LabelField("", GUILayout.Width(10));
             EditorGUILayout.LabelField("Secure:", GUILayout.Width(60));
             secure = EditorGUILayout.Toggle(secure);
             EditorGUI.EndDisabledGroup();
             EditorGUILayout.EndHorizontal();
+            EditorGUILayout.BeginHorizontal();
             if (GUILayout.Button("Clear Logs", GUILayout.Width(120)))
             {
                 logs.Clear();
             }
-
+            GUILayout.Label("");
+            if (GUILayout.Button("Test On Browser", GUILayout.Width(140)))
+            {
+                Application.OpenURL("https://localhost:" + port);
+            }
+            EditorGUILayout.EndHorizontal();
             scroll = EditorGUILayout.BeginScrollView(scroll, "box");
             foreach (var log in new List<string>(logs))
             {
