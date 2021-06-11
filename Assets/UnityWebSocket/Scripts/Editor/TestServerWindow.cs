@@ -33,7 +33,8 @@ namespace UnityWebSocket.Editor
         private List<string> logs = new List<string>();
         private Vector2 scroll;
         private bool needRepaint;
-        private string address = "ws://0.0.0.0";
+        private int port = 5963;
+        private bool secure = false;
 
         private void OnGUI()
         {
@@ -43,8 +44,10 @@ namespace UnityWebSocket.Editor
 
             EditorGUILayout.BeginHorizontal();
             EditorGUI.BeginDisabledGroup(isStart);
-            EditorGUILayout.LabelField("Listening on:", GUILayout.Width(80));
-            address = EditorGUILayout.TextField(address);
+            EditorGUILayout.LabelField("Listening on port:", GUILayout.Width(110));
+            port = EditorGUILayout.IntField(port);
+            EditorGUILayout.LabelField("Secure:", GUILayout.Width(60));
+            secure = EditorGUILayout.Toggle(secure);
             EditorGUI.EndDisabledGroup();
             EditorGUILayout.EndHorizontal();
             if (GUILayout.Button("Clear Logs", GUILayout.Width(120)))
@@ -64,7 +67,13 @@ namespace UnityWebSocket.Editor
                 GUI.color = Color.green;
                 if (GUILayout.Button("Start", GUILayout.Height(30)))
                 {
-                    server = new WebSocketServer();
+                    server = new WebSocketServer(port, secure);
+                    if (secure)
+                    {
+                        server.SslConfiguration.ServerCertificate =
+                            new System.Security.Cryptography.X509Certificates.
+                            X509Certificate2("Assets/UnityWebSocket/Scripts/Editor/cert.pfx", "123456");
+                    }
                     server.AddWebSocketService<TestServer>("/");
                     server.Start();
                 }
