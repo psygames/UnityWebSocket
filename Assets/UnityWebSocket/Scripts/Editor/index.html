@@ -38,7 +38,7 @@
         }
 
         .talk_word {
-            width: 420px;
+            width: 400px;
             height: 26px;
             padding: 0px;
             float: left;
@@ -48,7 +48,7 @@
         }
 
         .talk_sub {
-            width: 56px;
+            width: 76px;
             height: 30px;
             float: left;
             margin-left: 10px;
@@ -86,15 +86,15 @@
             var ConnectSub = document.getElementById("connectsub");
 
             if (!("WebSocket" in window)) {
-                ConnectSub.value = "连接";
-                alert("您的浏览器不支持 WebSocket!");
+                ConnectSub.value = "Connect";
+                alert("Your browser does not support WebSocket!");
                 return;
             }
 
             ws = new WebSocket(address);
             ws.onopen = function () {
-                ConnectSub.value = "关闭";
-                addMsg("System", "连接成功");
+                ConnectSub.value = "Close";
+                addMsg("System", "Connect success.");
             };
 
             ws.onmessage = function (evt) {
@@ -104,8 +104,8 @@
 
             ws.onclose = function () {
                 var ConnectSub = document.getElementById("connectsub");
-                ConnectSub.value = "连接";
-                addMsg("System", "连接已关闭");
+                ConnectSub.value = "Connect";
+                addMsg("System", "Connection Closed.");
             };
         }
 
@@ -127,7 +127,11 @@
             var TalkSub = document.getElementById("talksub");
             TalkSub.onclick = function () {
                 if (TalkWords.value == "") {
-                    alert("消息不能为空");
+                    alert("Message can't be empty");
+                    return;
+                }
+                if (!ws || ws.readyState != 1) {
+                    alert("Not connected yet.");
                     return;
                 }
                 ws.send(TalkWords.value);
@@ -140,12 +144,12 @@
                 Address.value = "ws://" + window.location.host;
             var ConnectSub = document.getElementById("connectsub");
             ConnectSub.onclick = function () {
-                if (ConnectSub.value == "关闭") {
-                    ConnectSub.value = "关闭中...";
+                if (ConnectSub.value == "Close") {
+                    ConnectSub.value = "Closing...";
                     ws.close();
                 }
-                else if (ConnectSub.value == "连接") {
-                    ConnectSub.value = "连接中...";
+                else if (ConnectSub.value == "Connect") {
+                    ConnectSub.value = "Connecting...";
                     WebSocketConnect(Address.value);
                 }
             }
@@ -156,19 +160,19 @@
     <div class="talk_con">
         <div class="talk_input">
             <select class="whotalk">
-                <option value="0">地址</option>
+                <option value="0">Address</option>
             </select>
             <input type="text" class="talk_word" id="address">
-            <input type="button" value="连接" class="talk_sub" id="connectsub">
+            <input type="button" value="Connect" class="talk_sub" id="connectsub">
         </div>
         <div class="talk_show" id="words">
         </div>
         <div class="talk_input">
             <select class="whotalk" id="who">
-                <option value="0">消息</option>
+                <option value="0">Message</option>
             </select>
             <input type="text" class="talk_word" id="talkwords">
-            <input type="button" value="发送" class="talk_sub" id="talksub">
+            <input type="button" value="Send" class="talk_sub" id="talksub">
         </div>
     </div>
 </body>
