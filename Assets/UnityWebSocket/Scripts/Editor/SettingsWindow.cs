@@ -274,7 +274,16 @@ namespace UnityWebSocket.Editor
 
         private void VersionCheckUpdate()
         {
+#if UNITY_2021_1_OR_NEWER
+            if (req == null
+                || req.result == UnityWebRequest.Result.ConnectionError
+                || req.result == UnityWebRequest.Result.DataProcessingError
+                || req.result == UnityWebRequest.Result.ProtocolError)
+#elif UNITY_2018_1_OR_NEWER
             if (req == null || req.isNetworkError || req.isHttpError)
+#else
+            if (req == null || req.isError)
+#endif
             {
                 EditorApplication.update -= VersionCheckUpdate;
                 latestVersion = "unknown";
@@ -320,9 +329,17 @@ namespace UnityWebSocket.Editor
 
             if (!isAllFixed)
             {
-                SettingsWindow.Open();
+                EditorApplication.update -= DelayOpenWindow;
+                EditorApplication.update += DelayOpenWindow;
             }
         }
+
+        private static void DelayOpenWindow()
+        {
+            EditorApplication.update -= DelayOpenWindow;
+            SettingsWindow.Open();
+        }
+
 
         internal static bool _IsInArray(int[] array, int val)
         {
