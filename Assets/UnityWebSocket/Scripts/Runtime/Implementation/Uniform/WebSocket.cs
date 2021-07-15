@@ -19,8 +19,13 @@ namespace UnityWebSocket.Uniform
 
         public WebSocket(string address)
         {
+#if !UNITY_EDITOR && UNITY_WEBGL
+            _rawSocket = new WebGL.WebSocket(address);
+#elif !NET_LEGACY
             _rawSocket = new NoWebGL.Default.WebSocket(address);
-      
+#else
+            //TODO: legacy .net 3.5 websocket
+#endif
             _rawSocket.OnOpen += (o, e) =>
             {
                 if (OnOpen != null)
