@@ -8,10 +8,10 @@ using WebSocketSharp.Server;
 
 namespace UnityWebSocket.Editor
 {
-    internal class TestServerWindow : EditorWindow
+    internal class Server_WebSocketSharp : EditorWindow
     {
-        static TestServerWindow window = null;
-        [MenuItem("Tools/UnityWebSocket/Test Server", priority = 100)]
+        static Server_WebSocketSharp window = null;
+        [MenuItem("Tools/UnityWebSocket/Server(WebSocketSharp)", priority = 101)]
         internal static void Open()
         {
             if (window != null)
@@ -19,7 +19,7 @@ namespace UnityWebSocket.Editor
                 window.Close();
             }
 
-            window = GetWindow<TestServerWindow>(true, "Test Server");
+            window = GetWindow<Server_WebSocketSharp>(true, "Server(WebSocketSharp)");
             window.minSize = window.maxSize = new Vector2(600, 500);
             window.Show();
         }
@@ -37,7 +37,7 @@ namespace UnityWebSocket.Editor
         private Vector2 scroll;
         private bool needRepaint;
         private int port = 5963;
-        private bool secure = true;
+        private bool secure = false;
 
         private void OnGUI()
         {
