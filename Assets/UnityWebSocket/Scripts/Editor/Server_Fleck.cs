@@ -124,6 +124,7 @@ namespace UnityWebSocket.Editor
                     {
                         socket.Close();
                     }
+                    sockets.Clear();
                     server.ListenerSocket = null;
                     server = null;
                 }
