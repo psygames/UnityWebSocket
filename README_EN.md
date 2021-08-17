@@ -48,12 +48,14 @@
   socket.CloseAsync();
   ```
 
-- more detail usage, see the [UnityWebSocketDemo.cs](Assets/UnityWebSocket/Demo/UnityWebSocketDemo.cs) code in project.
-  
-- Unity Define Symbols:
+- More detail usages, see the [UnityWebSocketDemo.cs](Assets/UnityWebSocket/Demo/UnityWebSocketDemo.cs) code in project.
+
+- Menus
+  - Tools -> UnityWebSocket -> Preference , Preference panel, contains WebGL platform settins, version update check, bug report, etc.
+  - Tools -> UnityWebSocket -> Server(Fleck) , A WebSocketServer base on [Fleck](https://github.com/statianzo/Fleck), only use for testing.
+
+- Unity Define Symbols(Optional):
   - `UNITY_WEB_SOCKET_LOG` open internal log info.
-  - `UNITY_WEB_SOCKET_SHARP` use third-party plugin [websocket-sharp](https://github.com/sta/websocket-sharp).
-  - `UNITY_WEB_SOCKET_NINJA` use third-party plugin [Ninja.WebSockets](https://github.com/ninjasource/Ninja.WebSockets) 
 
 ### **Attention(Warning)**
 

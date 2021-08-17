@@ -50,10 +50,12 @@
 
 - 更多使用方法可参考项目中的 [UnityWebSocketDemo.cs](Assets/UnityWebSocket/Demo/UnityWebSocketDemo.cs) 示例代码。
 
-- 可添加 Unity 编译宏：
+- 功能菜单：
+  - Tools -> UnityWebSocket -> Preference 偏好设置面板，包含WebGL的平台配置和检测，版本更新检测，问题反馈渠道等。
+  - Tools -> UnityWebSocket -> Server(Fleck) 基于 [Fleck](https://github.com/statianzo/Fleck) 插件实现的测试服务器，仅用于开发测试使用。
+
+- Unity 编译宏（可选项）：
   - `UNITY_WEB_SOCKET_LOG` 打开底层日志输出。
-  - `UNITY_WEB_SOCKET_SHARP` 使用 [websocket-sharp](https://github.com/sta/websocket-sharp) 插件。
-  - `UNITY_WEB_SOCKET_NINJA` 使用 [Ninja.WebSockets](https://github.com/ninjasource/Ninja.WebSockets) 插件。
 
 
 ### **注意（Warning）**
