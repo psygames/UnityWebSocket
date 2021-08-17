@@ -1,4 +1,4 @@
-﻿using Fleck;
+using Fleck;
 using System.Collections.Generic;
 using System.Security.Authentication;
 using System.Security.Cryptography.X509Certificates;
@@ -65,7 +65,7 @@ namespace UnityWebSocket.Editor
         private Vector2 scroll;
         private bool needRepaint;
         private int port = 5963;
-        private bool secure = false;
+        private bool wss = false;
 
         private void OnGUI()
         {
@@ -78,8 +78,10 @@ namespace UnityWebSocket.Editor
             EditorGUILayout.LabelField("Listening on port:", GUILayout.Width(110));
             port = EditorGUILayout.IntField(port, GUILayout.Width(80));
             EditorGUILayout.LabelField("", GUILayout.Width(10));
-            EditorGUILayout.LabelField("Secure:", GUILayout.Width(60));
-            secure = EditorGUILayout.Toggle(secure);
+            EditorGUI.BeginDisabledGroup(true);
+            EditorGUILayout.LabelField("Secure WebSockets(wss://)", GUILayout.Width(160));
+            wss = EditorGUILayout.Toggle(wss);
+            EditorGUI.EndDisabledGroup();
             EditorGUI.EndDisabledGroup();
             EditorGUILayout.EndHorizontal();
             EditorGUILayout.BeginHorizontal();
@@ -100,7 +102,7 @@ namespace UnityWebSocket.Editor
                 GUI.color = Color.green;
                 if (GUILayout.Button("Start", GUILayout.Height(30)))
                 {
-                    if (secure)
+                    if (wss)
                     {
                         server = new WebSocketServer("wss://0.0.0.0:" + port);
                         var certPwd = "123456";
