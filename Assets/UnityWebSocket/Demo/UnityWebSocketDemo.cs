@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityWebSocket;
 
 namespace UnityWebSocket.Demo
 {
