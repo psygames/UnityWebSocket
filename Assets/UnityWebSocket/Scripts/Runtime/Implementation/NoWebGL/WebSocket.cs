@@ -6,7 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Net.WebSockets;
 
-namespace UnityWebSocket.NoWebGL.Default
+namespace UnityWebSocket.NoWebGL
 {
     public class WebSocket : IWebSocket
     {
@@ -45,12 +45,6 @@ namespace UnityWebSocket.NoWebGL.Default
         private bool IsCtsCancel { get { return cts == null || cts.IsCancellationRequested; } }
         private bool isSendAsyncRunning;
         private bool isReceiveAsyncRunning;
-
-        //TODO: OPTIMIZE THIS API
-        /// <summary>
-        /// run the socket async method on main thread, if you want.
-        /// </summary>
-        public static bool runOnMainThread { get; set; } = false;
 
         #region APIs
         public WebSocket(string address)
@@ -93,46 +87,34 @@ namespace UnityWebSocket.NoWebGL.Default
         private async void RunConnectAsync()
         {
             Log("Run ConnectAsync ...");
-            if (runOnMainThread)
-                await _ConnectAsync();
-            else
-                await Task.Run(_ConnectAsync);
+            await Task.Run(ConnectTask);
             Log("Run ConnectAsync End !");
         }
 
         private async void RunCloseAsync()
         {
             Log("Run CloseAsync ...");
-            if (runOnMainThread)
-                await _CloseAsync();
-            else
-                await Task.Run(_CloseAsync);
+            await Task.Run(CloseTask);
             Log("Run CloseAsync End !");
         }
 
         private async void RunSendAsync()
         {
             Log("Run SendAsync ...");
-            if (runOnMainThread)
-                await _SendAsync();
-            else
-                await Task.Run(_SendAsync);
+            await Task.Run(SendTask);
             Log("Run SendAsync End !");
         }
 
         private async void RunReceiveAsync()
         {
             Log("Run ReceiveAsync ...");
-            if (runOnMainThread)
-                await _ReceiveAsync();
-            else
-                await Task.Run(_ReceiveAsync);
+            await Task.Run(ReceiveTask);
             Log("Run ReceiveAsync End !");
         }
 
         #endregion
 
-        private async Task _ConnectAsync()
+        private async Task ConnectTask()
         {
             Log("ConnectAsync Begin ...");
 
@@ -151,13 +133,12 @@ namespace UnityWebSocket.NoWebGL.Default
 
             RunSendAsync();
             RunReceiveAsync();
-
             HandleOpen();
 
             Log("ConnectAsync End !");
         }
 
-        private async Task _CloseAsync()
+        private async Task CloseTask()
         {
             Log("CloseAsync Begin ...");
 
@@ -173,7 +154,7 @@ namespace UnityWebSocket.NoWebGL.Default
             Log("CloseAsync End !");
         }
 
-        private async Task _SendAsync()
+        private async Task SendTask()
         {
             Log("SendAsync Begin ...");
 
@@ -214,11 +195,11 @@ namespace UnityWebSocket.NoWebGL.Default
             Log("SendAsync End !");
         }
 
-        private async Task _ReceiveAsync()
+        private async Task ReceiveTask()
         {
             Log("ReceiveAsync Begin ...");
 
-            var bufferCap = 1024;
+            var bufferCap = 2048;
             var buffer = new byte[bufferCap];
             var received = 0;
 
@@ -233,7 +214,7 @@ namespace UnityWebSocket.NoWebGL.Default
 
                 while (!IsCtsCancel && !isClosed)
                 {
-                    WebSocketReceiveResult result = await socket.ReceiveAsync(segment, cts.Token);
+                    var result = await socket.ReceiveAsync(segment, cts.Token);
                     received += result.Count;
 
                     if (received >= buffer.Length && !result.EndOfMessage)
@@ -253,10 +234,7 @@ namespace UnityWebSocket.NoWebGL.Default
                     }
 
                     byte[] data = new byte[received];
-                    for (int i = 0; i < received; i++)
-                    {
-                        data[i] = buffer[i];
-                    }
+                    Array.Copy(buffer, data, received);
 
                     switch (result.MessageType)
                     {

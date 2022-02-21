@@ -22,7 +22,7 @@ namespace UnityWebSocket.Uniform
 #if !UNITY_EDITOR && UNITY_WEBGL
             _rawSocket = new WebGL.WebSocket(address);
 #elif !NET_LEGACY
-            _rawSocket = new NoWebGL.Default.WebSocket(address);
+            _rawSocket = new NoWebGL.WebSocket(address);
 #else
             //TODO: legacy .net 3.5 websocket
 #endif

@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace UnityWebSocket.Demo
 {
@@ -18,7 +18,7 @@ namespace UnityWebSocket.Demo
 #if !UNITY_EDITOR && UNITY_WEBGL
     private void Awake()
     {
-        address = "wss://echo.websocket.org";
+        address = "wss://demo.piesocket.com/v3/channel_1?api_key=oCdCMcMPQpbvNjUIzqtvF1d2X2okWpDQj4AwARJuAgtjhzKxVEjQU6IdCjwm&notify_self";
     }
 #endif
 
