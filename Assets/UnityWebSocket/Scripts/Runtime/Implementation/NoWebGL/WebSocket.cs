@@ -1,10 +1,11 @@
-﻿#if !NET_LEGACY && (UNITY_EDITOR || !UNTIY_WEBGL)
+#if !NET_LEGACY && (UNITY_EDITOR || !UNTIY_WEBGL)
 using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Net.WebSockets;
+using System.IO;
 
 namespace UnityWebSocket.NoWebGL
 {
@@ -42,9 +43,8 @@ namespace UnityWebSocket.NoWebGL
 
         private ClientWebSocket socket;
         private CancellationTokenSource cts;
-        private bool IsCtsCancel { get { return cts == null || cts.IsCancellationRequested; } }
-        private bool isSendAsyncRunning;
-        private bool isReceiveAsyncRunning;
+        private bool IsCtsCanceled { get { return cts == null || cts.IsCancellationRequested; } }
+        private bool isSending;
 
         #region APIs
         public WebSocket(string address)
@@ -61,62 +61,34 @@ namespace UnityWebSocket.NoWebGL
             }
             cts = new CancellationTokenSource();
             socket = new ClientWebSocket();
-            RunConnectAsync();
+            Task.Run(ConnectTask);
         }
 
         public void CloseAsync()
         {
-            RunCloseAsync();
+            Task.Run(CloseTask);
         }
 
         public void SendAsync(byte[] data)
         {
-            var sendBuffer = SpawnBuffer(WebSocketMessageType.Binary, data);
-            PushBuffer(sendBuffer);
+            if (IsCtsCanceled) return;
+            var buffer = new SendBuffer(data, WebSocketMessageType.Binary);
+            SendAsyncBuffer(buffer);
         }
 
         public void SendAsync(string text)
         {
+            if (IsCtsCanceled) return;
             var data = Encoding.UTF8.GetBytes(text);
-            var sendBuffer = SpawnBuffer(WebSocketMessageType.Text, data);
-            PushBuffer(sendBuffer);
+            var buffer = new SendBuffer(data, WebSocketMessageType.Text);
+            SendAsyncBuffer(buffer);
         }
         #endregion
 
-        #region Run Async
-        private async void RunConnectAsync()
-        {
-            Log("Run ConnectAsync ...");
-            await Task.Run(ConnectTask);
-            Log("Run ConnectAsync End !");
-        }
-
-        private async void RunCloseAsync()
-        {
-            Log("Run CloseAsync ...");
-            await Task.Run(CloseTask);
-            Log("Run CloseAsync End !");
-        }
-
-        private async void RunSendAsync()
-        {
-            Log("Run SendAsync ...");
-            await Task.Run(SendTask);
-            Log("Run SendAsync End !");
-        }
-
-        private async void RunReceiveAsync()
-        {
-            Log("Run ReceiveAsync ...");
-            await Task.Run(ReceiveTask);
-            Log("Run ReceiveAsync End !");
-        }
-
-        #endregion
 
         private async Task ConnectTask()
         {
-            Log("ConnectAsync Begin ...");
+            Log("Connect Task Begin ...");
 
             try
             {
@@ -131,16 +103,16 @@ namespace UnityWebSocket.NoWebGL
                 return;
             }
 
-            RunSendAsync();
-            RunReceiveAsync();
             HandleOpen();
 
-            Log("ConnectAsync End !");
+            Log("Connect Task End !");
+
+            await ReceiveTask();
         }
 
         private async Task CloseTask()
         {
-            Log("CloseAsync Begin ...");
+            Log("Close Task Begin ...");
 
             try
             {
@@ -151,32 +123,56 @@ namespace UnityWebSocket.NoWebGL
                 HandleError(e);
             }
 
-            Log("CloseAsync End !");
+            Log("Close Task End !");
+        }
+
+        class SendBuffer
+        {
+            public byte[] data;
+            public WebSocketMessageType type;
+            public SendBuffer(byte[] data, WebSocketMessageType type)
+            {
+                this.data = data;
+                this.type = type;
+            }
+        }
+
+        private object sendQueueLock = new object();
+        private Queue<SendBuffer> sendQueue = new Queue<SendBuffer>();
+
+        private void SendAsyncBuffer(SendBuffer buffer)
+        {
+            if (isSending)
+            {
+                lock (sendQueueLock)
+                {
+                    sendQueue.Enqueue(buffer);
+                }
+            }
+            else
+            {
+                isSending = true;
+                sendQueue.Enqueue(buffer);
+                Task.Run(SendTask);
+            }
         }
 
         private async Task SendTask()
         {
-            Log("SendAsync Begin ...");
+            Log("Send Task Begin ...");
 
             try
             {
-                isSendAsyncRunning = true;
                 SendBuffer buffer = null;
-                while (!IsCtsCancel)
+                while (!IsCtsCanceled)
                 {
-                    if (sendBuffers.Count <= 0)
+                    if (sendQueue.Count <= 0) break;
+                    lock (sendQueueLock)
                     {
-                        await Task.Delay(1);
-                        continue;
+                        buffer = sendQueue.Dequeue();
                     }
-                    buffer = PopBuffer();
-                    if (!IsCtsCancel)
-                    {
-                        await socket.SendAsync(buffer.buffer, buffer.type, true, cts.Token);
-                    }
-                    ReleaseBuffer(buffer);
-
-                    Log("SendBuffers: " + sendBuffers.Count + ", PoolelBuffers: " + pooledSendBuffers.Count);
+                    await socket.SendAsync(new ArraySegment<byte>(buffer.data), buffer.type, true, cts.Token);
+                    Log("Send Queue Size: " + sendQueue.Count);
                 }
             }
             catch (Exception e)
@@ -185,57 +181,35 @@ namespace UnityWebSocket.NoWebGL
             }
             finally
             {
-                while (sendBuffers.Count > 0)
-                {
-                    ReleaseBuffer(PopBuffer());
-                }
-                isSendAsyncRunning = false;
+                isSending = false;
             }
 
-            Log("SendAsync End !");
+            if (IsCtsCanceled)
+            {
+                sendQueue.Clear();
+            }
+
+            Log("Send Task End !");
         }
 
         private async Task ReceiveTask()
         {
-            Log("ReceiveAsync Begin ...");
-
-            var bufferCap = 2048;
-            var buffer = new byte[bufferCap];
-            var received = 0;
+            Log("Receive Task Begin ...");
 
             string closeReason = "";
             ushort closeCode = 0;
             bool isClosed = false;
+            var segment = new ArraySegment<byte>(new byte[8192]);
+            var ms = new MemoryStream();
 
             try
             {
-                isReceiveAsyncRunning = true;
-                var segment = new ArraySegment<byte>(buffer);
-
-                while (!IsCtsCancel && !isClosed)
+                while (!IsCtsCanceled && !isClosed)
                 {
                     var result = await socket.ReceiveAsync(segment, cts.Token);
-                    received += result.Count;
-
-                    if (received >= buffer.Length && !result.EndOfMessage)
-                    {
-                        bufferCap = bufferCap * 2;
-                        var newBuffer = new byte[bufferCap];
-                        Array.Copy(buffer, newBuffer, buffer.Length);
-                        buffer = newBuffer;
-                        newBuffer = null;
-                        Log("Expand Receive Buffer to " + bufferCap);
-                    }
-
-                    if (!result.EndOfMessage)
-                    {
-                        segment = new ArraySegment<byte>(buffer, received, buffer.Length - received);
-                        continue;
-                    }
-
-                    byte[] data = new byte[received];
-                    Array.Copy(buffer, data, received);
-
+                    ms.Write(segment.Array, segment.Offset, result.Count);
+                    if (!result.EndOfMessage) continue;
+                    var data = ms.ToArray();
                     switch (result.MessageType)
                     {
                         case WebSocketMessageType.Binary:
@@ -250,8 +224,7 @@ namespace UnityWebSocket.NoWebGL
                             closeReason = result.CloseStatusDescription;
                             break;
                     }
-                    received = 0;
-                    segment = new ArraySegment<byte>(buffer);
+                    ms.Seek(0, SeekOrigin.Begin);
                 }
             }
             catch (Exception e)
@@ -262,16 +235,16 @@ namespace UnityWebSocket.NoWebGL
             }
             finally
             {
-                isReceiveAsyncRunning = false;
+                ms.Close();
             }
 
             cts.Cancel();
 
             Log("Wait For Close ...");
 
-            while (!IsCtsCancel || isSendAsyncRunning || isReceiveAsyncRunning)
+            while (!IsCtsCanceled || isSending)
             {
-                await Task.Delay(1);
+                await Task.Delay(10);
             }
 
             Log("Wait For Close End !");
@@ -279,7 +252,7 @@ namespace UnityWebSocket.NoWebGL
             HandleClose(closeCode, closeReason);
             SocketDispose();
 
-            Log("Receive Async End !");
+            Log("Receive Task End !");
         }
 
         private void SocketDispose()
@@ -288,67 +261,6 @@ namespace UnityWebSocket.NoWebGL
             socket.Dispose();
             cts = null;
             socket = null;
-        }
-
-        //TODO: OPTIMIZE Send Pool
-        private readonly Queue<SendBuffer> sendBuffers = new Queue<SendBuffer>();
-        private readonly Queue<SendBuffer> pooledSendBuffers = new Queue<SendBuffer>();
-
-        class SendBuffer
-        {
-            public WebSocketMessageType type;
-            public ArraySegment<byte> buffer;
-        }
-
-        private void PushBuffer(SendBuffer sendBuffer)
-        {
-            lock (sendBuffers)
-            {
-                sendBuffers.Enqueue(sendBuffer);
-            }
-        }
-
-        private SendBuffer PopBuffer()
-        {
-            SendBuffer buffer;
-            lock (sendBuffers)
-            {
-                buffer = sendBuffers.Dequeue();
-            }
-            return buffer;
-        }
-
-        private void ReleaseBuffer(SendBuffer sendBuffer)
-        {
-            sendBuffer.buffer = default;
-            lock (pooledSendBuffers)
-            {
-                pooledSendBuffers.Enqueue(sendBuffer);
-            }
-        }
-
-        private SendBuffer SpawnBuffer(WebSocketMessageType type, byte[] bytes)
-        {
-            SendBuffer sendBuffer = null;
-            if (pooledSendBuffers.Count <= 0)
-            {
-                sendBuffer = new SendBuffer
-                {
-                    type = type,
-                    buffer = new ArraySegment<byte>(bytes),
-                };
-                return sendBuffer;
-            }
-
-            lock (pooledSendBuffers)
-            {
-                sendBuffer = pooledSendBuffers.Dequeue();
-            }
-
-            sendBuffer.type = type;
-            sendBuffer.buffer = new ArraySegment<byte>(bytes);
-
-            return sendBuffer;
         }
 
         private void HandleOpen()

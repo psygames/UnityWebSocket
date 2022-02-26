@@ -1,10 +1,10 @@
-﻿using UnityEngine;
+using UnityEngine;
 
 namespace UnityWebSocket.Demo
 {
     public class UnityWebSocketDemo : MonoBehaviour
     {
-        public string address = "ws://127.0.0.1";
+        public string address = "ws://127.0.0.1:8080";
         public string sendText = "Hello World!";
         public bool logMessage = true;
 
@@ -14,13 +14,6 @@ namespace UnityWebSocket.Demo
         private int sendCount;
         private int receiveCount;
         private Vector2 scrollPos;
-
-#if !UNITY_EDITOR && UNITY_WEBGL
-    private void Awake()
-    {
-        address = "wss://demo.piesocket.com/v3/channel_1?api_key=oCdCMcMPQpbvNjUIzqtvF1d2X2okWpDQj4AwARJuAgtjhzKxVEjQU6IdCjwm&notify_self";
-    }
-#endif
 
         private void OnGUI()
         {
