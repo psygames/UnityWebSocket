@@ -51,8 +51,7 @@
 - More detail usages, see the [UnityWebSocketDemo.cs](Assets/UnityWebSocket/Demo/UnityWebSocketDemo.cs) code in project.
 
 - Menus
-  - Tools -> UnityWebSocket -> Preference , Preference panel, contains WebGL platform settins, version update check, bug report, etc.
-  - Tools -> UnityWebSocket -> Server(Fleck) , A WebSocketServer base on [Fleck](https://github.com/statianzo/Fleck), only use for testing.
+  - Tools -> UnityWebSocket, version update check, bug report, etc.
 
 - Unity Define Symbols(Optional):
   - `UNITY_WEB_SOCKET_LOG` open internal log info.
