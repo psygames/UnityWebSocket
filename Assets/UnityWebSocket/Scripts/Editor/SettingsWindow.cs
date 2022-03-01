@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEditor;
 using UnityEngine.Networking;
 using System.IO;
@@ -164,7 +164,7 @@ namespace UnityWebSocket.Editor
 
         private void VersionCheckUpdate()
         {
-#if UNITY_2021_1_OR_NEWER
+#if UNITY_2020_3_OR_NEWER
             if (req == null
                 || req.result == UnityWebRequest.Result.ConnectionError
                 || req.result == UnityWebRequest.Result.DataProcessingError
