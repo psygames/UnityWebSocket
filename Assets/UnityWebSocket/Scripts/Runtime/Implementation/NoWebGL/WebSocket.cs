@@ -200,16 +200,17 @@ namespace UnityWebSocket.NoWebGL
             ushort closeCode = 0;
             bool isClosed = false;
             var segment = new ArraySegment<byte>(new byte[8192]);
-            var ms = new MemoryStream();
 
             try
             {
                 while (!IsCtsCanceled && !isClosed)
                 {
+                    var ms = new MemoryStream();
                     var result = await socket.ReceiveAsync(segment, cts.Token);
-                    ms.Write(segment.Array, segment.Offset, result.Count);
+                    ms.Write(segment.Array, 0, result.Count);
                     if (!result.EndOfMessage) continue;
                     var data = ms.ToArray();
+                    ms.Close();
                     switch (result.MessageType)
                     {
                         case WebSocketMessageType.Binary:
@@ -224,7 +225,6 @@ namespace UnityWebSocket.NoWebGL
                             closeReason = result.CloseStatusDescription;
                             break;
                     }
-                    ms.Seek(0, SeekOrigin.Begin);
                 }
             }
             catch (Exception e)
@@ -232,10 +232,6 @@ namespace UnityWebSocket.NoWebGL
                 HandleError(e);
                 closeCode = (ushort)CloseStatusCode.Abnormal;
                 closeReason = e.Message;
-            }
-            finally
-            {
-                ms.Close();
             }
 
             cts.Cancel();
