@@ -42,9 +42,7 @@ namespace UnityWebSocket.NoWebGL
         public event EventHandler<MessageEventArgs> OnMessage;
 
         private ClientWebSocket socket;
-        private CancellationTokenSource cts;
-        private bool IsCtsCanceled { get { return cts == null || cts.IsCancellationRequested; } }
-        private bool isSending;
+        private bool isOpening => socket.State == System.Net.WebSockets.WebSocketState.Open;
 
         #region APIs
         public WebSocket(string address)
@@ -54,34 +52,34 @@ namespace UnityWebSocket.NoWebGL
 
         public void ConnectAsync()
         {
-            if (cts != null || socket != null)
+            if (socket != null)
             {
-                HandleError(new Exception("socket is busy."));
+                HandleError(new Exception("Socket is busy."));
                 return;
             }
-            cts = new CancellationTokenSource();
             socket = new ClientWebSocket();
             Task.Run(ConnectTask);
         }
 
         public void CloseAsync()
         {
-            Task.Run(CloseTask);
+            if (!isOpening) return;
+            SendBufferAsync(new SendBuffer(null, WebSocketMessageType.Close));
         }
 
         public void SendAsync(byte[] data)
         {
-            if (IsCtsCanceled) return;
+            if (!isOpening) return;
             var buffer = new SendBuffer(data, WebSocketMessageType.Binary);
-            SendAsyncBuffer(buffer);
+            SendBufferAsync(buffer);
         }
 
         public void SendAsync(string text)
         {
-            if (IsCtsCanceled) return;
+            if (!isOpening) return;
             var data = Encoding.UTF8.GetBytes(text);
             var buffer = new SendBuffer(data, WebSocketMessageType.Text);
-            SendAsyncBuffer(buffer);
+            SendBufferAsync(buffer);
         }
         #endregion
 
@@ -93,7 +91,7 @@ namespace UnityWebSocket.NoWebGL
             try
             {
                 var uri = new Uri(Address);
-                await socket.ConnectAsync(uri, cts.Token);
+                await socket.ConnectAsync(uri, CancellationToken.None);
             }
             catch (Exception e)
             {
@@ -110,22 +108,6 @@ namespace UnityWebSocket.NoWebGL
             await ReceiveTask();
         }
 
-        private async Task CloseTask()
-        {
-            Log("Close Task Begin ...");
-
-            try
-            {
-                await socket.CloseAsync(WebSocketCloseStatus.NormalClosure, "Normal Closure", cts.Token);
-            }
-            catch (Exception e)
-            {
-                HandleError(e);
-            }
-
-            Log("Close Task End !");
-        }
-
         class SendBuffer
         {
             public byte[] data;
@@ -139,19 +121,24 @@ namespace UnityWebSocket.NoWebGL
 
         private object sendQueueLock = new object();
         private Queue<SendBuffer> sendQueue = new Queue<SendBuffer>();
+        private bool isSendTaskRunning;
 
-        private void SendAsyncBuffer(SendBuffer buffer)
+        private void SendBufferAsync(SendBuffer buffer)
         {
-            if (isSending)
+            if (isSendTaskRunning)
             {
                 lock (sendQueueLock)
                 {
+                    if (buffer.type == WebSocketMessageType.Close)
+                    {
+                        sendQueue.Clear();
+                    }
                     sendQueue.Enqueue(buffer);
                 }
             }
             else
             {
-                isSending = true;
+                isSendTaskRunning = true;
                 sendQueue.Enqueue(buffer);
                 Task.Run(SendTask);
             }
@@ -164,15 +151,23 @@ namespace UnityWebSocket.NoWebGL
             try
             {
                 SendBuffer buffer = null;
-                while (!IsCtsCanceled)
+                while (sendQueue.Count > 0 && isOpening)
                 {
-                    if (sendQueue.Count <= 0) break;
                     lock (sendQueueLock)
                     {
                         buffer = sendQueue.Dequeue();
                     }
-                    await socket.SendAsync(new ArraySegment<byte>(buffer.data), buffer.type, true, cts.Token);
-                    Log("Send Queue Size: " + sendQueue.Count);
+                    if (buffer.type == WebSocketMessageType.Close)
+                    {
+                        Log($"Close Send Begin ...");
+                        await socket.CloseOutputAsync(WebSocketCloseStatus.NormalClosure, "Normal Closure", CancellationToken.None);
+                        Log($"Close Send End !");
+                    }
+                    else
+                    {
+                        Log($"Send, type: {buffer.type}, size: {buffer.data.Length}, queue left: {sendQueue.Count}");
+                        await socket.SendAsync(new ArraySegment<byte>(buffer.data), buffer.type, true, CancellationToken.None);
+                    }
                 }
             }
             catch (Exception e)
@@ -181,12 +176,7 @@ namespace UnityWebSocket.NoWebGL
             }
             finally
             {
-                isSending = false;
-            }
-
-            if (IsCtsCanceled)
-            {
-                sendQueue.Clear();
+                isSendTaskRunning = false;
             }
 
             Log("Send Task End !");
@@ -200,17 +190,17 @@ namespace UnityWebSocket.NoWebGL
             ushort closeCode = 0;
             bool isClosed = false;
             var segment = new ArraySegment<byte>(new byte[8192]);
+            var ms = new MemoryStream();
 
             try
             {
-                while (!IsCtsCanceled && !isClosed)
+                while (!isClosed)
                 {
-                    var ms = new MemoryStream();
-                    var result = await socket.ReceiveAsync(segment, cts.Token);
+                    var result = await socket.ReceiveAsync(segment, CancellationToken.None);
                     ms.Write(segment.Array, 0, result.Count);
                     if (!result.EndOfMessage) continue;
                     var data = ms.ToArray();
-                    ms.Close();
+                    ms.SetLength(0);
                     switch (result.MessageType)
                     {
                         case WebSocketMessageType.Binary:
@@ -233,17 +223,10 @@ namespace UnityWebSocket.NoWebGL
                 closeCode = (ushort)CloseStatusCode.Abnormal;
                 closeReason = e.Message;
             }
-
-            cts.Cancel();
-
-            Log("Wait For Close ...");
-
-            while (!IsCtsCanceled || isSending)
+            finally
             {
-                await Task.Delay(10);
+                ms.Close();
             }
-
-            Log("Wait For Close End !");
 
             HandleClose(closeCode, closeReason);
             SocketDispose();
@@ -253,9 +236,8 @@ namespace UnityWebSocket.NoWebGL
 
         private void SocketDispose()
         {
-            cts.Dispose();
+            sendQueue.Clear();
             socket.Dispose();
-            cts = null;
             socket = null;
         }
 
@@ -267,19 +249,19 @@ namespace UnityWebSocket.NoWebGL
 
         private void HandleMessage(Opcode opcode, byte[] rawData)
         {
-            Log("OnMessage: " + opcode + "(" + rawData.Length + ")");
+            Log($"OnMessage, type: {opcode}, size: {rawData.Length}");
             OnMessage?.Invoke(this, new MessageEventArgs(opcode, rawData));
         }
 
         private void HandleClose(ushort code, string reason)
         {
-            Log("OnClose: " + reason + "(" + code + ")");
+            Log($"OnClose, code: {code}, reason: {reason}");
             OnClose?.Invoke(this, new CloseEventArgs(code, reason));
         }
 
         private void HandleError(Exception exception)
         {
-            Log("OnError: " + exception.Message);
+            Log("OnError, error: " + exception.Message);
             OnError?.Invoke(this, new ErrorEventArgs(exception.Message));
         }
 

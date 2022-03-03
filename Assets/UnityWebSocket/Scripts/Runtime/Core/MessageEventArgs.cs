@@ -24,8 +24,7 @@ namespace UnityWebSocket
         /// Gets the opcode for the message.
         /// </summary>
         /// <value>
-        /// <see cref="Opcode.Text"/>, <see cref="Opcode.Binary"/>,
-        /// or <see cref="Opcode.Ping"/>.
+        /// <see cref="Opcode.Text"/>, <see cref="Opcode.Binary"/>.
         /// </value>
         internal Opcode Opcode { get; private set; }
 
@@ -34,7 +33,7 @@ namespace UnityWebSocket
         /// </summary>
         /// <value>
         /// A <see cref="string"/> that represents the message data if its type is
-        /// text or ping and if decoding it to a string has successfully done;
+        /// text and if decoding it to a string has successfully done;
         /// otherwise, <see langword="null"/>.
         /// </value>
         public string Data
@@ -72,20 +71,6 @@ namespace UnityWebSocket
             get
             {
                 return Opcode == Opcode.Binary;
-            }
-        }
-
-        /// <summary>
-        /// Gets a value indicating whether the message type is ping.
-        /// </summary>
-        /// <value>
-        /// <c>true</c> if the message type is ping; otherwise, <c>false</c>.
-        /// </value>
-        public bool IsPing
-        {
-            get
-            {
-                return Opcode == Opcode.Ping;
             }
         }
 
