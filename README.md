@@ -55,18 +55,8 @@
 
 - Unity 编译宏（可选项）：
   - `UNITY_WEB_SOCKET_LOG` 打开底层日志输出。
+  - `UNITY_WEB_SOCKET_ENABLE_ASYNC` 针对非WebGL平台使用异步线程处理消息（需自行处理跨线程访问Unity组件问题）。
 
-
-### **注意（Warning）**
-
-- 插件中多个命名空间中存在 **WebSocket** 类，适用不同环境，请根据自身需求选择。
-
-  命名空间 | 平台 | 方式 |  说明  
-  -|-|-|-
-  UnityWebSocket | 全平台 | 同步(无阻塞) | **[推荐]** 无需考虑异步回调使用 Unity 组件的问题。
-  UnityWebSocket.Uniform | 全平台 | 异步 | 需要考虑异步回调使用 Unity 组件的问题。
-  UnityWebSocket.WebGL | WebGL平台 | 异步 | 仅支持WebGL平台下的通信。
-  UnityWebSocket.NoWebGL | 非WebGL平台 | 异步  | 仅支持非WebGL平台下的通信。
 
 ### **QQ 交流群**
 - 1126457634 >>> [入群通道](https://qm.qq.com/cgi-bin/qm/qr?k=KcexYJ9aYwogFXbj2aN0XHH5b2G7ICmd) <<<

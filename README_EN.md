@@ -54,15 +54,6 @@
   - Tools -> UnityWebSocket, version update check, bug report, etc.
 
 - Unity Define Symbols(Optional):
-  - `UNITY_WEB_SOCKET_LOG` open internal log info.
+  - `UNITY_WEB_SOCKET_LOG` Open internal log info.
+  - `UNITY_WEB_SOCKET_ENABLE_ASYNC` Use network thread handle message (not WebGL platform).
 
-### **Attention(Warning)**
-
-- there are many **WebSocket** class in different namespace, use in different situations.
-
-  namespace | platform | sync style |  description  
-  -|-|-|-
-  UnityWebSocket | all | synchronized(no block) | **[recommend]** no need consider the problem by using unity component in asynchronized callback.
-  UnityWebSocket.Uniform | all | asynchronized | consider the problem by using unity component in asynchronized callback.
-  UnityWebSocket.WebGL | WebGL only | asynchronized | only run in WebGL platform.
-  UnityWebSocket.NoWebGL | WebGL except | asynchronized  | only run in not WebGL platforms.
