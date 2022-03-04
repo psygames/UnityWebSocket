@@ -17,25 +17,29 @@ namespace UnityWebSocket
         public WebSocket(string address)
         {
             _socket = new Uniform.WebSocket(address);
+            _socket.OnOpen += (o, e) => HandleEvent(e);
+            _socket.OnClose += (o, e) => HandleEvent(e);
+            _socket.OnError += (o, e) => HandleEvent(e);
+            _socket.OnMessage += (o, e) => HandleEvent(e);
+        }
 
-            _socket.OnOpen += (o, e) =>
+        private void HandleEvent(EventArgs eventArgs)
+        {
+            lock (eventQueueLock)
             {
-                lock (eventArgsQueue) { eventArgsQueue.Enqueue(e); }
-            };
-            _socket.OnClose += (o, e) =>
-            {
-                lock (eventArgsQueue) { eventArgsQueue.Enqueue(e); }
-            };
-            _socket.OnError += (o, e) =>
-            {
-                lock (eventArgsQueue) { eventArgsQueue.Enqueue(e); }
-            };
-            _socket.OnMessage += (o, e) =>
-            {
-                lock (eventArgsQueue) { eventArgsQueue.Enqueue(e); }
-            };
+                eventQueue.Enqueue(eventArgs);
+            }
+        }
 
+        public void ConnectAsync()
+        {
             WebSocketManager.Instance.Add(this);
+            _socket.ConnectAsync();
+        }
+
+        public void CloseAsync()
+        {
+            _socket.CloseAsync();
         }
 
         public void SendAsync(string data)
@@ -48,42 +52,34 @@ namespace UnityWebSocket
             _socket.SendAsync(data);
         }
 
-        public void ConnectAsync()
-        {
-            _socket.ConnectAsync();
-        }
-
-        public void CloseAsync()
-        {
-            _socket.CloseAsync();
-        }
-
-        private readonly Queue<EventArgs> eventArgsQueue = new Queue<EventArgs>();
+        private readonly Queue<EventArgs> eventQueue = new Queue<EventArgs>();
+        private readonly object eventQueueLock = new object();
         internal void Update()
         {
-            while (eventArgsQueue.Count > 0)
+            EventArgs e;
+            while (eventQueue.Count > 0)
             {
-                EventArgs e;
-                lock (eventArgsQueue)
+                lock (eventQueueLock)
                 {
-                    e = eventArgsQueue.Dequeue();
+                    e = eventQueue.Dequeue();
                 }
 
-                if (e is CloseEventArgs && OnClose != null)
+                if (e is CloseEventArgs)
                 {
-                    OnClose.Invoke(this, e as CloseEventArgs);
+                    OnClose?.Invoke(this, e as CloseEventArgs);
+                    WebSocketManager.Instance.Remove(this);
                 }
-                else if (e is OpenEventArgs && OnOpen != null)
+                else if (e is OpenEventArgs)
                 {
-                    OnOpen.Invoke(this, e as OpenEventArgs);
+                    OnOpen?.Invoke(this, e as OpenEventArgs);
                 }
-                else if (e is MessageEventArgs && OnMessage != null)
+                else if (e is MessageEventArgs)
                 {
-                    OnMessage.Invoke(this, e as MessageEventArgs);
+                    OnMessage?.Invoke(this, e as MessageEventArgs);
                 }
-                else if (e is ErrorEventArgs && OnError != null)
+                else if (e is ErrorEventArgs)
                 {
-                    OnError.Invoke(this, e as ErrorEventArgs);
+                    OnError?.Invoke(this, e as ErrorEventArgs);
                 }
             }
         }

@@ -74,28 +74,14 @@ namespace UnityWebSocket.WebGL
             isInitialized = true;
         }
 
-        /// <summary>
-        /// Called when instance is destroyed (by destructor)
-        /// Method removes instance from map and free it in JSLIB implementation
-        /// </summary>
-        /// <param name="instanceId">Instance identifier.</param>
-        public static void HandleInstanceDestroy(int instanceId)
-        {
-            instances.Remove(instanceId);
-            WebSocketFree(instanceId);
-        }
-
         [MonoPInvokeCallback(typeof(OnOpenCallback))]
         public static void DelegateOnOpenEvent(int instanceId)
         {
-
             WebSocket instanceRef;
-
             if (instances.TryGetValue(instanceId, out instanceRef))
             {
                 instanceRef.HandleOnOpen();
             }
-
         }
 
         [MonoPInvokeCallback(typeof(OnMessageCallback))]
@@ -109,7 +95,6 @@ namespace UnityWebSocket.WebGL
                 instanceRef.HandleOnMessage(bytes);
             }
         }
-
 
         [MonoPInvokeCallback(typeof(OnMessageCallback))]
         public static void DelegateOnMessageStrEvent(int instanceId, IntPtr msgStrPtr)
@@ -144,14 +129,25 @@ namespace UnityWebSocket.WebGL
             }
         }
 
-        public static int Add(WebSocket socket)
+        internal static int Add(WebSocket socket)
         {
-            if (!isInitialized)
-                Initialize();
-
-            int instanceId = WebSocketAllocate(socket.Address);
-            instances.Add(instanceId, socket);
+            if (!isInitialized) Initialize();
+            int instanceId = socket.instanceId;
+            if (!instances.ContainsValue(socket))
+            {
+                instanceId = WebSocketAllocate(socket.Address);
+                instances.Add(instanceId, socket);
+            }
             return instanceId;
+        }
+
+        internal static void Remove(int instanceId)
+        {
+            if (instances.ContainsKey(instanceId))
+            {
+                instances.Remove(instanceId);
+                WebSocketFree(instanceId);
+            }
         }
 
         public static string GetErrorMessageFromCode(int errorCode)

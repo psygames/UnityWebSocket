@@ -24,28 +24,12 @@ namespace UnityWebSocket.Uniform
 #elif !NET_LEGACY
             _rawSocket = new NoWebGL.WebSocket(address);
 #else
-            //TODO: legacy .net 3.5 websocket
+            throw new NotSupportedException("WebSocket not support .net3.5(legacy)");
 #endif
-            _rawSocket.OnOpen += (o, e) =>
-            {
-                if (OnOpen != null)
-                    OnOpen.Invoke(this, e);
-            };
-            _rawSocket.OnClose += (o, e) =>
-            {
-                if (OnClose != null)
-                    OnClose.Invoke(this, e);
-            };
-            _rawSocket.OnError += (o, e) =>
-            {
-                if (OnError != null)
-                    OnError.Invoke(this, e);
-            };
-            _rawSocket.OnMessage += (o, e) =>
-            {
-                if (OnMessage != null)
-                    OnMessage.Invoke(this, e);
-            };
+            _rawSocket.OnOpen += (o, e) => OnOpen?.Invoke(this, e);
+            _rawSocket.OnClose += (o, e) => OnClose?.Invoke(this, e);
+            _rawSocket.OnError += (o, e) => OnError?.Invoke(this, e);
+            _rawSocket.OnMessage += (o, e) => OnMessage?.Invoke(this, e);
         }
 
 

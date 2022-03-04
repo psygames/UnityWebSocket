@@ -11,8 +11,7 @@ namespace UnityWebSocket
         {
             get
             {
-                if (_instance == null)
-                    AutoCreateInstance();
+                if (!_instance) CreateInstance();
                 return _instance;
             }
         }
@@ -20,58 +19,36 @@ namespace UnityWebSocket
         void Awake()
         {
             DontDestroyOnLoad(gameObject);
-            _instance = this;
         }
 
-
-        public static void AutoCreateInstance()
+        public static void CreateInstance()
         {
             GameObject go = GameObject.Find("/" + rootName);
-            if (go == null)
-            {
-                go = new GameObject(rootName);
-            }
-
-            if (go.GetComponent<WebSocketManager>() == null)
-            {
-                go.AddComponent<WebSocketManager>();
-            }
+            if (!go) go = new GameObject(rootName);
+            _instance = go.GetComponent<WebSocketManager>();
+            if (!_instance) _instance = go.AddComponent<WebSocketManager>();
         }
 
         private readonly List<WebSocket> sockets = new List<WebSocket>();
 
         public void Add(WebSocket socket)
         {
-            lock (sockets)
-            {
-                if (!sockets.Contains(socket))
-                    sockets.Add(socket);
-            }
+            if (!sockets.Contains(socket))
+                sockets.Add(socket);
         }
 
-        float clearCheckTimeStamp = 0;
+        public void Remove(WebSocket socket)
+        {
+            if (sockets.Contains(socket))
+                sockets.Remove(socket);
+        }
+
         private void Update()
         {
-            if (sockets.Count <= 0)
-                return;
-
-            bool clearCheck = Time.realtimeSinceStartup - clearCheckTimeStamp >= 60;
-
-            lock (sockets)
+            if (sockets.Count <= 0) return;
+            for (int i = sockets.Count - 1; i >= 0; i--)
             {
-                for (int i = sockets.Count - 1; i >= 0; i--)
-                {
-                    sockets[i].Update();
-                    if (clearCheck && sockets[i].ReadyState == WebSocketState.Closed)
-                    {
-                        sockets.RemoveAt(i);
-                    }
-                }
-            }
-
-            if (clearCheck)
-            {
-                clearCheckTimeStamp = Time.realtimeSinceStartup;
+                sockets[i].Update();
             }
         }
     }
