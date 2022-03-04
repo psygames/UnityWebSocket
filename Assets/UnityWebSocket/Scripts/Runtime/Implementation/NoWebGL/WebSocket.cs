@@ -1,4 +1,4 @@
-#if !NET_LEGACY && (UNITY_EDITOR || !UNTIY_WEBGL)
+#if !NET_LEGACY && (UNITY_EDITOR || !UNITY_WEBGL)
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using System.Net.WebSockets;
 using System.IO;
 
-namespace UnityWebSocket.NoWebGL
+namespace UnityWebSocket
 {
     public class WebSocket : IWebSocket
     {
@@ -52,6 +52,9 @@ namespace UnityWebSocket.NoWebGL
 
         public void ConnectAsync()
         {
+#if !UNITY_WEB_SOCKET_ENABLE_ASYNC
+            WebSocketManager.Instance.Add(this);
+#endif
             if (socket != null)
             {
                 HandleError(new Exception("Socket is busy."));
@@ -244,29 +247,87 @@ namespace UnityWebSocket.NoWebGL
         private void HandleOpen()
         {
             Log("OnOpen");
+#if !UNITY_WEB_SOCKET_ENABLE_ASYNC
+            HandleEventSync(new OpenEventArgs());
+#else
             OnOpen?.Invoke(this, new OpenEventArgs());
+#endif
         }
 
         private void HandleMessage(Opcode opcode, byte[] rawData)
         {
             Log($"OnMessage, type: {opcode}, size: {rawData.Length}");
+#if !UNITY_WEB_SOCKET_ENABLE_ASYNC
+            HandleEventSync(new MessageEventArgs(opcode, rawData));
+#else
             OnMessage?.Invoke(this, new MessageEventArgs(opcode, rawData));
+#endif
         }
 
         private void HandleClose(ushort code, string reason)
         {
             Log($"OnClose, code: {code}, reason: {reason}");
+#if !UNITY_WEB_SOCKET_ENABLE_ASYNC
+            HandleEventSync(new CloseEventArgs(code, reason));
+#else
             OnClose?.Invoke(this, new CloseEventArgs(code, reason));
+#endif
         }
 
         private void HandleError(Exception exception)
         {
             Log("OnError, error: " + exception.Message);
+#if !UNITY_WEB_SOCKET_ENABLE_ASYNC
+            HandleEventSync(new ErrorEventArgs(exception.Message));
+#else
             OnError?.Invoke(this, new ErrorEventArgs(exception.Message));
+#endif
         }
 
+#if !UNITY_WEB_SOCKET_ENABLE_ASYNC
+        private readonly Queue<EventArgs> eventQueue = new Queue<EventArgs>();
+        private readonly object eventQueueLock = new object();
+        private void HandleEventSync(EventArgs eventArgs)
+        {
+            lock (eventQueueLock)
+            {
+                eventQueue.Enqueue(eventArgs);
+            }
+        }
+
+        internal void Update()
+        {
+            EventArgs e;
+            while (eventQueue.Count > 0)
+            {
+                lock (eventQueueLock)
+                {
+                    e = eventQueue.Dequeue();
+                }
+
+                if (e is CloseEventArgs)
+                {
+                    OnClose?.Invoke(this, e as CloseEventArgs);
+                    WebSocketManager.Instance.Remove(this);
+                }
+                else if (e is OpenEventArgs)
+                {
+                    OnOpen?.Invoke(this, e as OpenEventArgs);
+                }
+                else if (e is MessageEventArgs)
+                {
+                    OnMessage?.Invoke(this, e as MessageEventArgs);
+                }
+                else if (e is ErrorEventArgs)
+                {
+                    OnError?.Invoke(this, e as ErrorEventArgs);
+                }
+            }
+        }
+#endif
+
         [System.Diagnostics.Conditional("UNITY_WEB_SOCKET_LOG")]
-        private void Log(string msg)
+        static void Log(string msg)
         {
             UnityEngine.Debug.Log($"<color=yellow>[UnityWebSocket]</color>" +
                 $"<color=green>[T-{Thread.CurrentThread.ManagedThreadId:D3}]</color>" +

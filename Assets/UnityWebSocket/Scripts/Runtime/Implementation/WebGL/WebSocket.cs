@@ -1,7 +1,7 @@
-﻿#if UNITY_EDITOR || UNITY_WEBGL
+#if !UNITY_EDITOR && UNITY_WEBGL
 using System;
 
-namespace UnityWebSocket.WebGL
+namespace UnityWebSocket
 {
     public class WebSocket : IWebSocket
     {
@@ -13,62 +13,102 @@ namespace UnityWebSocket.WebGL
         public event EventHandler<ErrorEventArgs> OnError;
         public event EventHandler<MessageEventArgs> OnMessage;
 
-        internal int instanceId;
+        internal int instanceId = 0;
 
         public WebSocket(string address)
         {
-            this.Address = address;
+            instanceId = WebSocketManager.AllocateInstance(address);
+            Log($"Allocate socket with instanceId: {instanceId}");
+            Address = address;
+        }
+
+        ~WebSocket()
+        {
+            Log($"Free socket with instanceId: {instanceId}");
+            WebSocketManager.FreeInstance(instanceId);
+        }
+
+        public void ConnectAsync()
+        {
+            Log($"Connect with instanceId: {instanceId}");
+            WebSocketManager.Add(this);
+            int code = WebSocketManager.WebSocketConnect(instanceId);
+            if (code < 0) HandleOnError(GetErrorMessageFromCode(code));
+        }
+
+        public void CloseAsync()
+        {
+            Log($"Close with instanceId: {instanceId}");
+            int code = WebSocketManager.WebSocketClose(instanceId, (int)CloseStatusCode.Normal, "Normal Closure");
+            if (code < 0) HandleOnError(GetErrorMessageFromCode(code));
+        }
+
+        public void SendAsync(string text)
+        {
+            Log($"Send, type: {Opcode.Text}, size: {text.Length}");
+            int code = WebSocketManager.WebSocketSendStr(instanceId, text);
+            if (code < 0) HandleOnError(GetErrorMessageFromCode(code));
+        }
+
+        public void SendAsync(byte[] data)
+        {
+            Log($"Send, type: {Opcode.Binary}, size: {data.Length}");
+            int code = WebSocketManager.WebSocketSend(instanceId, data, data.Length);
+            if (code < 0) HandleOnError(GetErrorMessageFromCode(code));
         }
 
         internal void HandleOnOpen()
         {
+            Log("OnOpen");
             OnOpen?.Invoke(this, new OpenEventArgs());
         }
 
         internal void HandleOnMessage(byte[] rawData)
         {
+            Log($"OnMessage, type: {Opcode.Binary}, size: {rawData.Length}");
             OnMessage?.Invoke(this, new MessageEventArgs(Opcode.Binary, rawData));
         }
 
         internal void HandleOnMessageStr(string data)
         {
+            Log($"OnMessage, type: {Opcode.Text}, size: {data.Length}");
             OnMessage?.Invoke(this, new MessageEventArgs(Opcode.Text, data));
         }
 
         internal void HandleOnClose(ushort code, string reason)
         {
-            WebSocketManager.Remove(instanceId);
+            Log($"OnClose, code: {code}, reason: {reason}");
             OnClose?.Invoke(this, new CloseEventArgs(code, reason));
+            WebSocketManager.Remove(instanceId);
         }
 
         internal void HandleOnError(string msg)
         {
+            Log("OnError, error: " + msg);
             OnError?.Invoke(this, new ErrorEventArgs(msg));
         }
 
-        public void ConnectAsync()
+        internal static string GetErrorMessageFromCode(int errorCode)
         {
-            instanceId = WebSocketManager.Add(this);
-            int ret = WebSocketManager.WebSocketConnect(instanceId);
-            if (ret < 0) HandleOnError(WebSocketManager.GetErrorMessageFromCode(ret));
+            switch (errorCode)
+            {
+                case -1: return "WebSocket instance not found.";
+                case -2: return "WebSocket is already connected or in connecting state.";
+                case -3: return "WebSocket is not connected.";
+                case -4: return "WebSocket is already closing.";
+                case -5: return "WebSocket is already closed.";
+                case -6: return "WebSocket is not in open state.";
+                case -7: return "Cannot close WebSocket. An invalid code was specified or reason is too long.";
+                default: return $"Unknown error code {errorCode}.";
+            }
         }
 
-        public void CloseAsync()
+        [System.Diagnostics.Conditional("UNITY_WEB_SOCKET_LOG")]
+        static void Log(string msg)
         {
-            int ret = WebSocketManager.WebSocketClose(instanceId, (int)CloseStatusCode.Normal, "Normal Closure");
-            if (ret < 0) HandleOnError(WebSocketManager.GetErrorMessageFromCode(ret));
-        }
-
-        public void SendAsync(string text)
-        {
-            int ret = WebSocketManager.WebSocketSendStr(instanceId, text);
-            if (ret < 0) HandleOnError(WebSocketManager.GetErrorMessageFromCode(ret));
-        }
-
-        public void SendAsync(byte[] data)
-        {
-            int ret = WebSocketManager.WebSocketSend(instanceId, data, data.Length);
-            if (ret < 0) HandleOnError(WebSocketManager.GetErrorMessageFromCode(ret));
+            UnityEngine.Debug.Log($"[UnityWebSocket]" +
+                $"[{DateTime.Now.TimeOfDay}]" +
+                $" {msg}");
         }
     }
 }

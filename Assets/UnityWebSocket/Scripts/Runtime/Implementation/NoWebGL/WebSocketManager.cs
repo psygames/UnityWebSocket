@@ -1,8 +1,10 @@
-﻿using System.Collections.Generic;
+#if !NET_LEGACY && (UNITY_EDITOR || !UNITY_WEBGL) && !UNITY_WEB_SOCKET_ENABLE_ASYNC
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace UnityWebSocket
 {
+    [DefaultExecutionOrder(-10000)]
     internal class WebSocketManager : MonoBehaviour
     {
         private const string rootName = "[UnityWebSocket]";
@@ -16,7 +18,7 @@ namespace UnityWebSocket
             }
         }
 
-        void Awake()
+        private void Awake()
         {
             DontDestroyOnLoad(gameObject);
         }
@@ -53,3 +55,4 @@ namespace UnityWebSocket
         }
     }
 }
+#endif

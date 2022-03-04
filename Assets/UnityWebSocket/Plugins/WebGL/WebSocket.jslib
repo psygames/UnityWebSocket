@@ -21,9 +21,6 @@ var WebSocketLibrary =
 		onMessage: null,
 		onError: null,
 		onClose: null,
-
-		/* Debug mode */
-		debug: false
 	},
 
 	/**
@@ -83,8 +80,8 @@ var WebSocketLibrary =
 	 */
 	WebSocketAllocate: function(url)
 	{
-		var urlStr = Pointer_stringify(url);
-		var id = webSocketManager.lastId++;
+		var urlStr = UTF8ToString(url);
+		var id = ++webSocketManager.lastId;
 		webSocketManager.instances[id] = {
 			url: urlStr,
 			ws: null
@@ -130,17 +127,12 @@ var WebSocketLibrary =
 
 		instance.ws.onopen = function()
 		{
-			if (webSocketManager.debug)
-				console.log("[JSLIB WebSocket] Connected.");
 			if (webSocketManager.onOpen)
 				Module.dynCall_vi(webSocketManager.onOpen, instanceId);
 		};
 
 		instance.ws.onmessage = function(ev)
 		{
-			if (webSocketManager.debug)
-				console.log("[JSLIB WebSocket] Received message: ", ev.data);
-
 			if (webSocketManager.onMessage === null)
 				return;
 
@@ -200,9 +192,6 @@ var WebSocketLibrary =
 
 		instance.ws.onerror = function(ev)
 		{
-			if (webSocketManager.debug)
-				console.log("[JSLIB WebSocket] Error occured.");
-
 			if (webSocketManager.onError)
 			{
 				var msg = "WebSocket error.";
@@ -222,9 +211,6 @@ var WebSocketLibrary =
 
 		instance.ws.onclose = function(ev)
 		{
-			if (webSocketManager.debug)
-				console.log("[JSLIB WebSocket] Closed, Code: " + ev.code + ", Reason: " + ev.reason);
-
 			if (webSocketManager.onClose)
 			{
 				var msg = ev.reason;
@@ -261,7 +247,7 @@ var WebSocketLibrary =
 		if (instance.ws.readyState === 2) return -4;
 		if (instance.ws.readyState === 3) return -5;
 
-		var reason = ( reasonPtr ? Pointer_stringify(reasonPtr) : undefined );
+		var reason = ( reasonPtr ? UTF8ToString(reasonPtr) : undefined );
 		try
 		{
 			instance.ws.close(code, reason);
@@ -305,7 +291,7 @@ var WebSocketLibrary =
 		if (instance.ws === null) return -3;
 		if (instance.ws.readyState !== 1) return -6;
 
-		instance.ws.send(Pointer_stringify(stringPtr));
+		instance.ws.send(UTF8ToString(stringPtr));
 
 		return 0;
 	},

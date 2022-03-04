@@ -14,6 +14,9 @@ namespace UnityWebSocket.Demo
         private int sendCount;
         private int receiveCount;
         private Vector2 scrollPos;
+        private Color green = new Color(0.1f, 1, 0.1f);
+        private Color red = new Color(1f, 0.1f, 0.1f);
+        private Color wait = new Color(0.7f, 0.3f, 0.3f);
 
         private void OnGUI()
         {
@@ -23,10 +26,19 @@ namespace UnityWebSocket.Demo
 
             WebSocketState state = socket == null ? WebSocketState.Closed : socket.ReadyState;
 
-            GUILayout.Label("SDK Version: " + Settings.VERSION, width);
-            var stateColor = state == WebSocketState.Closed ? "red" : state == WebSocketState.Open ? "#11ff11" : "#aa4444";
-            var richText = new GUIStyle() { richText = true };
-            GUILayout.Label(string.Format(" <color=white>State:</color> <color={1}>{0}</color>", state, stateColor), richText);
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("SDK Version: " + Settings.VERSION, GUILayout.Width(Screen.width / scale - 100));
+            GUI.color = green;
+            GUILayout.Label($"FPS: {fps:F2}", GUILayout.Width(80));
+            GUI.color = Color.white;
+            GUILayout.EndHorizontal();
+
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("State: ", GUILayout.Width(36));
+            GUI.color = WebSocketState.Closed == state ? red : WebSocketState.Open == state ? green : wait;
+            GUILayout.Label($"{state}", GUILayout.Width(120));
+            GUI.color = Color.white;
+            GUILayout.EndHorizontal();
 
             GUI.enabled = state == WebSocketState.Closed;
             GUILayout.Label("Address: ", width);
@@ -116,12 +128,13 @@ namespace UnityWebSocket.Demo
         private void AddLog(string str)
         {
             if (!logMessage) return;
+            if (str.Length > 100) str = str.Substring(0, 100) + "...";
             log += str + "\n";
-            if (log.Length > 4 * 1024)
+            if (log.Length > 22 * 1024)
             {
-                log = log.Substring(2 * 1024);
+                log = log.Substring(log.Length - 22 * 1024);
             }
-            scrollPos.y = 10000;
+            scrollPos.y = int.MaxValue;
         }
 
         private void Socket_OnOpen(object sender, OpenEventArgs e)
@@ -157,6 +170,21 @@ namespace UnityWebSocket.Demo
             if (socket != null && socket.ReadyState != WebSocketState.Closed)
             {
                 socket.CloseAsync();
+            }
+        }
+
+        private int frame = 0;
+        private float time = 0;
+        private float fps = 0;
+        private void Update()
+        {
+            frame += 1;
+            time += Time.deltaTime;
+            if (time >= 0.5f)
+            {
+                fps = frame / time;
+                frame = 0;
+                time = 0;
             }
         }
     }
