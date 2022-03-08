@@ -42,7 +42,7 @@ namespace UnityWebSocket
         public event EventHandler<MessageEventArgs> OnMessage;
 
         private ClientWebSocket socket;
-        private bool isOpening => socket.State == System.Net.WebSockets.WebSocketState.Open;
+        private bool isOpening => socket != null && socket.State == System.Net.WebSockets.WebSocketState.Open;
 
         #region APIs
         public WebSocket(string address)
