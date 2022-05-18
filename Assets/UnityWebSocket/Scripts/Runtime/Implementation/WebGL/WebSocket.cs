@@ -6,6 +6,7 @@ namespace UnityWebSocket
     public class WebSocket : IWebSocket
     {
         public string Address { get; private set; }
+        public string[] SubProtocols { get; private set; }
         public WebSocketState ReadyState { get { return (WebSocketState)WebSocketManager.WebSocketGetState(instanceId); } }
 
         public event EventHandler<OpenEventArgs> OnOpen;
@@ -17,15 +18,46 @@ namespace UnityWebSocket
 
         public WebSocket(string address)
         {
-            instanceId = WebSocketManager.AllocateInstance(address);
+            this.Address = address;
+            AllocateInstance();
+        }
+
+        public WebSocket(string address, string subProtocol)
+        {
+            this.Address = address;
+            this.SubProtocols = new string[] { subProtocol };
+            AllocateInstance();
+        }
+
+        public WebSocket(string address, string[] subProtocols)
+        {
+            this.Address = address;
+            this.SubProtocols = subProtocols;
+            AllocateInstance();
+        }
+
+        internal void AllocateInstance()
+        {
+            instanceId = WebSocketManager.AllocateInstance(this.Address);
             Log($"Allocate socket with instanceId: {instanceId}");
-            Address = address;
+            if (this.SubProtocols == null) return;
+            foreach (var protocol in this.SubProtocols)
+            {
+                if (string.IsNullOrEmpty(protocol)) continue;
+                Log($"Add Sub Protocol {protocol}, with instanceId: {instanceId}");
+                int code = WebSocketManager.WebSocketAddSubProtocol(instanceId, protocol);
+                if (code < 0) 
+                {
+                    HandleOnError(GetErrorMessageFromCode(code));
+                    break;
+                }
+            }
         }
 
         ~WebSocket()
         {
             Log($"Free socket with instanceId: {instanceId}");
-            WebSocketManager.FreeInstance(instanceId);
+            WebSocketManager.WebSocketFree(instanceId);
         }
 
         public void ConnectAsync()

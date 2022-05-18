@@ -42,6 +42,9 @@ namespace UnityWebSocket
         public static extern int WebSocketAllocate(string url);
 
         [DllImport("__Internal")]
+        public static extern int WebSocketAddSubProtocol(int instanceId, string protocol);
+
+        [DllImport("__Internal")]
         public static extern void WebSocketFree(int instanceId);
 
         [DllImport("__Internal")]
@@ -128,11 +131,6 @@ namespace UnityWebSocket
         {
             if (!isInitialized) Initialize();
             return WebSocketAllocate(address);
-        }
-
-        internal static void FreeInstance(int instanceId)
-        {
-            WebSocketFree(instanceId);
         }
 
         internal static void Add(WebSocket socket)

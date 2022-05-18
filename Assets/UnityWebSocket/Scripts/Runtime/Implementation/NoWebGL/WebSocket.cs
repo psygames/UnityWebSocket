@@ -12,6 +12,7 @@ namespace UnityWebSocket
     public class WebSocket : IWebSocket
     {
         public string Address { get; private set; }
+        public string[] SubProtocols { get; private set; }
 
         public WebSocketState ReadyState
         {
@@ -44,10 +45,22 @@ namespace UnityWebSocket
         private ClientWebSocket socket;
         private bool isOpening => socket != null && socket.State == System.Net.WebSockets.WebSocketState.Open;
 
-        #region APIs
+        #region APIs 
         public WebSocket(string address)
         {
             this.Address = address;
+        }
+
+        public WebSocket(string address, string subProtocol)
+        {
+            this.Address = address;
+            this.SubProtocols = new string[] { subProtocol };
+        }
+
+        public WebSocket(string address, string[] subProtocols)
+        {
+            this.Address = address;
+            this.SubProtocols = subProtocols;
         }
 
         public void ConnectAsync()
@@ -61,6 +74,16 @@ namespace UnityWebSocket
                 return;
             }
             socket = new ClientWebSocket();
+            // Keep Alive Always
+            socket.Options.KeepAliveInterval = TimeSpan.Zero;
+            if (this.SubProtocols != null)
+            {
+                foreach (var protocol in this.SubProtocols)
+                {
+                    if (string.IsNullOrEmpty(protocol)) continue;
+                    socket.Options.AddSubProtocol(protocol);
+                }
+            }
             Task.Run(ConnectTask);
         }
 

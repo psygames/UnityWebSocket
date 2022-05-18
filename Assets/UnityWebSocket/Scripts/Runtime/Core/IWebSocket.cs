@@ -100,6 +100,11 @@ namespace UnityWebSocket
         string Address { get; }
 
         /// <summary>
+        /// get sub protocols .
+        /// </summary>
+        string[] SubProtocols { get; }
+
+        /// <summary>
         /// Gets the current state of the connection.
         /// </summary>
         /// <value>

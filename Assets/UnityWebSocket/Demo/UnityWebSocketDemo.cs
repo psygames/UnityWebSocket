@@ -4,12 +4,12 @@ namespace UnityWebSocket.Demo
 {
     public class UnityWebSocketDemo : MonoBehaviour
     {
-        public string address = "ws://127.0.0.1:8080";
-        public string sendText = "Hello World!";
-        public bool logMessage = true;
+        public string address = "wss://echo.websocket.events";
+        public string sendText = "Hello UnityWebSocket!";
 
         private IWebSocket socket;
 
+        private bool logMessage = true;
         private string log = "";
         private int sendCount;
         private int receiveCount;
