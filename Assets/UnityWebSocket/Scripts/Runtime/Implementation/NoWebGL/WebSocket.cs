@@ -74,8 +74,6 @@ namespace UnityWebSocket
                 return;
             }
             socket = new ClientWebSocket();
-            // Keep Alive Always
-            socket.Options.KeepAliveInterval = TimeSpan.Zero;
             if (this.SubProtocols != null)
             {
                 foreach (var protocol in this.SubProtocols)
