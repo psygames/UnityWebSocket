@@ -68,7 +68,7 @@ namespace UnityWebSocket.Editor
 
         private void DrawVersion()
         {
-            GUI.Label(new Rect(440, 10, 150, 10), "Current Version: " + Settings.VERSION, TextStyle(alignment: TextAnchor.MiddleLeft));
+            GUI.Label(new Rect(440, 10, 150, 10), "Current Version:  " + Settings.VERSION, TextStyle(alignment: TextAnchor.MiddleLeft));
             if (string.IsNullOrEmpty(latestVersion))
             {
                 GUI.Label(new Rect(440, 30, 150, 10), "Checking for Updates...", TextStyle(alignment: TextAnchor.MiddleLeft));
@@ -79,7 +79,7 @@ namespace UnityWebSocket.Editor
             }
             else
             {
-                GUI.Label(new Rect(440, 30, 150, 10), "Latest Version: " + latestVersion, TextStyle(alignment: TextAnchor.MiddleLeft));
+                GUI.Label(new Rect(440, 30, 150, 10), "Latest Version:    " + latestVersion, TextStyle(alignment: TextAnchor.MiddleLeft));
                 if (Settings.VERSION == latestVersion)
                 {
                     if (GUI.Button(new Rect(440, 50, 150, 18), "Check Update"))
@@ -183,7 +183,7 @@ namespace UnityWebSocket.Editor
             if (req.isDone)
             {
                 EditorApplication.update -= VersionCheckUpdate;
-                latestVersion = req.url.Substring(req.url.LastIndexOf("/") + 1);
+                latestVersion = req.url.Substring(req.url.LastIndexOf("/") + 1).TrimStart('v');
 
                 if (Settings.VERSION != latestVersion)
                 {
