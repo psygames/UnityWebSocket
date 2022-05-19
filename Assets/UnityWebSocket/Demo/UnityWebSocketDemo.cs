@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace UnityWebSocket.Demo
 {
@@ -65,7 +65,7 @@ namespace UnityWebSocket.Demo
             }
             GUILayout.EndHorizontal();
 
-            GUILayout.Label("Text: ");
+            GUILayout.Label("Message: ");
             sendText = GUILayout.TextArea(sendText, GUILayout.MinHeight(50), width);
 
             GUILayout.BeginHorizontal();

@@ -1,4 +1,4 @@
-#if !NET_LEGACY && (UNITY_EDITOR || !UNITY_WEBGL)
+﻿#if !NET_LEGACY && (UNITY_EDITOR || !UNITY_WEBGL)
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -81,6 +81,7 @@ namespace UnityWebSocket
                 foreach (var protocol in this.SubProtocols)
                 {
                     if (string.IsNullOrEmpty(protocol)) continue;
+                    Log($"Add Sub Protocol {protocol}");
                     socket.Options.AddSubProtocol(protocol);
                 }
             }
