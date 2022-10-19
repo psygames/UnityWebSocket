@@ -1,4 +1,4 @@
-﻿#if !NET_LEGACY && (UNITY_EDITOR || !UNITY_WEBGL)
+#if !NET_LEGACY && (UNITY_EDITOR || !UNITY_WEBGL)
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -36,6 +36,8 @@ namespace UnityWebSocket
                 return WebSocketState.Closed;
             }
         }
+
+        public string BinaryType { get; set; } = "arraybuffer";
 
         public event EventHandler<OpenEventArgs> OnOpen;
         public event EventHandler<CloseEventArgs> OnClose;
@@ -278,7 +280,7 @@ namespace UnityWebSocket
 
         private void HandleMessage(Opcode opcode, byte[] rawData)
         {
-            Log($"OnMessage, type: {opcode}, size: {rawData.Length}");
+            Log($"OnMessage, type: {opcode}, size: {rawData.Length}\n{BitConverter.ToString(rawData)}");
 #if !UNITY_WEB_SOCKET_ENABLE_ASYNC
             HandleEventSync(new MessageEventArgs(opcode, rawData));
 #else

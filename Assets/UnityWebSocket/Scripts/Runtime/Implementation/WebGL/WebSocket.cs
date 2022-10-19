@@ -8,6 +8,7 @@ namespace UnityWebSocket
         public string Address { get; private set; }
         public string[] SubProtocols { get; private set; }
         public WebSocketState ReadyState { get { return (WebSocketState)WebSocketManager.WebSocketGetState(instanceId); } }
+        public string BinaryType { get; set; } = "arraybuffer";
 
         public event EventHandler<OpenEventArgs> OnOpen;
         public event EventHandler<CloseEventArgs> OnClose;
@@ -38,7 +39,7 @@ namespace UnityWebSocket
 
         internal void AllocateInstance()
         {
-            instanceId = WebSocketManager.AllocateInstance(this.Address);
+            instanceId = WebSocketManager.AllocateInstance(this.Address, this.BinaryType);
             Log($"Allocate socket with instanceId: {instanceId}");
             if (this.SubProtocols == null) return;
             foreach (var protocol in this.SubProtocols)
@@ -46,7 +47,7 @@ namespace UnityWebSocket
                 if (string.IsNullOrEmpty(protocol)) continue;
                 Log($"Add Sub Protocol {protocol}, with instanceId: {instanceId}");
                 int code = WebSocketManager.WebSocketAddSubProtocol(instanceId, protocol);
-                if (code < 0) 
+                if (code < 0)
                 {
                     HandleOnError(GetErrorMessageFromCode(code));
                     break;
