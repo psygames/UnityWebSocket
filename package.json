@@ -26,7 +26,7 @@
     {
       "displayName": "Demo",
       "description": "Demo Scene",
-      "path": "Samples~/DemoScene.unity"
+      "path": "Samples~/Demo/DemoScene"
     }
   ]
 }
