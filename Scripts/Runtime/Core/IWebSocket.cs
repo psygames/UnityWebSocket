@@ -100,6 +100,11 @@ namespace UnityWebSocket
         string Address { get; }
 
         /// <summary>
+        /// get sub protocols .
+        /// </summary>
+        string[] SubProtocols { get; }
+
+        /// <summary>
         /// Gets the current state of the connection.
         /// </summary>
         /// <value>
@@ -110,10 +115,23 @@ namespace UnityWebSocket
         ///   It indicates the current state of the connection.
         ///   </para>
         ///   <para>
-        ///   The default value is <see cref="WebSocketState.Connecting"/>.
+        ///   The default value is <see cref="WebSocketState.Closed"/>.
         ///   </para>
         /// </value>
         WebSocketState ReadyState { get; }
+
+        /// <summary>
+        /// Gets the current binaryType of the connection, supported on WEBGL platform only.
+        /// </summary>
+        /// <value>
+        ///   <para>
+        ///   It indicates the current binaryType of the connection.
+        ///   </para>
+        ///   <para>
+        ///   The default value is "arraybuffer", options: "blob" or "arraybuffer".
+        ///   </para>
+        /// </value>
+        string BinaryType { get; set; }
 
         /// <summary>
         /// Occurs when the WebSocket connection has been established.

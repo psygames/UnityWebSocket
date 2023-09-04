@@ -5,8 +5,6 @@
   <img src="https://s1.ax1x.com/2020/08/21/dYIAQU.png" width=20%/>
 </div>
 
-[![openupm](https://img.shields.io/npm/v/com.psygame.unitywebsocket?label=openupm&registry_uri=https://package.openupm.com)](https://openupm.com/packages/com.psygame.unitywebsocket/)
-
 ## **在线示例**
 
 - **[https://psygames.github.io/UnityWebSocket/](https://psygames.github.io/UnityWebSocket/)**
@@ -14,37 +12,9 @@
 
 ## **快速开始**
 
-### **安装环境**
-
-- Unity 2018.3 或更高。
-- 无其他SDK依赖。
-
-
 ### **安装方法**
 
-- **通过 OpenUPM 安装**
-
-  插件已托管至 [OpenUPM](https://openupm.com/packages/com.psygame.unitywebsocket/) ，您可以使用 [openupm package installer](https://package-installer.glitch.me/v1/installer/OpenUPM/com.psygame.unitywebsocket?registry=https%3A%2F%2Fpackage.openupm.com) 进行安装。
-
-- **通过 Git 安装**
-
-  在您的项目根路径的 `Packages` 文件夹中找到 `manifest.json` 文件，参考如下方式进行修改:
-  ```js
-  {
-   "dependencies": {
-   "com.psygame.unitywebsocket": "https://github.com/psygames/UnityWebSocket.git",
-   ...
-   },
-  }
-  ```
-
-  可通过修改链接后缀 `#{version}` 来安装对应版本。
-  * 示例： `"com.psygame.unitywebsocket": "https://github.com/psygames/UnityWebSocket.git#2.4.5",`
-
-
-- **通过 Unity Package 安装**
-
-  在 [Releases](https://github.com/psygames/UnityWebSocket/releases) 页面中，下载对应版本的 `UnityWebSocket.unitypackage` 安装包，然后导入到您的项目中。
+  - 在 [Releases](https://github.com/psygames/UnityWebSocket/releases) 页面中，下载最新版本的 `UnityWebSocket.unitypackage` 安装包，然后导入到您的项目中。
 
 
 ### **使用方法**
@@ -68,27 +38,25 @@
   // 连接
   socket.ConnectAsync();
 
-  // 发送数据（两种方式）
-  socket.SendAsync(str); // 发送 string 类型数据
-  socket.SendAsync(bytes); // 发送 byte[] 类型数据
+  // 发送 string 类型数据
+  socket.SendAsync(str); 
+
+  // 或者 发送 byte[] 类型数据（建议使用）
+  socket.SendAsync(bytes); 
 
   // 关闭连接
   socket.CloseAsync();
   ```
 
-- 详细使用方法可参考项目中的 [UnityWebSocketDemo.cs](Samples~/Demo/UnityWebSocketDemo.cs) 示例代码。
+- 更多使用方法可参考项目中的 [UnityWebSocketDemo.cs](Assets/UnityWebSocket/Demo/UnityWebSocketDemo.cs) 示例代码。
 
+- 功能菜单：
+  - Tools -> UnityWebSocket，版本更新检测，问题反馈渠道等。
 
-### **注意（Warning）**
+- Unity 编译宏（可选项）：
+  - `UNITY_WEB_SOCKET_LOG` 打开底层日志输出。
+  - `UNITY_WEB_SOCKET_ENABLE_ASYNC` 针对非WebGL平台使用异步线程处理消息（需自行处理跨线程访问Unity组件问题）。
 
-- 插件中多个命名空间中存在 **WebSocket** 类，适用不同环境，请根据自身需求选择。
-
-  命名空间 | 平台 | 方式 |  说明  
-  -|-|-|-
-  UnityWebSocket | 全平台 | 同步(无阻塞) | **[推荐]** 无需考虑异步回调使用 Unity 组件的问题。
-  UnityWebSocket.Uniform | 全平台 | 异步 | 需要考虑异步回调使用 Unity 组件的问题。
-  UnityWebSocket.WebGL | WebGL平台 | 异步 | 仅支持WebGL平台下的通信。
-  UnityWebSocket.NoWebGL | 非WebGL平台 | 异步  | 仅支持非WebGL平台下的通信。
 
 ### **QQ 交流群**
 - 1126457634 >>> [入群通道](https://qm.qq.com/cgi-bin/qm/qr?k=KcexYJ9aYwogFXbj2aN0XHH5b2G7ICmd) <<<

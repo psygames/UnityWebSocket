@@ -1,7 +1,7 @@
 {
-  "name": "com.psygame.unitywebsocket",
+  "name": "com.psygames.unitywebsocket",
   "displayName": "UnityWebSocket",
-  "version": "2.4.5",
+  "version": "2.7.0",
   "unity": "2018.3",
   "description": "The Best Unity WebSocket Plugin for All Platforms.",
   "keywords": [
@@ -15,18 +15,18 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/psygame/UnityWebSocket.git"
+    "url": "git+https://github.com/psygames/UnityWebSocket.git"
   },
   "author": {
-    "name": "psygame",
+    "name": "psygames",
     "email": "799329256@qq.com",
-    "url": "https://github.com/psygame"
+    "url": "https://github.com/psygames"
   },
   "samples": [
     {
       "displayName": "Demo",
       "description": "Demo Scene",
-      "path": "Samples~/Demo"
+      "path": "Samples~/DemoScene"
     }
   ]
 }
