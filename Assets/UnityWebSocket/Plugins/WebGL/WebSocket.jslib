@@ -21,6 +21,7 @@ var WebSocketLibrary =
         /* Event listeners */
         onOpen: null,
         onMessage: null,
+        onMessageStr: null,
         onError: null,
         onClose: null
     },
@@ -46,7 +47,7 @@ var WebSocketLibrary =
     },
 
     /**
-     * Set onMessage callback
+     * Set onMessageStr callback
      *
      * @param callback Reference to C# static function
      */
@@ -106,9 +107,9 @@ var WebSocketLibrary =
         if (!instance) return -1;
 
         var protocol = UTF8ToString(protocolPtr);
-        
-        if(instance.subProtocols == null) 
-            instance.subProtocols = []; 
+
+        if(instance.subProtocols == null)
+            instance.subProtocols = [];
 
         instance.subProtocols.push(protocol);
 
@@ -137,7 +138,7 @@ var WebSocketLibrary =
 
         return 0;
     },
-    
+
     /**
      * Connect WebSocket to the server
      *
@@ -328,7 +329,7 @@ var WebSocketLibrary =
         var instance = webSocketManager.instances[instanceId];
         if (!instance) return -1;
         if (instance.ws === null) return 3; // socket null as closed
-        
+
         return instance.ws.readyState;
     }
 };
