@@ -97,7 +97,7 @@ namespace UnityWebSocket
             }
         }
 
-        [MonoPInvokeCallback(typeof(OnMessageCallback))]
+        [MonoPInvokeCallback(typeof(OnMessageStrCallback))]
         public static void DelegateOnMessageStrEvent(int instanceId, IntPtr msgStrPtr)
         {
             if (sockets.TryGetValue(instanceId, out var socket))
