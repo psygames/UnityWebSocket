@@ -177,26 +177,6 @@ var WebSocketLibrary =
                     _free(buffer);
                 }
             }
-            else if (ev.data instanceof Blob)
-            {
-                var reader = new FileReader();
-                reader.onload = function()
-                {
-                    var array = new Uint8Array(reader.result);
-                    var buffer = _malloc(array.length);
-                    writeArrayToMemory(array, buffer);
-                    try
-                    {
-                        Module.dynCall_viii(webSocketManager.onMessage, instanceId, buffer, array.length);
-                    }
-                    finally
-                    {
-                        reader = null;
-                        _free(buffer);
-                    }
-                };
-                reader.readAsArrayBuffer(ev.data);
-            }
             else if(typeof ev.data == 'string')
             {
                 var length = lengthBytesUTF8(ev.data) + 1;
