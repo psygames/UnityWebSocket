@@ -20,6 +20,7 @@ var WebSocketLibrary =
         /* Event listeners */
         onOpen: null,
         onMessage: null,
+        onMessageStr: null,
         onError: null,
         onClose: null
     },
@@ -45,7 +46,7 @@ var WebSocketLibrary =
     },
 
     /**
-     * Set onMessage callback
+     * Set onMessageStr callback
      *
      * @param callback Reference to C# static function
      */
@@ -104,7 +105,7 @@ var WebSocketLibrary =
 
         var protocol = UTF8ToString(protocolPtr);
         
-        if(instance.subProtocols == null) 
+        if (instance.subProtocols == null) 
             instance.subProtocols = []; 
 
         instance.subProtocols.push(protocol);
@@ -146,7 +147,7 @@ var WebSocketLibrary =
         if (!instance) return -1;
         if (instance.ws !== null) return -2;
 
-        if(instance.subProtocols != null)
+        if (instance.subProtocols != null)
             instance.ws = new WebSocket(instance.url, instance.subProtocols);
         else
             instance.ws = new WebSocket(instance.url);
@@ -172,7 +173,7 @@ var WebSocketLibrary =
                     _free(buffer);
                 }
             }
-            else if(typeof ev.data == 'string')
+            else if (typeof ev.data == 'string')
             {
                 var length = lengthBytesUTF8(ev.data) + 1;
                 var buffer = _malloc(length);

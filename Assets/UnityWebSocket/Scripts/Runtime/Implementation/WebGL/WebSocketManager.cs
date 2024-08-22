@@ -1,4 +1,4 @@
-#if !UNITY_EDITOR && UNITY_WEBGL
+﻿#if !UNITY_EDITOR && UNITY_WEBGL
 using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
@@ -97,7 +97,7 @@ namespace UnityWebSocket
             }
         }
 
-        [MonoPInvokeCallback(typeof(OnMessageCallback))]
+        [MonoPInvokeCallback(typeof(OnMessageStrCallback))]
         public static void DelegateOnMessageStrEvent(int instanceId, IntPtr msgStrPtr)
         {
             if (sockets.TryGetValue(instanceId, out var socket))
