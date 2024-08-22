@@ -9,7 +9,6 @@ var WebSocketLibrary =
          * {
          *     url: string,
          *     ws: WebSocket,
-         *	   binaryType: string,
          *     subProtocols: string[],
          * }
          */
@@ -80,15 +79,13 @@ var WebSocketLibrary =
      *
      * @param url Server URL
      */
-    WebSocketAllocate: function(urlPtr, binaryTypePtr)
+    WebSocketAllocate: function(urlPtr)
     {
         var url = UTF8ToString(urlPtr);
-        var binaryType = UTF8ToString(binaryTypePtr);
         var id = ++webSocketManager.lastId;
         webSocketManager.instances[id] = {
             url: url,
             ws: null,
-            binaryType: binaryType
         };
 
         return id;
@@ -153,8 +150,6 @@ var WebSocketLibrary =
             instance.ws = new WebSocket(instance.url, instance.subProtocols);
         else
             instance.ws = new WebSocket(instance.url);
-
-        instance.ws.binaryType = instance.binaryType;
 
         instance.ws.onopen = function()
         {
@@ -253,7 +248,7 @@ var WebSocketLibrary =
         {
             instance.ws.close(code, reason);
         }
-        catch(err)
+        catch (err)
         {
             return -7;
         }
@@ -275,7 +270,8 @@ var WebSocketLibrary =
         if (instance.ws === null) return -3;
         if (instance.ws.readyState !== 1) return -6;
 
-        instance.ws.send(buffer.slice(bufferPtr, bufferPtr + length));
+        var bufferBlock = buffer.slice(bufferPtr, bufferPtr + length)
+        instance.ws.send(bufferBlock);
 
         return 0;
     },

@@ -1,4 +1,4 @@
-#if !NET_LEGACY && (UNITY_EDITOR || !UNITY_WEBGL)
+﻿#if !NET_LEGACY && (UNITY_EDITOR || !UNITY_WEBGL)
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -36,8 +36,6 @@ namespace UnityWebSocket
                 return WebSocketState.Closed;
             }
         }
-
-        public string BinaryType { get; set; } = "arraybuffer";
 
         public event EventHandler<OpenEventArgs> OnOpen;
         public event EventHandler<CloseEventArgs> OnClose;

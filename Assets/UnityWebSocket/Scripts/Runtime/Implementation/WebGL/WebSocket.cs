@@ -1,4 +1,4 @@
-#if !UNITY_EDITOR && UNITY_WEBGL
+﻿#if !UNITY_EDITOR && UNITY_WEBGL
 using System;
 
 namespace UnityWebSocket
@@ -8,7 +8,6 @@ namespace UnityWebSocket
         public string Address { get; private set; }
         public string[] SubProtocols { get; private set; }
         public WebSocketState ReadyState { get { return (WebSocketState)WebSocketManager.WebSocketGetState(instanceId); } }
-        public string BinaryType { get; set; } = "arraybuffer";
 
         public event EventHandler<OpenEventArgs> OnOpen;
         public event EventHandler<CloseEventArgs> OnClose;
@@ -39,7 +38,7 @@ namespace UnityWebSocket
 
         internal void AllocateInstance()
         {
-            instanceId = WebSocketManager.AllocateInstance(this.Address, this.BinaryType);
+            instanceId = WebSocketManager.AllocateInstance(this.Address);
             Log($"Allocate socket with instanceId: {instanceId}");
             if (this.SubProtocols == null) return;
             foreach (var protocol in this.SubProtocols)
