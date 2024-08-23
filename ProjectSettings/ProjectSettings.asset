@@ -516,7 +516,7 @@ PlayerSettings:
   webGLThreadsSupport: 0
   scriptingDefineSymbols:
     1: 
-    13: UNITY_WEB_SOCKET_LOG
+    13: 
   platformArchitecture: {}
   scriptingBackend:
     Standalone: 0
