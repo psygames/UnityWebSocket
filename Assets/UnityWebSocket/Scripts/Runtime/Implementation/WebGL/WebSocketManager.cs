@@ -39,7 +39,7 @@ namespace UnityWebSocket
 
         /* WebSocket JSLIB callback setters and other functions */
         [DllImport("__Internal")]
-        public static extern int WebSocketAllocate(string url, string binaryType);
+        public static extern int WebSocketAllocate(string url);
 
         [DllImport("__Internal")]
         public static extern int WebSocketAddSubProtocol(int instanceId, string protocol);
@@ -127,10 +127,10 @@ namespace UnityWebSocket
             }
         }
 
-        internal static int AllocateInstance(string address, string binaryType)
+        internal static int AllocateInstance(string address)
         {
             if (!isInitialized) Initialize();
-            return WebSocketAllocate(address, binaryType);
+            return WebSocketAllocate(address);
         }
 
         internal static void Add(WebSocket socket)
