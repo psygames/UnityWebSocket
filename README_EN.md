@@ -18,11 +18,11 @@
 
 ### **Installation**
 
-- **[Recommended] Install via Unity Package Manager**
+- **Install via Package Manager (Recommended)**
 
   Open Window/Package Manager in the Unity menu bar, click the `+` icon at the top left, select `Add package from git URL...`, enter `https://github.com/psygames/UnityWebSocket.git#upm` and confirm.
   
-- **Install via Unity Package Manager**
+- **Install via Unity Package**
 
   Download the latest version of `UnityWebSocket.unitypackage` from the [Releases](https://github.com/psygames/UnityWebSocket/releases) page, then import the package into your project.
 
