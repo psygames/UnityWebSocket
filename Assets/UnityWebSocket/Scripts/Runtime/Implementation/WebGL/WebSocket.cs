@@ -130,7 +130,8 @@ namespace UnityWebSocket
                 case -4: return "WebSocket is already closing.";
                 case -5: return "WebSocket is already closed.";
                 case -6: return "WebSocket is not in open state.";
-                case -7: return "Cannot close WebSocket. An invalid code was specified or reason is too long.";
+                case -7: return "Cannot close WebSocket, An invalid code was specified or reason is too long.";
+                case -8: return "Not support buffer slice. ";
                 default: return $"Unknown error code {errorCode}.";
             }
         }

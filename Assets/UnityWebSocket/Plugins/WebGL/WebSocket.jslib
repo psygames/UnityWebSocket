@@ -295,6 +295,8 @@ var WebSocketLibrary =
             instance.ws.send(HEAPU8.buffer.slice(bufferPtr, bufferPtr + length));
         else if (typeof buffer !== 'undefined')
             instance.ws.send(buffer.slice(bufferPtr, bufferPtr + length));
+        else
+            return -8; // not support buffer slice
 
         return 0;
     },

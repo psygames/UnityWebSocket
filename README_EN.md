@@ -12,11 +12,19 @@
 
 ## **Quick Start**
 
+### **Requirements**
+
+- Unity 2018.3 or higher.
+
 ### **Installation**
 
-- Download latest `UnityWebSocket.unitypackage` file from [Releases](https://github.com/psygames/UnityWebSocket/releases) page.
-  Import it into your Unity project.
+- **[Recommended] Install via Unity Package Manager**
 
+  Open Window/Package Manager in the Unity menu bar, click the `+` icon at the top left, select `Add package from git URL...`, enter `https://github.com/psygames/UnityWebSocket.git#upm` and confirm.
+  
+- **Install via Unity Package Manager**
+
+  Download the latest version of `UnityWebSocket.unitypackage` from the [Releases](https://github.com/psygames/UnityWebSocket/releases) page, then import the package into your project.
 
 ### **Usage**
 
@@ -48,12 +56,10 @@
   socket.CloseAsync();
   ```
 
-- More detail usages, see the [UnityWebSocketDemo.cs](Assets/UnityWebSocket/Demo/UnityWebSocketDemo.cs) code in project.
+- For more usage, refer to the [UnityWebSocketDemo.cs](Assets/UnityWebSocket/Demo/UnityWebSocketDemo.cs) example code in the project.
 
 - Menus
   - Tools -> UnityWebSocket, version update check, bug report, etc.
 
 - Unity Define Symbols(Optional):
   - `UNITY_WEB_SOCKET_LOG` Open internal log info.
-  - `UNITY_WEB_SOCKET_ENABLE_ASYNC` Use network thread handle message (not WebGL platform).
-
