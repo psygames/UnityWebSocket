@@ -93,27 +93,10 @@ namespace UnityWebSocket.Editor
                 {
                     if (GUI.Button(new Rect(440, 50, 150, 18), "Update to | " + latestVersion))
                     {
-                        ShowUpdateDialog();
+                        Application.OpenURL(Settings.GITHUB + "/releases");
                     }
                 }
             }
-        }
-
-        private void ShowUpdateDialog()
-        {
-            var isOK = EditorUtility.DisplayDialog("UnityWebSocket",
-                "Update UnityWebSocket now?\n" + changeLog,
-                "Update Now", "Cancel");
-
-            if (isOK)
-            {
-                UpdateVersion();
-            }
-        }
-
-        private void UpdateVersion()
-        {
-            Application.OpenURL(Settings.GITHUB + "/releases");
         }
 
         private void DrawHelper()

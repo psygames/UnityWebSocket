@@ -26,6 +26,7 @@ namespace UnityWebSocket.Demo
 
             WebSocketState state = socket == null ? WebSocketState.Closed : socket.ReadyState;
 
+            // draw header
             GUILayout.BeginHorizontal();
             GUILayout.Label("SDK Version: " + Settings.VERSION, GUILayout.Width(Screen.width / scale - 100));
             GUI.color = green;
@@ -33,6 +34,7 @@ namespace UnityWebSocket.Demo
             GUI.color = Color.white;
             GUILayout.EndHorizontal();
 
+            // draw websocket state
             GUILayout.BeginHorizontal();
             GUILayout.Label("State: ", GUILayout.Width(36));
             GUI.color = WebSocketState.Closed == state ? red : WebSocketState.Open == state ? green : wait;
@@ -40,10 +42,12 @@ namespace UnityWebSocket.Demo
             GUI.color = Color.white;
             GUILayout.EndHorizontal();
 
+            // draw address
             GUI.enabled = state == WebSocketState.Closed;
             GUILayout.Label("Address: ", width);
             address = GUILayout.TextField(address, width);
 
+            // draw connect button
             GUILayout.BeginHorizontal();
             GUI.enabled = state == WebSocketState.Closed;
             if (GUILayout.Button(state == WebSocketState.Connecting ? "Connecting..." : "Connect"))
@@ -57,6 +61,7 @@ namespace UnityWebSocket.Demo
                 socket.ConnectAsync();
             }
 
+            // draw close button
             GUI.enabled = state == WebSocketState.Open;
             if (GUILayout.Button(state == WebSocketState.Closing ? "Closing..." : "Close"))
             {
@@ -65,9 +70,11 @@ namespace UnityWebSocket.Demo
             }
             GUILayout.EndHorizontal();
 
+            // draw input message
             GUILayout.Label("Message: ");
             sendText = GUILayout.TextArea(sendText, GUILayout.MinHeight(50), width);
 
+            // draw send message button
             GUILayout.BeginHorizontal();
             if (GUILayout.Button("Send") && !string.IsNullOrEmpty(sendText))
             {
@@ -103,9 +110,9 @@ namespace UnityWebSocket.Demo
                     sendCount += 1;
                 }
             }
-
             GUILayout.EndHorizontal();
 
+            // draw message count
             GUI.enabled = true;
             GUILayout.BeginHorizontal();
             logMessage = GUILayout.Toggle(logMessage, "Log Message");
@@ -113,6 +120,7 @@ namespace UnityWebSocket.Demo
             GUILayout.Label(string.Format("Receive Count: {0}", receiveCount));
             GUILayout.EndHorizontal();
 
+            // draw clear button
             if (GUILayout.Button("Clear"))
             {
                 log = "";
@@ -120,6 +128,7 @@ namespace UnityWebSocket.Demo
                 sendCount = 0;
             }
 
+            // draw message content
             scrollPos = GUILayout.BeginScrollView(scrollPos, GUILayout.MaxHeight(Screen.height / scale - 270), width);
             GUILayout.Label(log);
             GUILayout.EndScrollView();
