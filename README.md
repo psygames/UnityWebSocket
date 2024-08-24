@@ -12,15 +12,19 @@
 
 ## **快速开始**
 
+### 安装环境
+
+- Unity 2018.3 或更高版本。
+
 ### **安装方法**
 
-- **通过 Unity Package 安装**
-
-  在 [Releases](https://github.com/psygames/UnityWebSocket/releases) 页面中，下载最新版本的 `UnityWebSocket.unitypackage` 安装包，然后导入到您的项目中。
-
-- **通过 Package Manager 安装**
+- **方式一（推荐）：通过 Package Manager 安装**
 
   在 Unity 菜单栏中打开 `Window/Package Manager`，点击左上角 `+` 号，选择 `Add package from git URL...` ，输入 `https://github.com/psygames/UnityWebSocket.git#upm` 并确认。
+  
+- **方式二：通过 Unity Package 安装**
+
+  在 [Releases](https://github.com/psygames/UnityWebSocket/releases) 页面中，下载最新版本的 `UnityWebSocket.unitypackage` 安装包，然后手动导入到您的项目中。
 
 ### **使用方法**
 
@@ -60,7 +64,6 @@
 
 - Unity 编译宏（可选项）：
   - `UNITY_WEB_SOCKET_LOG` 打开底层日志输出。
-  - `UNITY_WEB_SOCKET_ENABLE_ASYNC` 针对非WebGL平台使用异步线程处理消息（需自行处理跨线程访问Unity组件问题）。
 
 
 ### **QQ 交流群**

@@ -1,4 +1,4 @@
-#if !NET_LEGACY && (UNITY_EDITOR || !UNITY_WEBGL) && !UNITY_WEB_SOCKET_ENABLE_ASYNC
+﻿#if !NET_LEGACY && (UNITY_EDITOR || !UNITY_WEBGL)
 using System.Collections.Generic;
 using UnityEngine;
 
