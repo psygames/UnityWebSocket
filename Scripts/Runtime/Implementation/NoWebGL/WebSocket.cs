@@ -166,14 +166,13 @@ namespace UnityWebSocket
             {
                 while (!closeProcessing)
                 {
-                    while (!closeProcessing && sendQueue.TryDequeue(out var buffer))
+                    while (!closeProcessing && sendQueue.Count > 0 && sendQueue.TryDequeue(out var buffer))
                     {
                         Log($"Send, type: {buffer.type}, size: {buffer.data.Length}, queue left: {sendQueue.Count}");
                         await socket.SendAsync(new ArraySegment<byte>(buffer.data), buffer.type, true, CancellationToken.None);
                     }
-                    await Task.Yield();
+                    Thread.Sleep(1);
                 }
-
                 if (closeProcessing)
                 {
                     CleanSendQueue();
@@ -279,7 +278,7 @@ namespace UnityWebSocket
 
         internal void Update()
         {
-            while (receiveQueue.TryDequeue(out var e))
+            while (receiveQueue.Count > 0 && receiveQueue.TryDequeue(out var e))
             {
                 if (e is CloseEventArgs)
                 {
