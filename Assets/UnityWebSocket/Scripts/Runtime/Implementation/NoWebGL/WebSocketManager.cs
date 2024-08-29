@@ -53,6 +53,14 @@ namespace UnityWebSocket
                 sockets[i].Update();
             }
         }
+
+        private void OnApplicationQuit()
+        {
+            for (int i = sockets.Count - 1; i >= 0; i--)
+            {
+                sockets[i].Abort();
+            }
+        }
     }
 }
 #endif
