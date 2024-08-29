@@ -139,9 +139,8 @@ namespace UnityWebSocket
         [System.Diagnostics.Conditional("UNITY_WEB_SOCKET_LOG")]
         static void Log(string msg)
         {
-            UnityEngine.Debug.Log($"[UnityWebSocket]" +
-                $"[{DateTime.Now.TimeOfDay}]" +
-                $" {msg}");
+            var time = DateTime.Now.ToString("HH:mm:ss.fff");
+            UnityEngine.Debug.Log($"[{time}][UnityWebSocket] {msg}");
         }
     }
 }
