@@ -1,4 +1,4 @@
-﻿#if !UNITY_EDITOR && UNITY_WEBGL
+﻿#if (UNITY_WEBGL && !UNITY_EDITOR ) || FORCE_WEBGL_IMPL_ENABLE
 using System;
 
 namespace UnityWebSocket
