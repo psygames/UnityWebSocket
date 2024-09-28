@@ -1,7 +1,7 @@
 {
   "name": "com.psygames.unitywebsocket",
   "displayName": "UnityWebSocket",
-  "version": "2.8.2",
+  "version": "2.8.3",
   "unity": "2018.3",
   "description": "The Best Unity WebSocket Plugin for All Platforms.",
   "keywords": [
@@ -28,5 +28,8 @@
       "description": "Demo Scene",
       "path": "Samples~/Demo"
     }
-  ]
+  ],
+  "documentationUrl": "https://github.com/psygames/UnityWebSocket",
+  "changelogUrl": "https://github.com/psygames/UnityWebSocket/releases",
+  "licensesUrl": "https://github.com/psygames/UnityWebSocket#MIT-1-ov-file"
 }
