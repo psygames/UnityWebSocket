@@ -4,6 +4,7 @@ using UnityEngine;
 
 namespace UnityWebSocket
 {
+    [DisallowMultipleComponent]
     [DefaultExecutionOrder(-10000)]
     internal class WebSocketManager : MonoBehaviour
     {
@@ -29,6 +30,10 @@ namespace UnityWebSocket
             if (!go) go = new GameObject(rootName);
             _instance = go.GetComponent<WebSocketManager>();
             if (!_instance) _instance = go.AddComponent<WebSocketManager>();
+#if UNITY_EDITOR && UNITY_2019_1_OR_NEWER
+            UnityEditor.Compilation.CompilationPipeline.compilationStarted -= OnCompilationStarted;
+            UnityEditor.Compilation.CompilationPipeline.compilationStarted += OnCompilationStarted;
+#endif
         }
 
         private readonly List<WebSocket> sockets = new List<WebSocket>();
@@ -55,7 +60,22 @@ namespace UnityWebSocket
         }
 
 #if UNITY_EDITOR
+#if UNITY_2019_1_OR_NEWER
+        private static void OnCompilationStarted(object obj)
+        {
+            if (_instance != null)
+            {
+                _instance.SocketAbort();
+            }
+        }
+#endif
+
         private void OnApplicationQuit()
+        {
+            SocketAbort();
+        }
+
+        private void SocketAbort()
         {
             for (int i = sockets.Count - 1; i >= 0; i--)
             {
