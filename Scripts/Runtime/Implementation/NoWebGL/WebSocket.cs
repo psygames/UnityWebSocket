@@ -174,7 +174,7 @@ namespace UnityWebSocket
                         Log($"Send, type: {buffer.type}, size: {buffer.data.Length}, queue left: {sendQueue.Count}");
                         await socket.SendAsync(new ArraySegment<byte>(buffer.data), buffer.type, true, cts.Token);
                     }
-                    Thread.Sleep(1);
+                    Thread.Sleep(3);
                 }
                 if (closeProcessing && socket != null && cts != null && !cts.IsCancellationRequested)
                 {
