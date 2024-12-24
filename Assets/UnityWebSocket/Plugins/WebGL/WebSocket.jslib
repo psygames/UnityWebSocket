@@ -154,7 +154,7 @@ var WebSocketLibrary =
 
         instance.ws.onopen = function()
         {
-            Module.dynCall_vi(webSocketManager.onOpen, instanceId);
+            {{{ makeDynCall('vi', 'webSocketManager.onOpen') }}}(instanceId);
         };
 
         instance.ws.onmessage = function(ev)
@@ -166,7 +166,7 @@ var WebSocketLibrary =
                 writeArrayToMemory(array, buffer);
                 try
                 {
-                    Module.dynCall_viii(webSocketManager.onMessage, instanceId, buffer, array.length);
+                    {{{ makeDynCall('viii', 'webSocketManager.onMessage') }}}(instanceId, buffer, array.length);
                 }
                 finally
                 {
@@ -180,7 +180,7 @@ var WebSocketLibrary =
                 stringToUTF8(ev.data, buffer, length);
                 try
                 {
-                    Module.dynCall_vii(webSocketManager.onMessageStr, instanceId, buffer);
+                    {{{ makeDynCall('vii', 'webSocketManager.onMessageStr') }}}(instanceId, buffer);
                 }
                 finally
                 {
@@ -197,7 +197,7 @@ var WebSocketLibrary =
                     writeArrayToMemory(array, buffer);
                     try
                     {
-                        Module.dynCall_viii(webSocketManager.onMessage, instanceId, buffer, array.length);
+                        {{{ makeDynCall('viii', 'webSocketManager.onMessage') }}}(instanceId, buffer, array.length);
                     }
                     finally
                     {
@@ -221,7 +221,7 @@ var WebSocketLibrary =
             stringToUTF8(msg, buffer, length);
             try
             {
-                Module.dynCall_vii(webSocketManager.onError, instanceId, buffer);
+                {{{ makeDynCall('vii', 'webSocketManager.onError') }}}(instanceId, buffer);
             }
             finally
             {
@@ -237,7 +237,7 @@ var WebSocketLibrary =
             stringToUTF8(msg, buffer, length);
             try
             {
-                Module.dynCall_viii(webSocketManager.onClose, instanceId, ev.code, buffer);
+                {{{ makeDynCall('viii', 'webSocketManager.onClose') }}}(instanceId, ev.code, buffer);
             }
             finally
             {
