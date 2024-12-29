@@ -174,14 +174,6 @@ namespace UnityWebSocket.Demo
             AddLog(string.Format("Error: {0}", e.Message));
         }
 
-        private void OnApplicationQuit()
-        {
-            if (socket != null && socket.ReadyState != WebSocketState.Closed)
-            {
-                socket.CloseAsync();
-            }
-        }
-
         private int frame = 0;
         private float time = 0;
         private float fps = 0;
