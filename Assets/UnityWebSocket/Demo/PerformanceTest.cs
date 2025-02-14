@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using System.Net.Sockets;
+using UnityEngine;
 using UnityEngine.UI;
 
 namespace UnityWebSocket.Demo
@@ -9,21 +11,21 @@ namespace UnityWebSocket.Demo
         public string sendText = "Hello UnityWebSocket!";
         public Button btn;
 
-        private IWebSocket socket;
+        private WebSocket socket;
 
         private void Awake()
         {
-            // btn.onClick.AddListener(ButtonClick);
+            btn.onClick.AddListener(ButtonClick);
         }
 
         public void ButtonClick()
         {
-            // AddLog("111");
+            StartCoroutine(TestCase1());
         }
 
         private void AddLog(string str)
         {
-
+            Debug.Log(str);
         }
 
         private void Socket_OnOpen(object sender, OpenEventArgs e)
@@ -53,27 +55,22 @@ namespace UnityWebSocket.Demo
             AddLog(string.Format("Error: {0}", e.Message));
         }
 
-        private void OnApplicationQuit()
+        static WaitForSeconds wait5000 = new WaitForSeconds(5);
+        static WaitForSeconds wait1000 = new WaitForSeconds(1);
+        static WaitForSeconds wait100 = new WaitForSeconds(0.1f);
+        static WaitForSeconds wait10 = new WaitForSeconds(0.01f);
+        private IEnumerator TestCase1()
         {
-            if (socket != null && socket.ReadyState != WebSocketState.Closed)
+            socket = new WebSocket(address);
+            socket.ConnectAsync();
+            yield return wait5000;
+            byte[] data = System.Text.Encoding.UTF8.GetBytes(sendText);
+            for (int i = 0; i < 100; i++)
             {
-                socket.CloseAsync();
+                socket.SendAsync(data);
+                yield return wait100;
             }
-        }
-
-        private int frame = 0;
-        private float time = 0;
-        private float fps = 0;
-        private void Update()
-        {
-            frame += 1;
-            time += Time.deltaTime;
-            if (time >= 0.5f)
-            {
-                fps = frame / time;
-                frame = 0;
-                time = 0;
-            }
+            socket.CloseAsync();
         }
     }
 }
