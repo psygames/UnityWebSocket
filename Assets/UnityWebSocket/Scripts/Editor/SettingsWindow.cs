@@ -120,7 +120,7 @@ namespace UnityWebSocket.Editor
                 Application.OpenURL(uri.AbsoluteUri);
             }
 
-            GUI.Label(new Rect(330, 275, 100, 18), "QQ群:", TextStyle(10, TextAnchor.MiddleRight));
+            GUI.Label(new Rect(330, 275, 100, 18), "QQ Group:", TextStyle(10, TextAnchor.MiddleRight));
             if (GUI.Button(new Rect(440, 275, 150, 18), Settings.QQ_GROUP))
             {
                 Application.OpenURL(Settings.QQ_GROUP_LINK);

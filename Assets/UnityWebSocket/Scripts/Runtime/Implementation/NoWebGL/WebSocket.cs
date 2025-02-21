@@ -190,7 +190,7 @@ namespace UnityWebSocket
                         await socket.SendAsync(new ArraySegment<byte>(buffer.Bytes), buffer.Opcode == Opcode.Text ? WebSocketMessageType.Text : WebSocketMessageType.Binary, true, cts.Token);
                         buffer.Dispose();
                     }
-                    Thread.Sleep(1);
+                    Thread.Sleep(3);
                 }
                 if (closeProcessing && socket != null && cts != null && !cts.IsCancellationRequested)
                 {

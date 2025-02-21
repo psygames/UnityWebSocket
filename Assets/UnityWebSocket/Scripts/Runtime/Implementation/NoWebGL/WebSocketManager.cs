@@ -13,6 +13,7 @@ using UnityEngine;
 
 namespace UnityWebSocket
 {
+    [DisallowMultipleComponent]
     [DefaultExecutionOrder(-10000)]
     internal class WebSocketManager : MonoBehaviour
     {
@@ -63,7 +64,12 @@ namespace UnityWebSocket
             }
         }
 
-        private void OnApplicationQuit()
+        private void OnDisable()
+        {
+            SocketAbort();
+        }
+
+        private void SocketAbort()
         {
             for (int i = sockets.Count - 1; i >= 0; i--)
             {
