@@ -151,11 +151,11 @@ namespace UnityWebSocket.Demo
             AddLog(string.Format("Connected: {0}", address));
         }
 
-        private void Socket_OnMessage(object sender, MessageEventArgs e)
+        private void Socket_OnMessage(object sender, PooledBuffer e)
         {
             if (e.IsBinary)
             {
-                AddLog(string.Format("Receive Bytes ({1}): {0}", e.Data, e.RawData.Length));
+                AddLog(string.Format("Receive Bytes ({1}): {0}", e.Data, e.Length));
             }
             else if (e.IsText)
             {
@@ -172,14 +172,6 @@ namespace UnityWebSocket.Demo
         private void Socket_OnError(object sender, ErrorEventArgs e)
         {
             AddLog(string.Format("Error: {0}", e.Message));
-        }
-
-        private void OnApplicationQuit()
-        {
-            if (socket != null && socket.ReadyState != WebSocketState.Closed)
-            {
-                socket.CloseAsync();
-            }
         }
 
         private int frame = 0;
