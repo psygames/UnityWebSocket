@@ -163,7 +163,8 @@ var WebSocketLibrary =
             instance.ws = new WebSocket(instance.url, instance.subProtocols);
         else
             instance.ws = new WebSocket(instance.url);
-
+        // Set binaryType to arraybuffer to prevent blob message
+        instance.ws.binaryType = 'arraybuffer';
         instance.ws.onopen = function()
         {
             if (webSocketManager.support6000)
@@ -208,44 +209,17 @@ var WebSocketLibrary =
                 {
                     if (webSocketManager.support6000)
                     {
-                        {{{ makeDynCall('vii', 'webSocketManager.onMessageStr') }}}(instanceId, buffer);
+                        {{{ makeDynCall('vii', 'webSocketManager.onMessageStr') }}}(instanceId, buffer, length);
                     }
                     else
                     {
-                        Module.dynCall_vii(webSocketManager.onMessageStr, instanceId, buffer);
+                        Module.dynCall_vii(webSocketManager.onMessageStr, instanceId, buffer, length);
                     }
                 }
                 finally
                 {
                     _free(buffer);
                 }
-            }
-            else if (typeof Blob !== 'undefined' && ev.data instanceof Blob)
-            {
-                var reader = new FileReader();
-                reader.onload = function()
-                {
-                    var array = new Uint8Array(reader.result);
-                    var buffer = _malloc(array.length);
-                    writeArrayToMemory(array, buffer);
-                    try
-                    {
-                        if (webSocketManager.support6000)
-                        {
-                            {{{ makeDynCall('viii', 'webSocketManager.onMessage') }}}(instanceId, buffer, array.length);
-                        }
-                        else
-                        {
-                            Module.dynCall_viii(webSocketManager.onMessage, instanceId, buffer, array.length);
-                        }
-                    }
-                    finally
-                    {
-                        reader = null;
-                        _free(buffer);
-                    }
-                };
-                reader.readAsArrayBuffer(ev.data);
             }
             else
             {
