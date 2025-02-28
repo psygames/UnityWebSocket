@@ -91,10 +91,9 @@ namespace UnityWebSocket
                 }
             }
 
-            // #if UNITY_WEB_SOCKET_LOG
-            UnityEngine.Debug.Log($"{TName} Get byte[{size}] Alloc");
-            // #endif
-
+#if UNITY_WEB_SOCKET_LOG
+            UnityEngine.Debug.LogWarning($"{TName} Get byte[{size}] Alloc !!!");
+#endif
             var allocArr = new byte[size];
             return allocArr;
         }
